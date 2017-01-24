@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     
-    private float speed = 5.5f;
+    public float speed = 5.5f;
     public bool onGround;
-    private int counter = 0;
+    public int counter = 0;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;

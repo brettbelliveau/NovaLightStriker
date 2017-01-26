@@ -6,20 +6,26 @@ public class Player : MonoBehaviour {
     
     public float speed = 5.5f;
     public bool onGround;
-    public int counter = 0;
+    public static int counter = 0;
+    public int runAnimationSpeed = 3;
+    public static int attackAnimationSpeed = 2;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
 
-    public Sprite standing, runningOne, runningTwo, runningThree, runningFour, runningFive,
-                  runningSix, runningSeven, runningEight, runningNine, jumping;
+    public Sprite standing, jumping;
+    public Sprite[] running;
+    public Sprite[] attacking;
 
-	// Use this for initialization
-	void Start () {
+    private bool attackFreeze;
+
+    // Use this for initialization
+    void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        attackFreeze = false;
 	}
 	
 	// Update is called once per frame
@@ -33,44 +39,42 @@ public class Player : MonoBehaviour {
         if (onGround)
             onGround = Mathf.Abs(body.velocity.y) < 0.02;
 
-        if (Input.GetButtonDown("Jump") && onGround)
+        if (Input.GetButtonDown("Jump") && onGround && !attackFreeze)
         {
             body.AddForce(Vector2.up * 170);
             onGround = false;
         }
 
+        if (Input.GetButtonDown("Fire1") && !attackFreeze)
+        {
+            counter = 0;
+            attackFreeze = true;
+            PixelGenerator.attacking = true;
+        }
+
         /* Sprite Section */
 
         //Standing sprite
-        if (body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02)
+        if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02)
         {
             spriteRender.sprite = standing;
         }
 
         //Running sprite
-        else if (body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02)
+        else if (!attackFreeze && body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02)
         {
-            counter = (counter + 1) % 18;
-            Debug.Log(counter);
-            if (counter >= 0 && counter < 2)
-                spriteRender.sprite = runningOne;
-            else if (counter >= 2 && counter < 4)
-                spriteRender.sprite = runningTwo;
-            else if (counter >= 4 && counter < 6)
-                spriteRender.sprite = runningThree;
-            else if (counter >= 6 && counter < 8)
-                spriteRender.sprite = runningFour;
-            else if (counter >= 8 && counter < 10)
-                spriteRender.sprite = runningFive;
-            else if (counter >= 10 && counter < 12)
-                spriteRender.sprite = runningSix;
-            else if (counter >= 12 && counter < 14)
-                spriteRender.sprite = runningSeven;
-            else if (counter >= 14 && counter < 16)
-                spriteRender.sprite = runningEight;
-            else if (counter >= 16 && counter < 18)
-                spriteRender.sprite = runningNine;
+            counter = (counter + 1) % (running.Length*runAnimationSpeed);
+            spriteRender.sprite = running[counter/runAnimationSpeed];
+        }
 
+        //Attacking sprite
+        else if (attackFreeze)
+        {
+            counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
+            spriteRender.sprite = attacking[counter / attackAnimationSpeed];
+            //Done attacking
+            if (counter == 0)
+                attackFreeze = PixelGenerator.attacking = false;
         }
 
         //Jumping sprite
@@ -85,12 +89,15 @@ public class Player : MonoBehaviour {
 
         //Obtain left/right input
         float h = Input.GetAxisRaw("Horizontal");
+
         body.velocity = new Vector2(speed * h, body.velocity.y);
         
         //Turn off collider when moving upward
+        //TODO: Change this to layering system
         collider.enabled = body.velocity.y <= 0.02;
 
         //Left orientation for sprite if going left, or if standing still and already left
         spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
+        PixelGenerator.facingRight = !spriteRender.flipX;
     }
 }

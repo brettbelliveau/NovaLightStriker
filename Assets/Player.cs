@@ -13,23 +13,34 @@ public class Player : MonoBehaviour {
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
+    private Transform transform;
+    public GameObject camera;
 
     public Sprite standing, jumping;
     public Sprite[] running;
     public Sprite[] attacking;
+    public Sprite damageSprite;
 
+    private bool takingDamage;
     private bool attackFreeze;
+    private int damageFrames = 40;
+    private int blinkSpeed = 4;
+
+    private int damageCounter = 0;
 
     // Use this for initialization
     void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        transform = gameObject.GetComponent<Transform>();
         attackFreeze = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        damageCounter = (damageCounter + 1) % 300;
 
         //Check if back on ground after jump/fall
         if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)
@@ -39,23 +50,68 @@ public class Player : MonoBehaviour {
         if (onGround)
             onGround = Mathf.Abs(body.velocity.y) < 0.02;
 
-        if (Input.GetButtonDown("Jump") && onGround && !attackFreeze)
+        if (Input.GetButtonDown("Jump") && onGround && !attackFreeze && !takingDamage)
         {
             body.AddForce(Vector2.up * 170);
             onGround = false;
         }
 
-        if (Input.GetButtonDown("Fire1") && !attackFreeze)
+        if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
         {
             counter = 0;
             attackFreeze = true;
             PixelGenerator.attacking = true;
         }
 
+        //TODO: Scrap damageCounter, check for enemy collision
+        if (damageCounter == 100 && !takingDamage)
+        {
+            counter = 0;
+            takingDamage = true;
+
+            //If facing left, push right. If not, push left
+            var x = spriteRender.flipX ? 3f : -3f;
+            var y = body.velocity.y > 0.02 ? -0.02f : 0f; 
+            body.velocity = new Vector2(x, y);
+        }
+        
         /* Sprite Section */
 
+        //Talking damage sprite
+        if (takingDamage)
+        {
+            counter = (counter + 1) % damageFrames;
+            
+            //First frame, set sprite and rotate
+            if (counter == 1)
+            {
+                //if facing left, tilt left, else right
+                var z = spriteRender.flipX ? -10 : 10; 
+                transform.rotation = Quaternion.Euler(0, 0, z);
+                camera.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+
+            //Every x frames blink character
+            if (counter % blinkSpeed * 2 > blinkSpeed)
+            {
+                spriteRender.sprite = damageSprite;
+            }
+            else
+            {
+                spriteRender.sprite = null;
+            }
+
+            //Done taking damage
+            if (counter == 0)
+            {
+                takingDamage = false;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                camera.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+        }
+
         //Standing sprite
-        if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02)
+        else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02)
         {
             spriteRender.sprite = standing;
         }
@@ -88,16 +144,21 @@ public class Player : MonoBehaviour {
     void FixedUpdate () {
 
         //Obtain left/right input
-        float h = Input.GetAxisRaw("Horizontal");
-
-        body.velocity = new Vector2(speed * h, body.velocity.y);
+        if (!takingDamage)
+        {
+            float h = Input.GetAxisRaw("Horizontal");
+            body.velocity = new Vector2(speed * h, body.velocity.y);
+        }
         
         //Turn off collider when moving upward
         //TODO: Change this to layering system
         collider.enabled = body.velocity.y <= 0.02;
 
         //Left orientation for sprite if going left, or if standing still and already left
-        spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
-        PixelGenerator.facingRight = !spriteRender.flipX;
+        if (!takingDamage)
+        {
+            spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
+            PixelGenerator.facingRight = !spriteRender.flipX;
+        }
     }
 }

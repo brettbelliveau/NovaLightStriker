@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        damageCounter = (damageCounter + 1) % 300;
+        //damageCounter = (damageCounter + 1) % 300;
 
         //Check if back on ground after jump/fall
         if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)

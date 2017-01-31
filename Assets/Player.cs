@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     
-    public float speed = 5.5f;
+    public float speed;
     public bool onGround;
     public static int counter = 0;
     public int runAnimationSpeed = 3;
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour {
 
         if (Input.GetButtonDown("Jump") && onGround && !attackFreeze && !takingDamage)
         {
-            body.AddForce(Vector2.up * 170);
+            body.AddForce(Vector2.up * 14);
             onGround = false;
         }
 

@@ -14,12 +14,12 @@ TextureImporter:
     21300018: Blocks_9
     21300020: Blocks_10
     21300022: Blocks_11
-  serializedVersion: 2
+  serializedVersion: 4
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
+    sRGBTexture: 1
     linearTexture: 0
-    correctGamma: 0
     fadeOut: 0
     borderMipMap: 0
     mipMapFadeDistanceStart: 1
@@ -27,11 +27,12 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
-  generateCubemap: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
   seamlessCubemap: 0
   textureFormat: -1
   maxTextureSize: 1024
@@ -39,7 +40,7 @@ TextureImporter:
     filterMode: 0
     aniso: 16
     mipBias: -1
-    wrapMode: 1
+    wrapMode: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -47,15 +48,39 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+  alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
-  buildTargetSettings: []
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: Blocks_0
+    - serializedVersion: 2
+      name: Blocks_0
       rect:
         serializedVersion: 2
         x: 0
@@ -65,7 +90,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_1
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_1
       rect:
         serializedVersion: 2
         x: 32
@@ -75,7 +103,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_2
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_2
       rect:
         serializedVersion: 2
         x: 64
@@ -85,7 +116,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_3
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_3
       rect:
         serializedVersion: 2
         x: 96
@@ -95,7 +129,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_4
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_4
       rect:
         serializedVersion: 2
         x: 128
@@ -105,7 +142,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_5
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_5
       rect:
         serializedVersion: 2
         x: 160
@@ -115,7 +155,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_6
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_6
       rect:
         serializedVersion: 2
         x: 0
@@ -125,7 +168,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_7
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_7
       rect:
         serializedVersion: 2
         x: 32
@@ -135,7 +181,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_8
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_8
       rect:
         serializedVersion: 2
         x: 64
@@ -145,7 +194,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_9
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_9
       rect:
         serializedVersion: 2
         x: 96
@@ -155,7 +207,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_10
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_10
       rect:
         serializedVersion: 2
         x: 128
@@ -165,7 +220,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Blocks_11
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Blocks_11
       rect:
         serializedVersion: 2
         x: 160
@@ -175,5 +233,10 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    outline: []
   spritePackingTag: 
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

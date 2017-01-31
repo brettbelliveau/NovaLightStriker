@@ -1,0 +1,34 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SnowPixel : MonoBehaviour {
+
+    public Rigidbody2D body;
+    public GameObject snow;
+
+    private int counter = 0;
+    
+	// Use this for initialization
+	void Start () {
+        body = gameObject.GetComponent<Rigidbody2D>();
+    }
+	
+	// Update is called once per frame
+	void Update () {
+
+        //If snow has had a chance to start falling, delete on ground hit
+		if (counter++ > 5 && body.velocity.y > -0.02)
+        {
+            Destroy(snow);
+            Destroy(this);
+        }
+
+        //Else if snow falling too long, delete
+        else if (counter > 150)
+        {
+            Destroy(snow);
+            Destroy(this);
+        }
+    }
+}

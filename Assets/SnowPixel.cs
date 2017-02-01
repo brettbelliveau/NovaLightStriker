@@ -12,6 +12,9 @@ public class SnowPixel : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
+        
+        //Ignore snow (layer 10) collision with characters (layer 9)
+        Physics2D.IgnoreLayerCollision(9, 10, true);
     }
 	
 	// Update is called once per frame

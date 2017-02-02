@@ -149,10 +149,10 @@ public class Player : MonoBehaviour {
             float h = Input.GetAxisRaw("Horizontal");
             body.velocity = new Vector2(speed * h, body.velocity.y);
         }
-        
+
         //Turn off collider when moving upward
-        //TODO: Change this to layering system
-        collider.enabled = body.velocity.y <= 0.02;
+        //Layer 9 is character, layer 11 is special platforms
+        Physics2D.IgnoreLayerCollision(9, 11, body.velocity.y >= 0.02);
 
         //Left orientation for sprite if going left, or if standing still and already left
         if (!takingDamage)

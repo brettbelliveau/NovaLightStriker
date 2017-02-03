@@ -46,7 +46,7 @@ public class SnowGenerator : MonoBehaviour {
         var minX = -1 * maxX;
         
         location.x = Random.Range(minX, maxX);
-        location.y = 10f;
+        location.y = 12f;
         location.z = 0;
         
         return (spawnPixelAtLocation(pixel, location));

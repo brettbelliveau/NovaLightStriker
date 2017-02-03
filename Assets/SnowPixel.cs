@@ -19,7 +19,7 @@ public class SnowPixel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        
         //If snow has had a chance to start falling, delete on ground hit
 		if (counter++ > 5 && body.velocity.y > -0.02)
         {
@@ -28,7 +28,7 @@ public class SnowPixel : MonoBehaviour {
         }
 
         //Else if snow falling too long, delete
-        else if (counter > 150)
+        else if (counter > 300)
         {
             Destroy(snow);
             Destroy(this);

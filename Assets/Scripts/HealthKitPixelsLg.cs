@@ -23,7 +23,7 @@ public class HealthKitPixelsLg : MonoBehaviour {
     void Start () {
         pixels = new List<GameObject>();
         //Range for X: -0.5f - 0.25f
-        xCoordinates = new float[] { -0.5f, 0.15f, -0.3f, 0.25f, -0.5f, 0.2f, 0f};
+        xCoordinates = new float[] { -0.5f, 0.15f, -0.3f, 0.25f, -0.5f, 0.2f, -0.1f};
         //Range for Y: 1f - 1.4f
         yCoordinates = new float[] { 1f, 1.2f, 1.2f, 1f, 1.2f, 1.2f, 1.2f};
 	}

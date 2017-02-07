@@ -9,6 +9,9 @@ public class Player : MonoBehaviour {
     public static int counter = 0;
     public int runAnimationSpeed = 3;
     public static int attackAnimationSpeed = 2;
+    private static int spawnAnimationSpeed = 8;
+
+    private static int waitFrames = 40;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -19,8 +22,11 @@ public class Player : MonoBehaviour {
     public Sprite standing, jumping;
     public Sprite[] running;
     public Sprite[] attacking;
+    public Sprite[] spawning;
     public Sprite damageSprite;
 
+    private bool spawningBool;
+    private bool spawned;
     private bool takingDamage;
     private bool attackFreeze;
     private int damageFrames = 40;
@@ -35,58 +41,65 @@ public class Player : MonoBehaviour {
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         transform = gameObject.GetComponent<Transform>();
         attackFreeze = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        spawningBool = true;
+        spawned = false;
+        spriteRender.sprite = null;
+        SpawnInOutPixels.spawning = true;
+        SpawnInOutPixels.spawned = false;
+    }
+
+    // Update is called once per frame
+    void Update() {
 
         //damageCounter = (damageCounter + 1) % 300;
-
-        //Check if back on ground after jump/fall
-        if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)
-            onGround = true;
-        
-        //Turn off onGround when falling from ledge
-        if (onGround)
-            onGround = Mathf.Abs(body.velocity.y) < 0.02;
-
-        if (Input.GetButtonDown("Jump") && onGround && !attackFreeze && !takingDamage)
+       
+        if (!spawningBool)
         {
-            body.AddForce(Vector2.up * 14);
-            onGround = false;
-        }
+            //Check if back on ground after jump/fall
+            if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)
+                onGround = true;
 
-        if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
-        {
-            counter = 0;
-            attackFreeze = true;
-            PixelGenerator.attacking = true;
-        }
+            //Turn off onGround when falling from ledge
+            if (onGround)
+                onGround = Mathf.Abs(body.velocity.y) < 0.02;
 
-        //TODO: Scrap damageCounter, check for enemy collision
-        if (damageCounter == 100 && !takingDamage)
-        {
-            counter = 0;
-            takingDamage = true;
+            if (Input.GetButtonDown("Jump") && onGround && !attackFreeze && !takingDamage)
+            {
+                body.AddForce(Vector2.up * 14);
+                onGround = false;
+            }
 
-            //If facing left, push right. If not, push left
-            var x = spriteRender.flipX ? 3f : -3f;
-            var y = body.velocity.y > 0.02 ? -0.02f : 0f; 
-            body.velocity = new Vector2(x, y);
+            if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
+            {
+                counter = 0;
+                attackFreeze = true;
+                PixelGenerator.attacking = true;
+            }
+
+            //TODO: Scrap damageCounter, check for enemy collision
+            if (damageCounter == 100 && !takingDamage)
+            {
+                counter = 0;
+                takingDamage = true;
+
+                //If facing left, push right. If not, push left
+                var x = spriteRender.flipX ? 3f : -3f;
+                var y = body.velocity.y > 0.02 ? -0.02f : 0f;
+                body.velocity = new Vector2(x, y);
+            }
         }
-        
         /* Sprite Section */
 
         //Talking damage sprite
         if (takingDamage)
         {
             counter = (counter + 1) % damageFrames;
-            
+
             //First frame, set sprite and rotate
             if (counter == 1)
             {
                 //if facing left, tilt left, else right
-                var z = spriteRender.flipX ? -10 : 10; 
+                var z = spriteRender.flipX ? -10 : 10;
                 transform.rotation = Quaternion.Euler(0, 0, z);
                 camera.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
@@ -111,16 +124,16 @@ public class Player : MonoBehaviour {
         }
 
         //Standing sprite
-        else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02)
+        else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool)
         {
             spriteRender.sprite = standing;
         }
 
         //Running sprite
-        else if (!attackFreeze && body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02)
+        else if (!attackFreeze && body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool)
         {
-            counter = (counter + 1) % (running.Length*runAnimationSpeed);
-            spriteRender.sprite = running[counter/runAnimationSpeed];
+            counter = (counter + 1) % (running.Length * runAnimationSpeed);
+            spriteRender.sprite = running[counter / runAnimationSpeed];
         }
 
         //Attacking sprite
@@ -131,6 +144,49 @@ public class Player : MonoBehaviour {
             //Done attacking
             if (counter == 0)
                 attackFreeze = PixelGenerator.attacking = false;
+        }
+
+        else if (spawningBool)
+        {
+            if (!spawned) //spawn-in animation
+            {
+                if (counter < waitFrames)
+                {
+                    counter++;
+                    if (counter >= waitFrames)
+                    {
+                        waitFrames = -1;
+                        counter = 0;
+                    }
+                }
+                else { 
+                counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
+                spriteRender.sprite = spawning[counter / spawnAnimationSpeed];
+                    //Done spawning
+                    if (counter == 0)
+                    {
+                        spriteRender.sprite = standing;
+                        spawningBool = false;
+                        spawned = true;
+                        SpawnInOutPixels.spawning = false;
+                        SpawnInOutPixels.spawned = true;
+                    }
+                }
+            }
+            else //spawn-out animation
+            {
+                counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
+                spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)];
+                //Done spawning
+                if (counter == 0)
+                {
+                    spriteRender.sprite = standing;
+                    spawningBool = false;
+                    spawned = false;
+                    SpawnInOutPixels.spawning = false;
+                    SpawnInOutPixels.spawned = false;
+                }
+            }
         }
 
         //Jumping sprite
@@ -144,7 +200,7 @@ public class Player : MonoBehaviour {
     void FixedUpdate () {
 
         //Obtain left/right input
-        if (!takingDamage)
+        if (!spawningBool && !takingDamage)
         {
             float h = Input.GetAxisRaw("Horizontal");
             body.velocity = new Vector2(speed * h, body.velocity.y);
@@ -155,7 +211,7 @@ public class Player : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(9, 11, body.velocity.y >= 0.02);
 
         //Left orientation for sprite if going left, or if standing still and already left
-        if (!takingDamage)
+        if (!spawningBool && !takingDamage)
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
             PixelGenerator.facingRight = !spriteRender.flipX;

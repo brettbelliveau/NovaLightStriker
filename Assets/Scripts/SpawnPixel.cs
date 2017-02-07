@@ -1,0 +1,38 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnPixel : MonoBehaviour {
+
+    public Rigidbody2D body;
+    public GameObject snow;
+
+    private int counter = 0;
+    
+	// Use this for initialization
+	void Start () {
+        body = gameObject.GetComponent<Rigidbody2D>();
+        
+        //Ignore snow (layer 10) collision with characters (layer 9)
+        Physics2D.IgnoreLayerCollision(9, 10, true);
+    }
+	
+	// Update is called once per frame
+	void Update () {
+        
+        //If falling pixels
+		if (counter++ > 5 && body.velocity.y < 0.02 && snow.transform.position.y <= SpawnInOutPixels.deleteSpot)
+        {
+            SpawnInOutPixels.deleteSpot += 0.006f;
+            Destroy(snow);
+            Destroy(this);
+        }
+
+        //Else if snow rising too long, delete
+        else if (counter > 300)
+        {
+            Destroy(snow);
+            Destroy(this);
+        }
+    }
+}

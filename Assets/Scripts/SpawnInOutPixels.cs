@@ -32,7 +32,6 @@ public class SpawnInOutPixels : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Deletespot" + deleteSpot);
         if (spawning)
         {
             counter = (counter + 1) % (framesPerPixel);
@@ -61,7 +60,8 @@ public class SpawnInOutPixels : MonoBehaviour {
 
         if (!spawned) //spawning in
             location.y = Random.Range(3.5f, 4f);
-        else { //spawning out
+        else //spawning out
+        { 
             location.y = spawnSpot;
             spawnSpot -= 0.05f;
         }
@@ -80,8 +80,9 @@ public class SpawnInOutPixels : MonoBehaviour {
         
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
-        if (!spawned)
-        { //spawning in
+
+        if (!spawned) //spawning in
+        { 
             tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -0.8f);
             tempPixel.GetComponent<Rigidbody2D>().gravityScale = 0;
         }

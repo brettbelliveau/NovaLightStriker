@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     public static int attackAnimationSpeed = 2;
     private static int spawnAnimationSpeed = 8;
 
-    private static int waitFrames = 40;
+    private static int waitFrames = 40; //number of frames to wait before spawning
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -25,8 +25,8 @@ public class Player : MonoBehaviour {
     public Sprite[] spawning;
     public Sprite damageSprite;
 
-    private bool spawningBool;
-    private bool spawned;
+    public bool spawningBool = true;
+    public bool spawned = false;
     private bool takingDamage;
     private bool attackFreeze;
     private int damageFrames = 40;
@@ -41,19 +41,16 @@ public class Player : MonoBehaviour {
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         transform = gameObject.GetComponent<Transform>();
         attackFreeze = false;
-        spawningBool = true;
-        spawned = false;
         spriteRender.sprite = null;
-        SpawnInOutPixels.spawning = true;
-        SpawnInOutPixels.spawned = false;
+        SpawnInOutPixels.spawning = spawningBool;
+        SpawnInOutPixels.spawned = spawned;
     }
 
     // Update is called once per frame
     void Update() {
-
         //damageCounter = (damageCounter + 1) % 300;
        
-        if (!spawningBool)
+        if (!spawningBool && spawned)
         {
             //Check if back on ground after jump/fall
             if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)
@@ -124,13 +121,13 @@ public class Player : MonoBehaviour {
         }
 
         //Standing sprite
-        else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool)
+        else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool && spawned)
         {
             spriteRender.sprite = standing;
         }
 
         //Running sprite
-        else if (!attackFreeze && body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool)
+        else if (!attackFreeze && body.velocity.x != 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool && spawned)
         {
             counter = (counter + 1) % (running.Length * runAnimationSpeed);
             spriteRender.sprite = running[counter / runAnimationSpeed];
@@ -166,9 +163,9 @@ public class Player : MonoBehaviour {
                     if (counter == 0)
                     {
                         spriteRender.sprite = standing;
-                        spawningBool = false;
+                        spawningBool = false;               //Comment this out to test spawn out
                         spawned = true;
-                        SpawnInOutPixels.spawning = false;
+                        SpawnInOutPixels.spawning = false;  //Comment this out to test spawn out
                         SpawnInOutPixels.spawned = true;
                     }
                 }
@@ -176,11 +173,12 @@ public class Player : MonoBehaviour {
             else //spawn-out animation
             {
                 counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
-                spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)];
-                //Done spawning
+                if (counter > 0)
+                    spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)];
+                //Done spawning out
                 if (counter == 0)
                 {
-                    spriteRender.sprite = standing;
+                    spriteRender.sprite = null;
                     spawningBool = false;
                     spawned = false;
                     SpawnInOutPixels.spawning = false;
@@ -200,7 +198,7 @@ public class Player : MonoBehaviour {
     void FixedUpdate () {
 
         //Obtain left/right input
-        if (!spawningBool && !takingDamage)
+        if (!spawningBool && spawned && !takingDamage)
         {
             float h = Input.GetAxisRaw("Horizontal");
             body.velocity = new Vector2(speed * h, body.velocity.y);
@@ -211,7 +209,7 @@ public class Player : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(9, 11, body.velocity.y >= 0.02);
 
         //Left orientation for sprite if going left, or if standing still and already left
-        if (!spawningBool && !takingDamage)
+        if (!spawningBool && spawned && !takingDamage)
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
             PixelGenerator.facingRight = !spriteRender.flipX;

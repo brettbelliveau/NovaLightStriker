@@ -13,8 +13,10 @@ public class SpawnPixel : MonoBehaviour {
 	void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
         
-        //Ignore snow (layer 10) collision with characters (layer 9)
+        //Ignore spawn pixels (layer 10) collision with characters (layer 9)
         Physics2D.IgnoreLayerCollision(9, 10, true);
+        //Ignore all VFX collisions (snow, spawn pixels, etc)
+        Physics2D.IgnoreLayerCollision(10, 10, true);
     }
 	
 	// Update is called once per frame
@@ -23,13 +25,13 @@ public class SpawnPixel : MonoBehaviour {
         //If falling pixels
 		if (counter++ > 5 && body.velocity.y < 0.02 && snow.transform.position.y <= SpawnInOutPixels.deleteSpot)
         {
-            SpawnInOutPixels.deleteSpot += 0.006f;
+            SpawnInOutPixels.deleteSpot += 0.005f;
             Destroy(snow);
             Destroy(this);
         }
 
         //Else if snow rising too long, delete
-        else if (counter > 300)
+        else if (counter > 200)
         {
             Destroy(snow);
             Destroy(this);

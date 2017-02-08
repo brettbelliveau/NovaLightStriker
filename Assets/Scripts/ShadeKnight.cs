@@ -9,10 +9,10 @@ public class ShadeKnight : MonoBehaviour {
     public int attackFreezeCounter = 0;
     
     public float speed;
-    public int turnAfterFrames = 2000;
+    private int turnAfterFrames = 120;
     public int floatSpeed = 10;
     private int attackAnimationSpeed = 3;
-    private int attackFreezeDuration = 90;
+    private int attackFreezeDuration = 54;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -94,7 +94,7 @@ public class ShadeKnight : MonoBehaviour {
             }
 
             //Manual attacking
-            else if (walkingCounter == 30 || walkingCounter == 160)
+            else if (walkingCounter == 30 || walkingCounter == 150)
             {
                 attackFreeze = true;
 

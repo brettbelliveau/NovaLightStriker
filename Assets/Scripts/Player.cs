@@ -10,7 +10,8 @@ public class Player : MonoBehaviour {
     public int runAnimationSpeed = 3;
     public static int attackAnimationSpeed = 2;
     private static int spawnAnimationSpeed = 8;
-
+    private int framesSinceOnGround = 0;
+    private bool jumped = false;
     private static int waitFrames = 40; //number of frames to wait before spawning
 
     private Rigidbody2D body;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour {
 
     public bool spawningBool = true;
     public bool spawned = false;
+
     private bool takingDamage;
     private bool attackFreeze;
     private int damageFrames = 40;
@@ -53,17 +55,25 @@ public class Player : MonoBehaviour {
         if (!spawningBool && spawned)
         {
             //Check if back on ground after jump/fall
-            if (!onGround && Mathf.Abs(body.velocity.y) < 0.02)
+            if (!onGround && Mathf.Abs(body.velocity.y) < 0.02) {
                 onGround = true;
+                framesSinceOnGround = 0;
+                jumped = false;
+            }
 
             //Turn off onGround when falling from ledge
             if (onGround)
                 onGround = Mathf.Abs(body.velocity.y) < 0.02;
-
-            if (Input.GetButtonDown("Jump") && onGround && !attackFreeze && !takingDamage)
+            //Use this counter as a check for how long since fallen off ledge
+            else
+                framesSinceOnGround++;
+            
+            //Give the user 2 frames after leaving platform to jump
+            if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage)
             {
                 body.AddForce(Vector2.up * 14);
                 onGround = false;
+                jumped = true;
             }
 
             if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)

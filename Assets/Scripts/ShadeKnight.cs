@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ShadeKnight : MonoBehaviour {
-    
-    public int counter = 0;
+
+    private int counter = 0;
     private int walkingCounter = 0;
-    public int attackFreezeCounter = 0;
+    private int attackFreezeCounter = 0;
     
     public float speed;
+    public int floatInterval = 8;
     private int turnAfterFrames = 120;
-    public int floatSpeed = 10;
     private int attackAnimationSpeed = 3;
     private int attackFreezeDuration = 54;
 
@@ -83,6 +84,14 @@ public class ShadeKnight : MonoBehaviour {
         //Standing sprite
         else if (!attackFreeze)
         {
+            //Float Up 1/2 of the time
+            if ((walkingCounter / (turnAfterFrames*2 / floatInterval) % 2) == 0)
+                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.02f);
+
+            //Float Down the other 1/2 of the time
+            else
+                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.02f);
+
             walkingCounter = (walkingCounter + 1) % (turnAfterFrames * 2);
             if (walkingCounter == turnAfterFrames)
             {
@@ -92,9 +101,9 @@ public class ShadeKnight : MonoBehaviour {
             {
                 movingRight = false;
             }
-
+            
             //Manual attacking
-            else if (walkingCounter == 30 || walkingCounter == 150)
+            else if (walkingCounter == 150)
             {
                 attackFreeze = true;
 
@@ -114,6 +123,9 @@ public class ShadeKnight : MonoBehaviour {
         //Attacking sprite
         else
         {
+            //Stop movement
+            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+
             if (attackFreezeCounter == 0)
                 counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
 

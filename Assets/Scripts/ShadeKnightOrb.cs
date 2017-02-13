@@ -43,7 +43,7 @@ public class ShadeKnightOrb : MonoBehaviour {
             body.velocity = velocity;
         }
         //Flying through the air
-        else if (counter > 48) {
+        else if (counter > 48 && counter < 200) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
@@ -56,13 +56,30 @@ public class ShadeKnightOrb : MonoBehaviour {
             }
         }
         //Else if orb flying too long, delete
-        else if (counter > 200)
+        else if (counter >= 200)
         {
-            Destroy(gameObject);
-            Destroy(this);
+            if (counter == 200)
+            {
+                spriteRenderer.sprite = null;
+                //TODO: Remove collider at this step
+            }
+
+            if (counter < (200 + maxSpawnPixels * 3))
+            {
+                if (counter % 3 == 0 && pixels.Count > 0)
+                {
+                    Destroy(pixels[0]);
+                    pixels.RemoveAt(0);
+                }
+            }
+            else
+            {
+                Destroy(gameObject);
+                Destroy(this);
+            }
         }
         //TODO: Add delete on collision
-        
+
     }
 
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)

@@ -33,7 +33,6 @@ public class CheckpointPixelGen : MonoBehaviour {
     {
         counter = (counter + 1) % (framesPerPixel);
 
-        Debug.Log("Accessed ? " + accessed);
         //TODO: Make this collider-based when the character steps over
         if (!accessed && pixels.Count >= maxPixels-1)
         {

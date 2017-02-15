@@ -12,7 +12,8 @@ public class ShadeRanger : MonoBehaviour {
     public float speed;
     private int turnAfterFrames = 80;
     private int attackAnimationSpeed = 3;
-    private int attackFreezeDuration = 20;
+    private int attackFreezeDuration = 40;
+    private bool arrowFlag = false;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -97,17 +98,6 @@ public class ShadeRanger : MonoBehaviour {
             else if (walkingCounter % turnAfterFrames == 40)
             {
                 attackFreeze = true;
-
-                float x = movingRight ? 0.6f : -0.6f;
-                Vector3 arrowPosition = new Vector3(x, -0.086f, -5);
-                var tempArrow = Instantiate(arrow, arrowPosition, Quaternion.identity) as GameObject;
-
-                tempArrow.GetComponent<SpriteRenderer>().flipX = movingRight;
-                tempArrow.transform.parent = gameObject.transform;
-                tempArrow.transform.localPosition = arrowPosition;
-
-                tempArrow.transform.parent = null;
-                tempArrow.SetActive(true);
             }
         }
         
@@ -124,6 +114,13 @@ public class ShadeRanger : MonoBehaviour {
             if (counter > 0)
                 spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
+            //Hardcoded point in animation to generate arrow. May want to find better solution
+            if (!arrowFlag && counter / attackAnimationSpeed == 3)
+            {
+                generateArrow();
+                arrowFlag = true;
+            }
+
             //Done with first attack frames
             if (counter == 0)
             {
@@ -132,6 +129,7 @@ public class ShadeRanger : MonoBehaviour {
                 {
                     attackFreeze = false;
                     spriteRender.sprite = moving;
+                    arrowFlag = false;
                 }
             }
         }
@@ -156,5 +154,19 @@ public class ShadeRanger : MonoBehaviour {
         {
             spriteRender.flipX = (body.velocity.x > 0) || (spriteRender.flipX && body.velocity.x == 0);
         }
+    }
+
+    void generateArrow()
+    {
+        float x = movingRight ? 0.6f : -0.6f;
+        Vector3 arrowPosition = new Vector3(x, -0.086f, -5);
+        var tempArrow = Instantiate(arrow, arrowPosition, Quaternion.identity) as GameObject;
+
+        tempArrow.GetComponent<SpriteRenderer>().flipX = movingRight;
+        tempArrow.transform.parent = gameObject.transform;
+        tempArrow.transform.localPosition = arrowPosition;
+
+        tempArrow.transform.parent = null;
+        tempArrow.SetActive(true);
     }
 }

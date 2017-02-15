@@ -30,14 +30,14 @@ public class ShadeArrow : MonoBehaviour {
 
         counter++;
         //Charging up orb
-        if (counter == 30)
+        if (counter == 25)
         {
             movingRight = shadeRanger.GetComponent<SpriteRenderer>().flipX;
             Vector2 velocity = movingRight ? new Vector2(speed, 0) : new Vector2(-1*speed,0);
             body.velocity = velocity;
         }
         //Flying through the air
-        else if (counter > 30 && counter < 200) {
+        else if (counter > 25 && counter < 180) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));

@@ -52,24 +52,7 @@ public class ShadeRanger : MonoBehaviour {
         {
             counter = (counter + 1) % damageFrames;
 
-            //First frame, set sprite and rotate
-            if (counter == 1)
-            {
-                //if facing left, tilt left, else right
-                var z = spriteRender.flipX ? -10 : 10;
-                transform.rotation = Quaternion.Euler(0, 0, z);
-                GetComponent<Camera>().transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-
-            //Every x frames blink character
-            if (counter % blinkSpeed * 2 > blinkSpeed)
-            {
-                spriteRender.sprite = damageSprite;
-            }
-            else
-            {
-                spriteRender.sprite = null;
-            }
+            //TODO: Taking damage anim
 
             //Done taking damage
             if (counter == 0)

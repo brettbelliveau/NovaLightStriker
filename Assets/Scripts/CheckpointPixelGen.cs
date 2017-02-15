@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CheckpointPixelGen : MonoBehaviour {
     
-    public GameObject point, pixel;
+    public GameObject bottom, top, pixel;
     public Sprite pointOn, pixelOn;
 
     //TODO: Make this a global variable
@@ -13,9 +13,10 @@ public class CheckpointPixelGen : MonoBehaviour {
     private List<GameObject> pixels;
 
     private int counter = 0;
+    private float pixelCounter;
     private int coordinateCounter;
-    private int maxPixels = 15;
-    private int framesPerPixel = 6;
+    private int maxPixels = 30;
+    private int framesPerPixel = 3;
 
     private float[] xCoordinates;
     private float[] yCoordinates;
@@ -38,7 +39,8 @@ public class CheckpointPixelGen : MonoBehaviour {
         {
             //TODO: Again, make this variable global so it can be loaded on death
             accessed = true;
-            point.GetComponent<SpriteRenderer>().sprite = pointOn;
+            top.GetComponent<SpriteRenderer>().sprite = pointOn;
+            bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
             pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
             foreach (GameObject temp in pixels)
             {
@@ -46,7 +48,7 @@ public class CheckpointPixelGen : MonoBehaviour {
             }
         }
    
-        if (counter % framesPerPixel == 0)
+        if (counter == 0)
         {
             pixels.Add(spawnPixelAtRandomLocation(pixel));
 
@@ -60,10 +62,11 @@ public class CheckpointPixelGen : MonoBehaviour {
 
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
     {
+        pixelCounter = Random.Range(0, 1f);
         var location = Vector3.zero;
         coordinateCounter = (coordinateCounter + 1) % 6;
         location.x = xCoordinates[coordinateCounter];
-        location.y = -0.4f;
+        location.y = pixelCounter > 0.5f ? -0.4f : -0.6f;
         location.z = 0;
         
         return (spawnPixelAtLocation(pixel, location));
@@ -72,15 +75,29 @@ public class CheckpointPixelGen : MonoBehaviour {
     private GameObject spawnPixelAtLocation(GameObject pixel, Vector3 location)
     {
         var tempPixel = Instantiate(pixel, location, Quaternion.identity) as GameObject;
-        
-        tempPixel.transform.parent = point.transform;
+
+        if (pixelCounter > 0.5f)
+            tempPixel.transform.parent = bottom.transform;
+        else
+            tempPixel.transform.parent = top.transform;
+
         tempPixel.transform.localPosition = new Vector3(location.x, location.y, 1f);
 
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
 
-        tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0.05f);
-        
+        Rigidbody2D body = tempPixel.GetComponent<Rigidbody2D>();
+
+        if (pixelCounter > 0.5f)
+        {   
+            body.velocity = new Vector2(0, 0.05f);
+        }
+        else
+        {
+            body.velocity = new Vector2(0, -0.05f);
+            body.gravityScale *= -1;
+        }
+
         return tempPixel;
     }
 }

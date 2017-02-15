@@ -15,6 +15,8 @@ public class SnowPixel : MonoBehaviour {
         
         //Ignore snow (layer 10) collision with characters (layer 9)
         Physics2D.IgnoreLayerCollision(9, 10, true);
+        //Ignore platforms where there is cover overhead (layer 13)
+        Physics2D.IgnoreLayerCollision(13, 10, true);
     }
 	
 	// Update is called once per frame

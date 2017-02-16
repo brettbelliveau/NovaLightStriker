@@ -29,7 +29,7 @@ public class ShadeArrow : MonoBehaviour {
 	void Update () {
 
         counter++;
-        //Charging up orb
+        //Charging up arrow
         if (counter == 25)
         {
             movingRight = shadeRanger.GetComponent<SpriteRenderer>().flipX;
@@ -48,17 +48,19 @@ public class ShadeArrow : MonoBehaviour {
                     pixels.RemoveAt(0);
                 }
             }
+
+            //TODO: Check if hit another object
         }
         //Else if orb flying too long, delete
-        else if (counter >= 200)
+        else if (counter >= 180)
         {
-            if (counter == 200)
+            if (counter == 180)
             {
                 spriteRenderer.sprite = null;
                 //TODO: Remove collider at this step
             }
 
-            if (counter < (200 + maxSpawnPixels * 3))
+            if (counter < (180 + maxSpawnPixels * 3))
             {
                 if (counter % 3 == 0 && pixels.Count > 0)
                 {

@@ -178,7 +178,7 @@ public class ShadeMageBoss : MonoBehaviour {
 
                 //TODO: Maybe add some more deviance to this pattern
                 //If below 1/2 hp, increase warp speed and only attack after third warp (need to add this condition where false is)
-                if (false && warpCounter++ < 2)
+                if (true && warpCounter++ < 2)
                     attackFreezeCounter = 0;
 
                 //Above 1/2 hp, normal execution

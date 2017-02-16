@@ -18,7 +18,7 @@ public class Player : MonoBehaviour {
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
     private Transform transform;
-    public GameObject camera;
+    public GameObject camera, shockwave;
 
     public Sprite standing, jumping;
     public Sprite[] running;
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour {
     private bool attackFreeze;
     private int damageFrames = 40;
     private int blinkSpeed = 4;
+    public static bool hyperModeActive;
 
     private int damageCounter = 0;
 
@@ -80,7 +81,7 @@ public class Player : MonoBehaviour {
             {
                 counter = 0;
                 attackFreeze = true;
-                PixelGenerator.attacking = true;
+                SwordPixelGenerator.attacking = true;
             }
 
             //TODO: Scrap damageCounter, check for enemy collision
@@ -148,9 +149,18 @@ public class Player : MonoBehaviour {
         {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
+
+            //Around when the sword slash anim has finished
+            if (hyperModeActive)
+            {
+                if (counter / attackAnimationSpeed == attacking.Length - 8
+                    && counter % attackAnimationSpeed == 0)
+                    generateShockWave();
+            }
+           
             //Done attacking
             if (counter == 0)
-                attackFreeze = PixelGenerator.attacking = false;
+                attackFreeze = SwordPixelGenerator.attacking = false;
         }
 
         else if (spawningBool)
@@ -222,7 +232,23 @@ public class Player : MonoBehaviour {
         if (!spawningBool && spawned && !takingDamage)
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
-            PixelGenerator.facingRight = !spriteRender.flipX;
+            SwordPixelGenerator.facingRight = !spriteRender.flipX;
+            ShockWave.facingRight = spriteRender.flipX;
         }
+    }
+
+    void generateShockWave()
+    {
+        float x = SwordPixelGenerator.facingRight ? 0.8f : -0.8f;
+        Vector3 position = new Vector3(x, 0.1f, 10);
+        var tempWave = Instantiate(shockwave, position, Quaternion.identity) as GameObject;
+
+        tempWave.GetComponent<SpriteRenderer>().flipX = !SwordPixelGenerator.facingRight;
+        tempWave.transform.parent = gameObject.transform;
+        tempWave.transform.localPosition = position;
+
+        tempWave.transform.parent = null;
+        tempWave.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        tempWave.SetActive(true);
     }
 }

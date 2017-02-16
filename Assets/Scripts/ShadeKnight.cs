@@ -22,7 +22,7 @@ public class ShadeKnight : MonoBehaviour {
     public Sprite moving;
     public Sprite[] attacking;
     public Sprite damageSprite;
-    public GameObject orb;
+    public GameObject orb, pixel, player;
     
     private bool takingDamage;
     private bool attackFreeze;

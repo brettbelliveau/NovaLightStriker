@@ -10,11 +10,15 @@ public class ShadeMageBoss : MonoBehaviour {
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
-    private int attackAfterFrames = 60;
-    private int warpFrames = 30;
-    private int attackFreezeDuration = 60;
+    private int attackAfterFrames = 30;
+    private int warpFrames = 60;
+    private int attackFreezeDuration = 70;
     private int previousWarp = -1;
     private int nextWarp = -1;
+    private int warpCounter = 0;
+
+    private int framesPerPixel = 4;
+    private int maxSpawnPixels = 20;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -22,12 +26,16 @@ public class ShadeMageBoss : MonoBehaviour {
     
     public Sprite floating;
     public Sprite attacking;
-    public GameObject topL, topR, botL, botR, gameObject;
+    private List<GameObject> pixels;
+    public GameObject topL, topR, botL, botR, gameObject, pixel;
+
+    public GameObject[] orbs;
     
     private bool takingDamage;
     private bool attackFreeze;
     private bool warping;
     private bool movingRight;
+    private int pixelCounter;
     
     // Use this for initialization
     void Start () {
@@ -35,6 +43,7 @@ public class ShadeMageBoss : MonoBehaviour {
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         body = gameObject.GetComponent<Rigidbody2D>();
+        pixels = new List<GameObject>();
         attackFreeze = false;
         takingDamage = false;
         movingRight = false;
@@ -44,8 +53,24 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        /* Spawn Pixels Here */
+        pixelCounter = (pixelCounter + 1) % framesPerPixel;
+
+        if (!warping)
+        {
+            if (pixelCounter == 0)
+            {
+                pixels.Add(spawnPixelAtRandomLocation(pixel));
+
+                if (pixels.Count == maxSpawnPixels)
+                {
+                    Destroy(pixels[0]);
+                    pixels.RemoveAt(0);
+                }
+            }
+        }
+
         /* Sprite Section */
-        Debug.Log("Next " + nextWarp);
 
         //Talking damage sprite (RESET COUNTER FIRST)
         if (takingDamage)
@@ -61,7 +86,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 warping = true;
             }
         }
-        
+
         //Warping to new location
         else if (warping)
         {
@@ -70,7 +95,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 gameObject.SetActive(false);
 
                 while (nextWarp == previousWarp)
-                    nextWarp = Random.Range(0,4);
+                    nextWarp = Random.Range(0, 4);
 
                 previousWarp = nextWarp;
                 if (nextWarp == 0)
@@ -94,9 +119,9 @@ public class ShadeMageBoss : MonoBehaviour {
                     spriteRender.flipX = false;
                 }
 
-                gameObject.transform.localPosition = new Vector3(0,0,0);
+                gameObject.transform.localPosition = new Vector3(0, 0, 0);
             }
-            
+
             if (counter == warpFrames)
             {
                 counter = 0;
@@ -121,14 +146,14 @@ public class ShadeMageBoss : MonoBehaviour {
             {
                 //Float Up 1/2 of the time
                 if ((counter / (floatInterval) % 2) == 0)
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.1f);
+                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.06f);
 
                 //Float Down the other 1/2 of the time
                 else
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.1f);
+                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.06f);
             }
         }
-        
+
 
         //Attacking sprite (attackFreeze == true)
         else
@@ -138,15 +163,77 @@ public class ShadeMageBoss : MonoBehaviour {
             spriteRender.sprite = attacking;
             attackFreezeCounter = (attackFreezeCounter + 1) % attackFreezeDuration;
 
-            //TODO: Throw projectiles everywhere
-
-            if (attackFreezeCounter == 0)
+            //Throw projectiles after first tele
+            //TODO? Add variance after below 1/2 hp
+            if (attackFreezeCounter == 1 && previousWarp > -1)
             {
-                warping = true;
-                attackFreeze = false;
-                counter = 0;
+                Vector2 velocity;
+                int orbCounter = 0;
+                //Left side (move orbs to right)
+                if (previousWarp < 2)
+                {
+                    velocity = new Vector2(0.4f, -0.8f);
+                }
+                //Right side (move orbs to left)
+                else if (previousWarp > 1)
+                {
+                    velocity = new Vector2(-0.4f, -0.8f);
+                }
+                //This case will not happen
+                else
+                    velocity = new Vector2(0,0);
+
+                foreach (GameObject orb in orbs)
+                {
+                    //If moving right, skip last orb
+                    if (previousWarp < 2 && orbCounter++ >= orbs.Length-1)
+                        continue;
+                    //If moving left, skip first orb
+                    else if (previousWarp > 1 && orbCounter++ == 0)
+                        continue;
+
+                    var tempOrb = Instantiate(orb, orb.GetComponent<Transform>().position, Quaternion.identity) as GameObject;
+
+                    tempOrb.transform.parent = orb.transform;
+                    tempOrb.transform.localPosition = new Vector3(0, 0, 0);
+                    tempOrb.transform.parent = null;
+                    tempOrb.SetActive(true);
+                    tempOrb.GetComponent<Rigidbody2D>().velocity = velocity;
+                }
+            }
+
+                if (attackFreezeCounter == 0)
+                {
+                    warping = true;
+                    attackFreeze = false;
+                    counter = 0;
+                }
             }
         }
-        
+    
+
+    private GameObject spawnPixelAtRandomLocation(GameObject pixel)
+    {
+        var location = Vector3.zero;
+
+        location.x = Random.Range(-0.65f, 0.6f);
+        location.y = Random.Range(-1f, 1f);
+        location.z = 2;
+
+        return (spawnPixelAtLocation(pixel, location));
+    }
+
+    private GameObject spawnPixelAtLocation(GameObject pixel, Vector3 location)
+    {
+        var tempPixel = Instantiate(pixel, location, Quaternion.identity) as GameObject;
+
+        tempPixel.transform.parent = gameObject.transform;
+        tempPixel.transform.localPosition = location;
+
+        tempPixel.transform.parent = null;
+        tempPixel.GetComponent<Rigidbody2D>().gravityScale = -0.03f;
+        tempPixel.SetActive(true);
+
+        return tempPixel;
     }
 }

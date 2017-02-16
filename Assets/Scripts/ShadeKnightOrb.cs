@@ -16,6 +16,8 @@ public class ShadeKnightOrb : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D body;
     private bool movingRight;
+
+    private Vector2 velocityOnStart; 
     
     
 	// Use this for initialization
@@ -27,23 +29,37 @@ public class ShadeKnightOrb : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
+        if (speed > 0)
+            movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
 
         counter++;
+
         //Charging up orb
         if (counter < 48)
-        {
+        {   
+            if (counter == 1) {
+                velocityOnStart = body.velocity;
+                body.velocity = new Vector2(0, 0);
+            }
+
             if (counter <= 40)
-                spriteRenderer.sprite = sprites[counter/8];
+            {
+                spriteRenderer.sprite = sprites[counter / 8];
+            }
         }
         //Firing Orb
         else if (counter == 48)
-        {
-            Vector2 velocity = movingRight ? new Vector2(speed, 0) : new Vector2(-1*speed,0);
-            body.velocity = velocity;
+        {   //By setting speed to negative value, we can skip this assignment (for custom orb velocities)
+            if (speed > 0)
+            {
+                Vector2 velocity = movingRight ? new Vector2(speed, 0) : new Vector2(-1 * speed, 0);
+                body.velocity = velocity;
+            }
+            else
+                body.velocity = velocityOnStart;
         }
         //Flying through the air
-        else if (counter > 48 && counter < 200) {
+        else if (counter > 48 && counter < 180) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
@@ -56,15 +72,15 @@ public class ShadeKnightOrb : MonoBehaviour {
             }
         }
         //Else if orb flying too long, delete
-        else if (counter >= 200)
+        else if (counter >= 180)
         {
-            if (counter == 200)
+            if (counter == 180)
             {
                 spriteRenderer.sprite = null;
                 //TODO: Remove collider at this step
             }
 
-            if (counter < (200 + maxSpawnPixels * 3))
+            if (counter < (180 + maxSpawnPixels * 3))
             {
                 if (counter % 3 == 0 && pixels.Count > 0)
                 {
@@ -103,8 +119,9 @@ public class ShadeKnightOrb : MonoBehaviour {
 
         tempPixel.transform.parent = null;
         float x = (body.velocity.x / 3) * 2;
+        float y = (body.velocity.y / 3) * 2;
         tempPixel.SetActive(true);
-        tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(x, 0);
+        tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(x, y);
 
         return tempPixel;
     }

@@ -51,7 +51,8 @@ public class ShadeMageBoss : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
         /* Spawn Pixels Here */
         pixelCounter = (pixelCounter + 1) % framesPerPixel;
@@ -120,6 +121,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 }
 
                 gameObject.transform.localPosition = new Vector3(0, 0, 0);
+
             }
 
             if (counter == warpFrames)
@@ -135,7 +137,9 @@ public class ShadeMageBoss : MonoBehaviour {
         else if (!attackFreeze)
         {
             if (counter == 0)
+            {
                 spriteRender.sprite = floating;
+            }
 
             if (counter++ == attackAfterFrames)
             {
@@ -146,11 +150,11 @@ public class ShadeMageBoss : MonoBehaviour {
             {
                 //Float Up 1/2 of the time
                 if ((counter / (floatInterval) % 2) == 0)
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.06f);
+                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.05f);
 
                 //Float Down the other 1/2 of the time
                 else
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.06f);
+                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.05f);
             }
         }
 
@@ -158,60 +162,76 @@ public class ShadeMageBoss : MonoBehaviour {
         //Attacking sprite (attackFreeze == true)
         else
         {
-            //Stop movement
-            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            spriteRender.sprite = attacking;
+            //Float Up 1/2 of the time
+            if ((attackFreezeCounter / (floatInterval) % 2) == 0)
+                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.05f);
+
+            //Float Down the other 1/2 of the time
+            else
+                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.05f);
+
             attackFreezeCounter = (attackFreezeCounter + 1) % attackFreezeDuration;
 
-            //Throw projectiles after first tele
-            //TODO? Add variance after below 1/2 hp
+            //Throw projectiles after first warp
             if (attackFreezeCounter == 1 && previousWarp > -1)
             {
-                Vector2 velocity;
-                int orbCounter = 0;
-                //Left side (move orbs to right)
-                if (previousWarp < 2)
-                {
-                    velocity = new Vector2(0.4f, -0.8f);
-                }
-                //Right side (move orbs to left)
-                else if (previousWarp > 1)
-                {
-                    velocity = new Vector2(-0.4f, -0.8f);
-                }
-                //This case will not happen
+
+                //TODO: Maybe add some more deviance to this pattern
+                //If below 1/2 hp, increase warp speed and only attack after third warp (need to add this condition where false is)
+                if (false && warpCounter++ < 2)
+                    attackFreezeCounter = 0;
+
+                //Above 1/2 hp, normal execution
                 else
-                    velocity = new Vector2(0,0);
-
-                foreach (GameObject orb in orbs)
                 {
-                    //If moving right, skip last orb
-                    if (previousWarp < 2 && orbCounter++ >= orbs.Length-1)
-                        continue;
-                    //If moving left, skip first orb
-                    else if (previousWarp > 1 && orbCounter++ == 0)
-                        continue;
+                    warpCounter = 0;
+                    spriteRender.sprite = attacking;
 
-                    var tempOrb = Instantiate(orb, orb.GetComponent<Transform>().position, Quaternion.identity) as GameObject;
+                    Vector2 velocity;
+                    int orbCounter = 0;
+                    //Left side (move orbs to right)
+                    if (previousWarp < 2)
+                    {
+                        velocity = new Vector2(0.4f, -0.8f);
+                    }
+                    //Right side (move orbs to left)
+                    else if (previousWarp > 1)
+                    {
+                        velocity = new Vector2(-0.4f, -0.8f);
+                    }
+                    //This case will not happen
+                    else
+                        velocity = new Vector2(0, 0);
 
-                    tempOrb.transform.parent = orb.transform;
-                    tempOrb.transform.localPosition = new Vector3(0, 0, 0);
-                    tempOrb.transform.parent = null;
-                    tempOrb.SetActive(true);
-                    tempOrb.GetComponent<Rigidbody2D>().velocity = velocity;
+                    foreach (GameObject orb in orbs)
+                    {
+                        //If moving right, skip last orb
+                        if (previousWarp < 2 && orbCounter++ >= orbs.Length - 1)
+                            continue;
+                        //If moving left, skip first orb
+                        else if (previousWarp > 1 && orbCounter++ == 0)
+                            continue;
+
+                        var tempOrb = Instantiate(orb, orb.GetComponent<Transform>().position, Quaternion.identity) as GameObject;
+
+                        tempOrb.transform.parent = orb.transform;
+                        tempOrb.transform.localPosition = new Vector3(0, 0, 0);
+                        tempOrb.transform.parent = null;
+                        tempOrb.SetActive(true);
+                        tempOrb.GetComponent<Rigidbody2D>().velocity = velocity;
+                    }
                 }
             }
 
-                if (attackFreezeCounter == 0)
-                {
-                    warping = true;
-                    attackFreeze = false;
-                    counter = 0;
-                }
+            if (attackFreezeCounter == 0)
+            {
+                warping = true;
+                attackFreeze = false;
+                counter = 0;
             }
         }
-    
-
+    }
+      
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
     {
         var location = Vector3.zero;

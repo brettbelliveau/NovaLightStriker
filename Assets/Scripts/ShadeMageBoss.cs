@@ -10,9 +10,9 @@ public class ShadeMageBoss : MonoBehaviour {
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
-    private int attackAfterFrames = 30;
-    private int warpFrames = 60;
-    private int attackFreezeDuration = 70;
+    private int attackAfterFrames = 40;
+    private int warpFrames = 20;
+    private int attackFreezeDuration = 60;
     private int previousWarp = -1;
     private int nextWarp = -1;
     private int warpCounter = 0;
@@ -236,8 +236,8 @@ public class ShadeMageBoss : MonoBehaviour {
     {
         var location = Vector3.zero;
 
-        location.x = Random.Range(-0.65f, 0.6f);
-        location.y = Random.Range(-1f, 1f);
+        location.x = Random.Range(-0.7f, 0.7f);
+        location.y = Random.Range(-1.5f, 1f);
         location.z = 2;
 
         return (spawnPixelAtLocation(pixel, location));

@@ -25,14 +25,16 @@ public class Player : MonoBehaviour {
     public Sprite[] attacking;
     public Sprite[] spawning;
     public Sprite damageSprite;
+    public GameObject damageCollider;
+    public GameObject swordCollider;
 
-    public bool spawningBool = true;
-    public bool spawned = false;
+    public static bool spawningBool = false; //Flip these before release
+    public static bool spawned = true;       //Flip these before release
 
-    private bool takingDamage;
-    private bool attackFreeze;
+    public static bool attackFreeze;
+    public static bool takingDamage;
     private int damageFrames = 40;
-    private int blinkSpeed = 4;
+    private int blinkSpeed = 5;
     public static bool hyperModeActive;
 
     private int damageCounter = 0;
@@ -83,29 +85,26 @@ public class Player : MonoBehaviour {
                 attackFreeze = true;
                 SwordPixelGenerator.attacking = true;
             }
-
-            //TODO: Scrap damageCounter, check for enemy collision
-            if (damageCounter == 100 && !takingDamage)
-            {
-                counter = 0;
-                takingDamage = true;
-
-                //If facing left, push right. If not, push left
-                var x = spriteRender.flipX ? 3f : -3f;
-                var y = body.velocity.y > 0.02 ? -0.02f : 0f;
-                body.velocity = new Vector2(x, y);
-            }
         }
+
         /* Sprite Section */
 
         //Talking damage sprite
         if (takingDamage)
         {
             counter = (counter + 1) % damageFrames;
+            
 
-            //First frame, set sprite and rotate
+            //First frame, set sprite, push back and rotate
             if (counter == 1)
             {
+                //If facing left, push right. If not, push left
+                var x = spriteRender.flipX ? 0.4f : -0.4f;
+                body.AddForce(new Vector2(x, 0));
+                //If moving up, push down.
+                var y = body.velocity.y > 0.02 ? -0.02f : 0f;
+                body.velocity = new Vector2(x, y);
+
                 //if facing left, tilt left, else right
                 var z = spriteRender.flipX ? -10 : 10;
                 transform.rotation = Quaternion.Euler(0, 0, z);
@@ -113,7 +112,7 @@ public class Player : MonoBehaviour {
             }
 
             //Every x frames blink character
-            if (counter % blinkSpeed * 2 > blinkSpeed)
+            if (counter % blinkSpeed == 0)
             {
                 spriteRender.sprite = damageSprite;
             }
@@ -157,6 +156,8 @@ public class Player : MonoBehaviour {
                     && counter % attackAnimationSpeed == 0)
                     generateShockWave();
             }
+
+
            
             //Done attacking
             if (counter == 0)

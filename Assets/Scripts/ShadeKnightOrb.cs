@@ -16,6 +16,7 @@ public class ShadeKnightOrb : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D body;
     private bool movingRight;
+    private bool delete;
 
     private Vector2 velocityOnStart; 
     
@@ -59,7 +60,7 @@ public class ShadeKnightOrb : MonoBehaviour {
                 body.velocity = velocityOnStart;
         }
         //Flying through the air
-        else if (counter > 48 && counter < 180) {
+        else if (counter > 48 && counter < 180 && !delete) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
@@ -72,12 +73,12 @@ public class ShadeKnightOrb : MonoBehaviour {
             }
         }
         //Else if orb flying too long, delete
-        else if (counter >= 180)
+        else if (counter >= 180 || delete)
         {
             if (counter == 180)
             {
                 spriteRenderer.sprite = null;
-                //TODO: Remove collider at this step
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
             }
 
             if (counter < (180 + maxSpawnPixels * 3))
@@ -94,8 +95,6 @@ public class ShadeKnightOrb : MonoBehaviour {
                 Destroy(this);
             }
         }
-        //TODO: Add delete on collision
-
     }
 
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
@@ -124,5 +123,16 @@ public class ShadeKnightOrb : MonoBehaviour {
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(x, y);
 
         return tempPixel;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        //Begins deletion process
+        delete = true;
+        if (counter > 48)
+        {
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            spriteRenderer.sprite = null;
+        }
     }
 }

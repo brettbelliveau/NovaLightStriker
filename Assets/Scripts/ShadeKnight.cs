@@ -42,18 +42,25 @@ public class ShadeKnight : MonoBehaviour {
         attackFreeze = false;
         takingDamage = false;
         movingRight = false;
+
+        //Make enemies ignore collisions with each other/projectiles
+        Physics2D.IgnoreLayerCollision(14, 14, true);
+        //Make enemies ignore collisions with VFX like snow
+        Physics2D.IgnoreLayerCollision(10, 14, true);
     }
 
     // Update is called once per frame
     void Update() {
 
         //Manual trigger for killing enemy
+        /*
         if (walkingCounter == 50)
         {
             counter = 0;
             walkingCounter = 0;
             takingDamage = true;
         }
+        */
 
         //Talking damage (must reset counter first)
         if (takingDamage)

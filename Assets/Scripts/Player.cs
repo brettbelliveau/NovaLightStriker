@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     private static int spawnAnimationSpeed = 8;
     private int framesSinceOnGround = 0;
     private bool jumped = false;
+    public static List<bool> hitFromLeft;
     private static int waitFrames = 40; //number of frames to wait before spawning
 
     private Rigidbody2D body;
@@ -45,10 +46,13 @@ public class Player : MonoBehaviour {
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         transform = gameObject.GetComponent<Transform>();
+
         attackFreeze = false;
         spriteRender.sprite = null;
         SpawnInOutPixels.spawning = spawningBool;
         SpawnInOutPixels.spawned = spawned;
+        
+        hitFromLeft = new List<bool>();
     }
 
     // Update is called once per frame
@@ -94,17 +98,19 @@ public class Player : MonoBehaviour {
         {
             counter = (counter + 1) % damageFrames;
             
-
             //First frame, set sprite, push back and rotate
             if (counter == 1)
             {
-                //If facing left, push right. If not, push left
-                var x = spriteRender.flipX ? 0.4f : -0.4f;
-                body.AddForce(new Vector2(x, 0));
+                attackFreeze = SwordPixelGenerator.attacking = false;
+
+                //If hit from left, push right. If not, push left
+                var x = hitFromLeft[0] ? 0.4f : -0.4f;
                 //If moving up, push down.
                 var y = body.velocity.y > 0.02 ? -0.02f : 0f;
                 body.velocity = new Vector2(x, y);
 
+                spriteRender.flipX = hitFromLeft[0];
+                hitFromLeft.Clear();
                 //if facing left, tilt left, else right
                 var z = spriteRender.flipX ? -10 : 10;
                 transform.rotation = Quaternion.Euler(0, 0, z);
@@ -156,9 +162,7 @@ public class Player : MonoBehaviour {
                     && counter % attackAnimationSpeed == 0)
                     generateShockWave();
             }
-
-
-           
+            
             //Done attacking
             if (counter == 0)
                 attackFreeze = SwordPixelGenerator.attacking = false;

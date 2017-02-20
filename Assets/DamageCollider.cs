@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DamageCollider : MonoBehaviour {
 
+    public bool isLeft;
 	// Use this for initialization
 	void Start () {
         //Ignore character layer collisions
@@ -23,7 +24,7 @@ public class DamageCollider : MonoBehaviour {
         {
             Player.takingDamage = true;
             Player.counter = 0;
-            Debug.Log("ENTERING SWORD WOOHOO");
+            Player.hitFromLeft.Add(isLeft);
         }
 
         //Else do nothing
@@ -38,10 +39,15 @@ public class DamageCollider : MonoBehaviour {
         {
             Player.takingDamage = true;
             Player.counter = 0;
-            Debug.Log("ENTERING SWORD WOOHOO");
+            Player.hitFromLeft.Add(isLeft);
         }
-
-        //Else do nothing
-
+        
+        //Misc Notes:
+        //By using two colliders we can determine if the character was hit from 
+        //right or left, and act accordingly
+        
+        //Also, if we add the isLeft bool to a list, even if both right and left are triggered
+        //We can check index 0 to see which one came first
+        //Pretty good for a lazy solution 8)
     }
 }

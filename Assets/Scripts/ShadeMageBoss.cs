@@ -5,13 +5,16 @@ using System.Linq;
 
 public class ShadeMageBoss : MonoBehaviour {
 
-    private int counter = 0;
+    public int counter = 0;
+    private int waitCounter;
+    public int startingLifePoints = 1;
+    public int lifePoints;
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
-    private int attackAfterFrames = 40;
+    private int attackAfterFrames = 60;
     private int warpFrames = 20;
-    private int attackFreezeDuration = 60;
+    private int attackFreezeDuration = 80;
     private int previousWarp = -1;
     private int nextWarp = -1;
     private int warpCounter = 0;
@@ -25,16 +28,19 @@ public class ShadeMageBoss : MonoBehaviour {
     
     public Sprite floating;
     public Sprite attacking;
+    public Sprite[] dying;
     private List<GameObject> pixels;
     public GameObject topL, topR, botL, botR, gameObject, pixel;
 
     public GameObject[] orbs;
     
-    private bool takingDamage;
     private bool attackFreeze;
     private bool warping;
     private int pixelCounter;
-    
+    private bool dyingBool;
+    private int dyingAnimationSpeed = 5;
+    private bool flag = true;
+
     // Use this for initialization
     void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
@@ -43,8 +49,9 @@ public class ShadeMageBoss : MonoBehaviour {
         body = gameObject.GetComponent<Rigidbody2D>();
         pixels = new List<GameObject>();
         attackFreeze = false;
-        takingDamage = false;
         warping = false;
+
+        lifePoints = startingLifePoints;
     }
 
     // Update is called once per frame
@@ -54,7 +61,7 @@ public class ShadeMageBoss : MonoBehaviour {
         /* Spawn Pixels Here */
         pixelCounter = (pixelCounter + 1) % framesPerPixel;
 
-        if (!warping)
+        if (!warping && lifePoints > 0)
         {
             if (pixelCounter == 0)
             {
@@ -68,20 +75,42 @@ public class ShadeMageBoss : MonoBehaviour {
             }
         }
 
+        if (flag && lifePoints < (startingLifePoints / 2))
+        {
+            attackAfterFrames = 30;
+            flag = false;
+        }
+
+
         /* Sprite Section */
 
-        //Talking damage sprite (RESET COUNTER FIRST)
-        if (takingDamage)
-        {
-            //TODO: Taking damage anim + deal with health
+        if (lifePoints <= 0) {
+            
+            if (waitCounter < 100) {
+                waitCounter++;
+                collider.enabled = false;
+                spriteRender.sprite = dying[0];
+            }
 
-            //Done taking damage
-            if (counter == 0)
-            {
-                takingDamage = false;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                GetComponent<Camera>().transform.rotation = Quaternion.Euler(0, 0, 0);
-                warping = true;
+            else {
+
+                if (counter == 0)
+                    SpawnOutPixelsBoss.dying = true;
+
+                counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);
+
+                if (counter > 0)
+                    spriteRender.sprite = dying[(counter / dyingAnimationSpeed)];
+
+                //Done spawning out
+                if (counter == 0)
+                {
+                    spriteRender.sprite = null;
+                    dyingBool = false;
+                    SpawnOutPixelsBoss.dying = false;
+                    Destroy(gameObject);
+                    Destroy(this);
+                }
             }
         }
 
@@ -127,6 +156,14 @@ public class ShadeMageBoss : MonoBehaviour {
                 gameObject.SetActive(true);
                 warping = false;
                 spriteRender.sprite = floating;
+
+                if (warpFrames > 20) //just took damage, so last warp was long
+                {
+                    if (lifePoints >= startingLifePoints / 2)
+                        warpFrames = 20;
+                    else
+                        warpFrames = 10;
+                }
             }
         }
 
@@ -155,7 +192,6 @@ public class ShadeMageBoss : MonoBehaviour {
             }
         }
 
-
         //Attacking sprite (attackFreeze == true)
         else
         {
@@ -172,11 +208,11 @@ public class ShadeMageBoss : MonoBehaviour {
             //Throw projectiles after first warp
             if (attackFreezeCounter == 1 && previousWarp > -1)
             {
-
-                //TODO: Maybe add some more deviance to this pattern
-                //If below 1/2 hp, increase warp speed and only attack after third warp (need to add this condition where false is)
-                if (true && warpCounter++ < 2)
+                //If below 1/2 hp, increase warp speed and only attack after third warp
+                if (lifePoints < (startingLifePoints / 2) && warpCounter++ < 2)
+                {
                     attackFreezeCounter = 0;
+                }
 
                 //Above 1/2 hp, normal execution
                 else
@@ -220,6 +256,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 }
             }
 
+            //Done attacking, warp
             if (attackFreezeCounter == 0)
             {
                 warping = true;
@@ -252,5 +289,28 @@ public class ShadeMageBoss : MonoBehaviour {
         tempPixel.SetActive(true);
 
         return tempPixel;
+    }
+
+    public void sendDamage(int damage)
+    {
+        lifePoints -= damage;
+        attackFreeze = false;
+        attackFreezeCounter = 0;
+        counter = 0;
+        warpFrames = 100;
+
+        //If still alive, warp some more and spawn some pixels
+        if (lifePoints > 0)
+        {
+            warping = true;
+            spawnBunchOfPixels(18);
+        }
+
+    }
+
+    private void spawnBunchOfPixels(int num)
+    {
+        for (int i = 0; i < num; i++)
+            pixels.Add(spawnPixelAtRandomLocation(pixel));
     }
 }

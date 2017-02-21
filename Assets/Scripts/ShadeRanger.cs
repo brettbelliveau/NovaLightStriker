@@ -71,7 +71,7 @@ public class ShadeRanger : MonoBehaviour {
                 x = gameObject.transform.position.x - player.transform.position.x;
                 y = gameObject.transform.position.y - player.transform.position.y + 0.137f;
 
-                xV = 0.6f * (x*x);
+                xV = -0.1f * (x*x);
                 yV = 0.3f * (y*y);
                 
                 int r = 0;

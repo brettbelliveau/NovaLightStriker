@@ -81,7 +81,7 @@ public class ShockWave : MonoBehaviour {
 
         location.x = facingRight ? 0.2f : -0.2f;
         location.y = Random.Range(-1f, 1.15f);
-        location.z = 2f;
+        location.z = 0;
 
         return (spawnPixelAtLocation(pixel, location));
     }

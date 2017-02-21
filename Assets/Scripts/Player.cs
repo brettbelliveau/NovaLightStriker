@@ -36,7 +36,7 @@ public class Player : MonoBehaviour {
     public static bool takingDamage;
     private int damageFrames = 30;
     private int blinkSpeed = 5;
-    public static bool hyperModeActive;
+    public static bool hyperModeActive = true;
     private bool disableFrontCollider;
     public static bool invincibleFrames;
     private int iCounter = 0;
@@ -57,7 +57,9 @@ public class Player : MonoBehaviour {
 
         hitFromLeft = new List<bool>();
 
-        //Ignore Layer collision for sword (15) and all terrain
+        //Ignore Layer collision for sword (15) and all non-enemy layers
+        Physics2D.IgnoreLayerCollision(15, 0, true);
+        Physics2D.IgnoreLayerCollision(15, 5, true);
         Physics2D.IgnoreLayerCollision(15, 9, true);
         Physics2D.IgnoreLayerCollision(15, 10, true);
         Physics2D.IgnoreLayerCollision(15, 11, true);
@@ -183,7 +185,7 @@ public class Player : MonoBehaviour {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
-            if (counter / attackAnimationSpeed == 2)
+            if (counter / attackAnimationSpeed == 1) 
                 disableFrontCollider = true;
 
             if (counter / attackAnimationSpeed >= 8 && counter / attackAnimationSpeed < 12)
@@ -242,7 +244,7 @@ public class Player : MonoBehaviour {
             {
                 counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
                 if (counter > 0)
-                    spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)];
+                    spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)-1];
                 //Done spawning out
                 if (counter == 0)
                 {
@@ -261,7 +263,7 @@ public class Player : MonoBehaviour {
             spriteRender.sprite = jumping;
         }
 
-                if (disableFrontCollider)
+    if (disableFrontCollider)
         {
             if (spriteRender.flipX)
             {
@@ -296,7 +298,7 @@ public class Player : MonoBehaviour {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
 
             swordCollider.gameObject.GetComponent<BoxCollider2D>().offset = 
-                (spriteRender.flipX) ? new Vector2(-0.8f,2) : new Vector2(0.8f,2);
+                (spriteRender.flipX) ? new Vector2(-0.8f, -0.05f) : new Vector2(0.8f, -0.05f);
 
             SwordPixelGenerator.facingRight = !spriteRender.flipX;
             ShockWave.facingRight = spriteRender.flipX;
@@ -306,7 +308,7 @@ public class Player : MonoBehaviour {
     void generateShockWave()
     {
         float x = SwordPixelGenerator.facingRight ? 0.8f : -0.8f;
-        Vector3 position = new Vector3(x, 0.1f, 10);
+        Vector3 position = new Vector3(x, 0.1f, 0);
         var tempWave = Instantiate(shockwave, position, Quaternion.identity) as GameObject;
 
         tempWave.GetComponent<SpriteRenderer>().flipX = !SwordPixelGenerator.facingRight;

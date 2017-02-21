@@ -25,7 +25,7 @@ public class SpawnInOutPixels : MonoBehaviour {
         pixels = new List<GameObject>();
         spawned = false;
         deleteSpot = player.transform.position.y - 0.09f;
-        spawnSpot = player.transform.position.y + 1.18f;
+        spawnSpot = 1000f;
     }
 
     // Update is called once per frame
@@ -52,7 +52,7 @@ public class SpawnInOutPixels : MonoBehaviour {
     {
         var location = Vector3.zero;
 
-        var maxX = width / 1f;
+        var maxX = width / 1.2f;
         var minX = -1 * maxX;
 
         location.x = Random.Range(minX, maxX);
@@ -60,7 +60,10 @@ public class SpawnInOutPixels : MonoBehaviour {
         if (!spawned) //spawning in
             location.y = Random.Range(3.5f, 4f);
         else //spawning out
-        { 
+        {
+            if (spawnSpot == 1000f) //first pixel
+                spawnSpot = player.transform.position.y + 3.8f;
+
             location.y = spawnSpot;
             spawnSpot -= 0.05f;
         }

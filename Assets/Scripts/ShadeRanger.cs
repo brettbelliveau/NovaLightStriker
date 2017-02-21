@@ -5,7 +5,7 @@ using System.Linq;
 
 public class ShadeRanger : MonoBehaviour {
 
-    private int counter = 0;
+    public int counter = 0;
     private int walkingCounter = 0;
     private int attackFreezeCounter = 0;
     
@@ -26,7 +26,7 @@ public class ShadeRanger : MonoBehaviour {
 
     private GameObject pixel;
 
-    private bool takingDamage;
+    public bool takingDamage;
     private bool attackFreeze;
     private bool movingRight;
     private float x, y, xV, yV;
@@ -50,12 +50,12 @@ public class ShadeRanger : MonoBehaviour {
     void Update() {
        
         //Manual trigger for killing enemy
-        if (walkingCounter == 1000)
+        /*if (walkingCounter == 1000)
         {
             counter = 0;
             walkingCounter = 0;
             takingDamage = true;
-        }
+        }*/
 
         //Talking damage (must reset counter first)
         if (takingDamage)

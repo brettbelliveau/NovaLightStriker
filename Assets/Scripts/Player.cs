@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    
+
     public float speed;
     public bool onGround;
     public static int counter = 0;
@@ -26,7 +26,7 @@ public class Player : MonoBehaviour {
     public Sprite[] attacking;
     public Sprite[] spawning;
     public Sprite damageSprite;
-    public GameObject damageCollider;
+    public GameObject damageColliderRight, damageColliderLeft;
     public GameObject swordCollider;
 
     public static bool spawningBool = false; //Flip these before release
@@ -34,14 +34,15 @@ public class Player : MonoBehaviour {
 
     public static bool attackFreeze;
     public static bool takingDamage;
-    private int damageFrames = 40;
+    private int damageFrames = 35;
     private int blinkSpeed = 5;
     public static bool hyperModeActive;
+    private bool disableFrontCollider;
 
     private int damageCounter = 0;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
@@ -51,14 +52,21 @@ public class Player : MonoBehaviour {
         spriteRender.sprite = null;
         SpawnInOutPixels.spawning = spawningBool;
         SpawnInOutPixels.spawned = spawned;
-        
+
         hitFromLeft = new List<bool>();
+
+        //Ignore Layer collision for sword (15) and all terrain
+        Physics2D.IgnoreLayerCollision(15, 9, true);
+        Physics2D.IgnoreLayerCollision(15, 10, true);
+        Physics2D.IgnoreLayerCollision(15, 11, true);
+        Physics2D.IgnoreLayerCollision(15, 13, true);
+
     }
 
     // Update is called once per frame
     void Update() {
         //damageCounter = (damageCounter + 1) % 300;
-       
+
         if (!spawningBool && spawned)
         {
             //Check if back on ground after jump/fall
@@ -74,7 +82,7 @@ public class Player : MonoBehaviour {
             //Use this counter as a check for how long since fallen off ledge
             else
                 framesSinceOnGround++;
-            
+
             //Give the user 2 frames after leaving platform to jump
             if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage)
             {
@@ -97,10 +105,11 @@ public class Player : MonoBehaviour {
         if (takingDamage)
         {
             counter = (counter + 1) % damageFrames;
-            
+
             //First frame, set sprite, push back and rotate
             if (counter == 1)
             {
+                swordCollider.gameObject.SetActive(false);
                 attackFreeze = SwordPixelGenerator.attacking = false;
 
                 //If hit from left, push right. If not, push left
@@ -155,6 +164,16 @@ public class Player : MonoBehaviour {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
+            if (counter / attackAnimationSpeed == 2)
+                disableFrontCollider = true;
+
+            if (counter / attackAnimationSpeed >= 8 && counter / attackAnimationSpeed < 12)
+                swordCollider.gameObject.SetActive(true);
+
+            else if (counter / attackAnimationSpeed == 12) {
+                swordCollider.gameObject.SetActive(false);
+            }
+
             //Around when the sword slash anim has finished
             if (hyperModeActive)
             {
@@ -162,10 +181,15 @@ public class Player : MonoBehaviour {
                     && counter % attackAnimationSpeed == 0)
                     generateShockWave();
             }
-            
+
             //Done attacking
             if (counter == 0)
+            {
                 attackFreeze = SwordPixelGenerator.attacking = false;
+                disableFrontCollider = false;
+                damageColliderLeft.SetActive(true);
+                damageColliderRight.SetActive(true);
+            }
         }
 
         else if (spawningBool)
@@ -217,6 +241,20 @@ public class Player : MonoBehaviour {
         {
             spriteRender.sprite = jumping;
         }
+
+                if (disableFrontCollider)
+        {
+            if (spriteRender.flipX)
+            {
+                damageColliderLeft.SetActive(false);
+                damageColliderRight.SetActive(true);
+            }
+            else
+            {
+                damageColliderLeft.SetActive(true);
+                damageColliderRight.SetActive(false);
+            }
+        }
     
     }
 
@@ -234,9 +272,13 @@ public class Player : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(9, 11, body.velocity.y >= 0.02);
 
         //Left orientation for sprite if going left, or if standing still and already left
-        if (!spawningBool && spawned && !takingDamage)
+        if (!takingDamage && !spawningBool && spawned)
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
+
+            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset = 
+                (spriteRender.flipX) ? new Vector2(-0.8f,2) : new Vector2(0.8f,2);
+
             SwordPixelGenerator.facingRight = !spriteRender.flipX;
             ShockWave.facingRight = spriteRender.flipX;
         }

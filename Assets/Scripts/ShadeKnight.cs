@@ -5,7 +5,7 @@ using System.Linq;
 
 public class ShadeKnight : MonoBehaviour {
 
-    private int counter = 0;
+    public int counter = 0;
     private int walkingCounter = 0;
     private int attackFreezeCounter = 0;
     
@@ -24,7 +24,7 @@ public class ShadeKnight : MonoBehaviour {
     public GameObject orb, pixel, pixel1, pixel2, player;
     private List<GameObject> pixels;
 
-    private bool takingDamage;
+    public bool takingDamage;
     private bool attackFreeze;
     private bool movingRight;
     private float x, y, xV, yV;

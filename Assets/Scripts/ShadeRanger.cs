@@ -49,14 +49,6 @@ public class ShadeRanger : MonoBehaviour {
     // Update is called once per frame
     void Update() {
        
-        //Manual trigger for killing enemy
-        /*if (walkingCounter == 1000)
-        {
-            counter = 0;
-            walkingCounter = 0;
-            takingDamage = true;
-        }*/
-
         //Talking damage (must reset counter first)
         if (takingDamage)
         {
@@ -64,7 +56,7 @@ public class ShadeRanger : MonoBehaviour {
             if (counter == 1 && !startDeleting)
             {
                 body.velocity = new Vector2(0, 0);
-                //TODO: Remove collider at this step
+                collider.enabled = false;
                 spriteRender.sprite = null;
 
                 //Increase velocity depending on dist. to player

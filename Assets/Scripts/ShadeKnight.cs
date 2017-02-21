@@ -62,7 +62,7 @@ public class ShadeKnight : MonoBehaviour {
             if (counter == 1 && !startDeleting)
             {
                 body.velocity = new Vector2(0, 0);
-                //TODO: Remove collider at this step
+                collider.enabled = false;
                 spriteRender.sprite = null;
 
                 //Increase velocity depending on dist. to player

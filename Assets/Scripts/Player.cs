@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     public float speed;
+    public static int lifePoints;
     public bool onGround;
     public static int counter = 0;
     public int runAnimationSpeed = 3;
@@ -19,7 +20,7 @@ public class Player : MonoBehaviour {
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
     private Transform transform;
-    public GameObject camera, shockwave;
+    public GameObject camera, shockwave, pixel;
 
     public Sprite standing, jumping;
     public Sprite[] running;
@@ -40,8 +41,11 @@ public class Player : MonoBehaviour {
     private bool disableFrontCollider;
     public static bool invincibleFrames;
     private int iCounter = 0;
-    private bool spriteEnabled = true; 
-    
+    private bool spriteEnabled = true;
+    private bool startDeleting = false;
+    private List<GameObject> pixels;
+    private float xV, yV;
+
 
     // Use this for initialization
     void Start() {
@@ -49,6 +53,7 @@ public class Player : MonoBehaviour {
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         transform = gameObject.GetComponent<Transform>();
+        pixels = new List<GameObject>();
 
         attackFreeze = false;
         spriteRender.sprite = null;
@@ -56,6 +61,8 @@ public class Player : MonoBehaviour {
         SpawnInOutPixels.spawned = spawned;
 
         hitFromLeft = new List<bool>();
+
+        lifePoints = 40;
 
         //Ignore Layer collision for sword (15) and all non-enemy layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
@@ -124,48 +131,61 @@ public class Player : MonoBehaviour {
         //Talking damage sprite
         if (takingDamage)
         {
-            counter = (counter + 1) % damageFrames;
-
-            //First frame, set sprite, push back and rotate
-            if (counter == 1)
-            {
-                swordCollider.gameObject.SetActive(false);
-                attackFreeze = SwordPixelGenerator.attacking = false;
-
-                //If hit from left, push right. If not, push left
-                var x = hitFromLeft[0] ? 0.4f : -0.4f;
-                //If moving up, push down.
-                var y = body.velocity.y > 0.02 ? -0.02f : 0f;
-                body.velocity = new Vector2(x, y);
-
-                spriteRender.flipX = hitFromLeft[0];
-                hitFromLeft.Clear();
-                //if facing left, tilt left, else right
-                var z = spriteRender.flipX ? -10 : 10;
-                transform.rotation = Quaternion.Euler(0, 0, z);
-                camera.transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-
-            //Every x frames blink character
-            if (counter % blinkSpeed == 0)
-            {
-                spriteRender.sprite = damageSprite;
-            }
+            if (lifePoints <= 0)
+                playDyingAnimation();
             else
             {
-                spriteRender.sprite = null;
-            }
+                counter = (counter + 1) % damageFrames;
 
-            //Done taking damage
-            if (counter == 0)
-            {
-                invincibleFrames = true;
-                takingDamage = false;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                camera.transform.rotation = Quaternion.Euler(0, 0, 0);
+                //First frame, set sprite, push back and rotate
+                if (counter == 1)
+                {
+                    //For now, take 10 damage on every hit
+                    lifePoints -= 10;
+                    Debug.Log("Life Points = " + lifePoints);
+                    if (lifePoints <= 0)
+                        playDyingAnimation();
+
+                    else
+                    {
+                        swordCollider.gameObject.SetActive(false);
+                        attackFreeze = SwordPixelGenerator.attacking = false;
+
+                        //If hit from left, push right. If not, push left
+                        var x = hitFromLeft[0] ? 0.4f : -0.4f;
+                        //If moving up, push down.
+                        var y = body.velocity.y > 0.02 ? -0.02f : 0f;
+                        body.velocity = new Vector2(x, y);
+
+                        spriteRender.flipX = hitFromLeft[0];
+                        hitFromLeft.Clear();
+                        //if facing left, tilt left, else right
+                        var z = spriteRender.flipX ? -10 : 10;
+                        transform.rotation = Quaternion.Euler(0, 0, z);
+                        camera.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    }
+                }
+
+                //Every x frames blink character
+                if (counter % blinkSpeed == 0)
+                {
+                    spriteRender.sprite = damageSprite;
+                }
+                else
+                {
+                    spriteRender.sprite = null;
+                }
+
+                //Done taking damage
+                if (counter == 0)
+                {
+                    invincibleFrames = true;
+                    takingDamage = false;
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                    camera.transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
             }
         }
-
         //Standing sprite
         else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool && spawned)
         {
@@ -185,13 +205,14 @@ public class Player : MonoBehaviour {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
-            if (counter / attackAnimationSpeed == 1) 
+            if (counter / attackAnimationSpeed == 1)
                 disableFrontCollider = true;
 
             if (counter / attackAnimationSpeed >= 8 && counter / attackAnimationSpeed < 12)
                 swordCollider.gameObject.SetActive(true);
 
-            else if (counter / attackAnimationSpeed == 12) {
+            else if (counter / attackAnimationSpeed == 12)
+            {
                 swordCollider.gameObject.SetActive(false);
             }
 
@@ -226,9 +247,10 @@ public class Player : MonoBehaviour {
                         counter = 0;
                     }
                 }
-                else { 
-                counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
-                spriteRender.sprite = spawning[counter / spawnAnimationSpeed];
+                else
+                {
+                    counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
+                    spriteRender.sprite = spawning[counter / spawnAnimationSpeed];
                     //Done spawning
                     if (counter == 0)
                     {
@@ -244,7 +266,7 @@ public class Player : MonoBehaviour {
             {
                 counter = (counter + 1) % (spawning.Length * spawnAnimationSpeed);
                 if (counter > 0)
-                    spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed)-1];
+                    spriteRender.sprite = spawning[spawning.Length - (counter / spawnAnimationSpeed) - 1];
                 //Done spawning out
                 if (counter == 0)
                 {
@@ -318,5 +340,88 @@ public class Player : MonoBehaviour {
         tempWave.transform.parent = null;
         tempWave.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         tempWave.SetActive(true);
+    }
+
+    void playDyingAnimation()
+    {
+        counter = (counter + 1) % 180;
+        if (counter == 2 && !startDeleting)
+        {
+            body.velocity = new Vector3(0, 0, 0);
+            body.gravityScale = 0;
+            damageColliderLeft.SetActive(false);
+            damageColliderRight.SetActive(false);
+            swordCollider.SetActive(false);
+            spriteRender.sprite = null;
+
+            xV = 0;
+            yV = 0.1f;
+
+            int r = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 30; j++)
+                {
+                    pixels.Add(spawnPixelAtFixedLocation(pixel, i, j));
+                }
+            }
+        }
+        else if (counter == 0 || startDeleting)
+        {
+            startDeleting = true;
+            if (pixels.Count > 0)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    int index = pixels.Count - 1;
+                    if (index >= 0)
+                    {
+                        Destroy(pixels[index]);
+                        pixels.RemoveAt(index);
+                    }
+                }
+            }
+            else
+            {
+               //Game over?
+            }
+        }
+    }
+
+    private GameObject spawnPixelAtFixedLocation(GameObject pixel, int x, int y)
+    {
+        var location = Vector3.zero;
+
+        location.x = 0.075f * x - 0.425f;
+        location.y = 0.07f * y - 1.1f;
+        location.z = 0f;
+
+        return (spawnPixelAtLocation(pixel, location));
+    }
+
+    private GameObject spawnPixelAtLocation(GameObject pixel, Vector3 location)
+    {
+        var tempPixel = Instantiate(pixel, location, Quaternion.identity) as GameObject;
+
+        tempPixel.transform.parent = gameObject.transform;
+        tempPixel.transform.localPosition = location;
+
+        tempPixel.transform.parent = null;
+        tempPixel.SetActive(true);
+
+        var xVelocity = Random.Range(xV - 0.08f, xV + 0.08f);
+        var yVelocity = Random.Range(yV, yV + 0.05f);
+
+        tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
+        tempPixel.GetComponent<Rigidbody2D>().gravityScale = Random.Range(-0.035f, 0.02f);
+
+        return tempPixel;
+    }
+
+    public static void addLifePoints(int add)
+    {
+        lifePoints += add;
+        lifePoints = lifePoints > 100 ? 100 : lifePoints;
+        Debug.Log("Life Points = " + lifePoints);
     }
 }

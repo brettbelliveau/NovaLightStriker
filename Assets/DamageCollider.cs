@@ -20,7 +20,7 @@ public class DamageCollider : MonoBehaviour {
     {
         //If collider belongs to an enemy, and not
         //taking damage or spawning
-        if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool)
+        if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
         {
             Player.takingDamage = true;
             Player.counter = 0;
@@ -35,7 +35,7 @@ public class DamageCollider : MonoBehaviour {
         
         //If collider belongs to an enemy, and not
         //taking damage or spawning
-        if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool)
+        if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
         {
             Player.takingDamage = true;
             Player.counter = 0;

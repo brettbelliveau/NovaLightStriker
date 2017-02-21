@@ -19,7 +19,6 @@ public class SpawnInOutPixels : MonoBehaviour {
     public static float deleteSpot; //= -0.12f;        //Spot where pixels start disappearing for spawn in
     private static float spawnSpot; //= 0.85f;          //Spot where pixels start appearing for spawn out
 
-    private bool startDeleting = false;
 
     // Use this for initialization
     void Start () {

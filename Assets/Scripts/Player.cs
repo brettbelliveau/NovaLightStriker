@@ -34,12 +34,14 @@ public class Player : MonoBehaviour {
 
     public static bool attackFreeze;
     public static bool takingDamage;
-    private int damageFrames = 35;
+    private int damageFrames = 30;
     private int blinkSpeed = 5;
     public static bool hyperModeActive;
     private bool disableFrontCollider;
-
-    private int damageCounter = 0;
+    public static bool invincibleFrames;
+    private int iCounter = 0;
+    private bool spriteEnabled = true; 
+    
 
     // Use this for initialization
     void Start() {
@@ -65,7 +67,23 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        //damageCounter = (damageCounter + 1) % 300;
+
+        if (invincibleFrames)
+        {
+            iCounter = (iCounter + 1) % 40;
+
+            if (iCounter % blinkSpeed == 0)
+                spriteEnabled = !spriteEnabled;
+
+            spriteRender.enabled = spriteEnabled;
+
+            if (iCounter == 0)
+            {
+                invincibleFrames = false;
+                spriteRender.enabled = true;
+                spriteEnabled = true;
+            }
+        }
 
         if (!spawningBool && spawned)
         {
@@ -139,6 +157,7 @@ public class Player : MonoBehaviour {
             //Done taking damage
             if (counter == 0)
             {
+                invincibleFrames = true;
                 takingDamage = false;
                 transform.rotation = Quaternion.Euler(0, 0, 0);
                 camera.transform.rotation = Quaternion.Euler(0, 0, 0);

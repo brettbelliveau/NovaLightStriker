@@ -6,7 +6,6 @@ using System.Linq;
 public class ShadeMageBoss : MonoBehaviour {
 
     private int counter = 0;
-    private int walkingCounter = 0;
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
@@ -34,7 +33,6 @@ public class ShadeMageBoss : MonoBehaviour {
     private bool takingDamage;
     private bool attackFreeze;
     private bool warping;
-    private bool movingRight;
     private int pixelCounter;
     
     // Use this for initialization
@@ -46,7 +44,6 @@ public class ShadeMageBoss : MonoBehaviour {
         pixels = new List<GameObject>();
         attackFreeze = false;
         takingDamage = false;
-        movingRight = false;
         warping = false;
     }
 

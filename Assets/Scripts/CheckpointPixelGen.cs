@@ -21,8 +21,6 @@ public class CheckpointPixelGen : MonoBehaviour {
     private float[] xCoordinates;
     private float[] yCoordinates;
 
-    private bool startDeleting = false;
-
     // Use this for initialization
     void Start () {
         pixels = new List<GameObject>();

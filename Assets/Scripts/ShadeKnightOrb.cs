@@ -16,7 +16,7 @@ public class ShadeKnightOrb : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D body;
     private bool movingRight;
-    private bool delete;
+    public bool delete;
 
     private Vector2 velocityOnStart; 
     
@@ -30,11 +30,12 @@ public class ShadeKnightOrb : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (speed > 0)
+        
+        if (!delete && speed > 0)
             movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
 
         counter++;
-
+        
         //Charging up orb
         if (counter < 48)
         {   
@@ -129,10 +130,8 @@ public class ShadeKnightOrb : MonoBehaviour {
     {
         //Begins deletion process
         delete = true;
-        if (counter > 48)
-        {
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            spriteRenderer.sprite = null;
-        }
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        spriteRenderer.sprite = null;
+        counter = 180;
     }
 }

@@ -16,8 +16,7 @@ public class ShadeArrow : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D body;
     private bool movingRight;
-    private bool delete;
-    
+    public bool delete;
     
 	// Use this for initialization
 	void Start () {
@@ -33,6 +32,7 @@ public class ShadeArrow : MonoBehaviour {
 
         counter++;
         //After charged up arrow
+        
         if (counter == 25)
         {
             movingRight = shadeRanger.GetComponent<SpriteRenderer>().flipX;
@@ -111,10 +111,8 @@ public class ShadeArrow : MonoBehaviour {
     {
         //Begins deletion process
         delete = true;
-        if (counter > 25)
-        {
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            spriteRenderer.sprite = null;
-        }
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        spriteRenderer.sprite = null;
+        counter = 180;
     }
 }

@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
+    private BoxCollider2D swordColliderObject;
     private Transform transform;
     public GameObject camera, shockwave, pixel;
 
@@ -61,6 +62,8 @@ public class Player : MonoBehaviour {
         spriteRender.sprite = null;
         SpawnInOutPixels.spawning = spawningBool;
         SpawnInOutPixels.spawned = spawned;
+
+        swordColliderObject = swordCollider.gameObject.GetComponent<BoxCollider2D>();
 
         hitFromLeft = new List<bool>();
 
@@ -312,13 +315,13 @@ public class Player : MonoBehaviour {
 
         if (earlySwing)
         {
-            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
-            (spriteRender.flipX) ? new Vector2(0f, -0.05f) : new Vector2(0f, -0.05f);
+            swordColliderObject.offset = (spriteRender.flipX) ? new Vector2(0f, -0.05f) : new Vector2(0f, -0.05f);
+            swordColliderObject.size = new Vector2(0.3f, 0.7f);
         }
         else
         {
-            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
-                (spriteRender.flipX) ? new Vector2(-0.65f, -0.05f) : new Vector2(0.65f, -0.05f);
+            swordColliderObject.offset = (spriteRender.flipX) ? new Vector2(-0.65f, -0.05f) : new Vector2(0.65f, -0.05f);
+            swordColliderObject.size = new Vector2(0.3f, 1.8f);
         }
     }
 

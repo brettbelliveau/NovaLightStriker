@@ -20,15 +20,25 @@ public class EnemyDamageCollider : MonoBehaviour {
     void OnTriggerEnter2D (Collider2D other)
     {
         //If it's the sword collider from the character
-        //Add instance for third enemy type
         if (other.gameObject.layer == 15)
         {
             var script = enemyObject.GetComponent<ShadeKnight>();
             if (script == null)
             {
-                var newScript = enemyObject.GetComponent<ShadeRanger>();
-                newScript.takingDamage = true;
-                newScript.counter = 0;
+                var script2 = enemyObject.GetComponent<ShadeRanger>();
+
+                if (script2 == null)
+                {
+                    var script3 = enemyObject.GetComponent<ShadeCrawler>();
+                    script3.takingDamage = true;
+                    script3.counter = 0;
+                }
+
+                else
+                {
+                    script2.takingDamage = true;
+                    script2.counter = 0;
+                }
             }
             else
             {

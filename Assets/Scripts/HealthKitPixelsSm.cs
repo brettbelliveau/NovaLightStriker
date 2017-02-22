@@ -78,7 +78,7 @@ public class HealthKitPixelsSm : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == 9) //character layer
+        if (other.gameObject.layer == 9 && Player.lifePoints < 100) //character layer, and lifepoints not maxed
         {
             Player.addLifePoints(20);
             startDeleting = true;

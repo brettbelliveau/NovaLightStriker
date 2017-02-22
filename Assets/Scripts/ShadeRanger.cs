@@ -115,13 +115,13 @@ public class ShadeRanger : MonoBehaviour {
             }
             
             //Manual attacking
-            else if (walkingCounter % turnAfterFrames == 40)
+            else if (walkingCounter % 30 == 0)
             {
-                attackFreeze = true;
+                if (playerIsNear())
+                    attackFreeze = true;
             }
         }
         
-
         //Attacking sprite
         else
         {
@@ -217,5 +217,29 @@ public class ShadeRanger : MonoBehaviour {
         tempPixel.GetComponent<Rigidbody2D>().gravityScale = -0.02f;
 
         return tempPixel;
+    }
+
+    private bool playerIsNear()
+    {
+        //Calculate distance to player from body
+        x = gameObject.transform.position.x - player.transform.position.x;
+        y = gameObject.transform.position.y - player.transform.position.y;
+
+        if (System.Math.Abs(y) < 0.1f)
+        {
+            //Player is on the right and enemy unit is facing right
+            if (x > -5f && x < 0 && movingRight)
+                return true;
+
+            //Player is on the left and enemy unit is facing left
+            else if (x < 5f && x > 0 && !movingRight)
+                return true;
+
+            else
+                return false;
+        }
+
+        else
+            return false;
     }
 }

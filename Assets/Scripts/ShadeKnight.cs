@@ -11,7 +11,7 @@ public class ShadeKnight : MonoBehaviour {
     
     public float speed;
     public int floatInterval = 8;
-    private int turnAfterFrames = 120;
+    public int turnAfterFrames = 120;
     private int attackAnimationSpeed = 3;
     private int attackFreezeDuration = 54;
 
@@ -126,21 +126,24 @@ public class ShadeKnight : MonoBehaviour {
             {
                 movingRight = false;
             }
-            
-            //Manual attacking
-            else if (walkingCounter == 150)
+
+            //Auto attacking
+            else if (walkingCounter % 30 == 0)
             {
-                attackFreeze = true;
+                if (playerIsNear())
+                {
+                    attackFreeze = true;
 
-                float x = movingRight ? 0.6f : -0.6f;
-                Vector3 orbPosition = new Vector3(x, -0.5f, -5);
-                var tempOrb = Instantiate(orb, orbPosition, Quaternion.identity) as GameObject;
+                    float x = movingRight ? 0.6f : -0.6f;
+                    Vector3 orbPosition = new Vector3(x, -0.5f, -5);
+                    var tempOrb = Instantiate(orb, orbPosition, Quaternion.identity) as GameObject;
 
-                tempOrb.transform.parent = gameObject.transform;
-                tempOrb.transform.localPosition = orbPosition;
+                    tempOrb.transform.parent = gameObject.transform;
+                    tempOrb.transform.localPosition = orbPosition;
 
-                tempOrb.transform.parent = null;
-                tempOrb.SetActive(true);
+                    tempOrb.transform.parent = null;
+                    tempOrb.SetActive(true);
+                }
             }
         }
         
@@ -218,5 +221,29 @@ public class ShadeKnight : MonoBehaviour {
         tempPixel.GetComponent<Rigidbody2D>().gravityScale = -0.02f;
 
         return tempPixel;
+    }
+
+    private bool playerIsNear()
+    {
+        //Calculate distance to player from body
+        x = gameObject.transform.position.x - player.transform.position.x;
+        y = gameObject.transform.position.y - player.transform.position.y;
+
+        if (System.Math.Abs(y) < 0.1f)
+        {
+            //Player is on the right and enemy unit is facing right
+            if (x > -5f && x < 0 && movingRight)
+                return true;
+
+            //Player is on the left and enemy unit is facing left
+            else if (x < 5f && x > 0 && !movingRight)
+                return true;
+
+            else
+                return false;
+        }
+
+        else
+            return false;
     }
 }

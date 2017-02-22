@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
     public static bool takingDamage;
     private int damageFrames = 30;
     private int blinkSpeed = 5;
-    public static bool hyperModeActive = true;
+    public static bool hyperModeActive = false;
     private bool disableFrontCollider;
     public static bool invincibleFrames;
     private int iCounter = 0;
@@ -62,7 +62,7 @@ public class Player : MonoBehaviour {
 
         hitFromLeft = new List<bool>();
 
-        lifePoints = 40;
+        lifePoints = 100;
 
         //Ignore Layer collision for sword (15) and all non-enemy layers
         Physics2D.IgnoreLayerCollision(15, 0, true);

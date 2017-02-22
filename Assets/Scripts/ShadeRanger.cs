@@ -10,25 +10,26 @@ public class ShadeRanger : MonoBehaviour {
     private int attackFreezeCounter = 0;
     
     public float speed;
-    private int turnAfterFrames = 80;
+    public int turnAfterFrames = 80;
     private int attackAnimationSpeed = 3;
     private int attackFreezeDuration = 40;
     private bool arrowFlag = false;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
-    private BoxCollider2D collider;
+    private BoxCollider2D collider, damageCollider;
     
     public Sprite moving;
     public Sprite[] attacking;
     public GameObject arrow, pixel1, pixel2, player;
+    public GameObject enemyDamageCollider;
     private List<GameObject> pixels;
 
     private GameObject pixel;
 
     public bool takingDamage;
     private bool attackFreeze;
-    private bool movingRight;
+    public bool movingRight;
     private float x, y, xV, yV;
     private bool startDeleting;
     private int index;
@@ -40,6 +41,7 @@ public class ShadeRanger : MonoBehaviour {
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        damageCollider = enemyDamageCollider.GetComponent<BoxCollider2D>();
         pixels = new List<GameObject>();
         attackFreeze = false;
         takingDamage = false;
@@ -56,7 +58,6 @@ public class ShadeRanger : MonoBehaviour {
             if (counter == 1 && !startDeleting)
             {
                 body.velocity = new Vector2(0, 0);
-                collider.enabled = false;
                 spriteRender.sprite = null;
 
                 //Increase velocity depending on dist. to player
@@ -108,14 +109,16 @@ public class ShadeRanger : MonoBehaviour {
             if (walkingCounter == turnAfterFrames)
             {
                 movingRight = true;
+                damageCollider.offset = new Vector2(0.1f, 0);
             }
             else if (walkingCounter == 0)
             {
                 movingRight = false;
+                damageCollider.offset = new Vector2(-0.1f, 0);
             }
             
-            //Manual attacking
-            else if (walkingCounter % 30 == 0)
+            //Attack if player within certain distances
+            else if (walkingCounter % 25 == 0)
             {
                 if (playerIsNear())
                     attackFreeze = true;
@@ -228,11 +231,11 @@ public class ShadeRanger : MonoBehaviour {
         if (System.Math.Abs(y) < 0.1f)
         {
             //Player is on the right and enemy unit is facing right
-            if (x > -5f && x < 0 && movingRight)
+            if (x > -4f && x < 0 && movingRight)
                 return true;
 
             //Player is on the left and enemy unit is facing left
-            else if (x < 5f && x > 0 && !movingRight)
+            else if (x < 4f && x > 0 && !movingRight)
                 return true;
 
             else

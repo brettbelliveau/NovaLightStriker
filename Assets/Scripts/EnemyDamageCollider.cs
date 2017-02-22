@@ -36,6 +36,9 @@ public class EnemyDamageCollider : MonoBehaviour {
                 script.counter = 0;
             }
 
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            enemyObject.GetComponent<BoxCollider2D>().enabled = false;
+
         }
     }
 
@@ -58,9 +61,8 @@ public class EnemyDamageCollider : MonoBehaviour {
                 script.counter = 0;
             }
 
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
             enemyObject.GetComponent<BoxCollider2D>().enabled = false;
-            Destroy(gameObject);
-            Destroy(this);
         }
     }
 }

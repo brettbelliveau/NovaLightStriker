@@ -31,8 +31,8 @@ public class DamageCollider : MonoBehaviour {
     }
 
     void OnTriggerStay2D(Collider2D other)
-    { 
-        
+    {
+
         //If collider belongs to an enemy, and not
         //taking damage or spawning
         if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
@@ -41,13 +41,26 @@ public class DamageCollider : MonoBehaviour {
             Player.counter = 0;
             Player.hitFromLeft.Add(isLeft);
         }
-        
-        //Misc Notes:
-        //By using two colliders we can determine if the character was hit from 
-        //right or left, and act accordingly
-        
-        //Also, if we add the isLeft bool to a list, even if both right and left are triggered
-        //We can check index 0 to see which one came first
-        //Pretty good for a lazy solution 8)
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+
+        //If collider belongs to an enemy, and not
+        //taking damage or spawning
+        if (other.gameObject.layer == 14 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
+        {
+            Player.takingDamage = true;
+            Player.counter = 0;
+            Player.hitFromLeft.Add(isLeft);
+        }
+    }
+        //Misc Notes:
+            //By using two of this script we can determine if the character was hit from 
+            //right or left, and act accordingly
+
+            //Also, if we add the isLeft bool to a list, even if both right and left are triggered
+            //We can check index 0 to see which one came first
+            //Pretty good for a lazy solution 8)
+        
 }

@@ -35,16 +35,18 @@ public class Player : MonoBehaviour {
 
     public static bool attackFreeze;
     public static bool takingDamage;
-    private int damageFrames = 30;
+    private int damageFrames = 20;
     private int blinkSpeed = 5;
     public static bool hyperModeActive = false;
     private bool disableFrontCollider;
+    private bool disableBackCollider;
     public static bool invincibleFrames;
     private int iCounter = 0;
     private bool spriteEnabled = true;
     private bool startDeleting = false;
     private List<GameObject> pixels;
     private float xV, yV;
+    private bool earlySwing = false;
 
 
     // Use this for initialization
@@ -79,7 +81,7 @@ public class Player : MonoBehaviour {
 
         if (invincibleFrames)
         {
-            iCounter = (iCounter + 1) % 40;
+            iCounter = (iCounter + 1) % 50;
 
             if (iCounter % blinkSpeed == 0)
                 spriteEnabled = !spriteEnabled;
@@ -121,6 +123,8 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
             {
                 counter = 0;
+                disableFrontCollider = true;
+                disableBackCollider = true;
                 attackFreeze = true;
                 SwordPixelGenerator.attacking = true;
             }
@@ -140,6 +144,7 @@ public class Player : MonoBehaviour {
                 //First frame, set sprite, push back and rotate
                 if (counter == 1)
                 {
+                    disableFrontCollider = disableBackCollider = false;
                     //For now, take 10 damage on every hit
                     lifePoints -= 10;
                     Debug.Log("Life Points = " + lifePoints);
@@ -152,17 +157,13 @@ public class Player : MonoBehaviour {
                         attackFreeze = SwordPixelGenerator.attacking = false;
 
                         //If hit from left, push right. If not, push left
-                        var x = hitFromLeft[0] ? 0.4f : -0.4f;
+                        //var x = hitFromLeft[0] ? 0.2f : -0.2f;
                         //If moving up, push down.
                         var y = body.velocity.y > 0.02 ? -0.02f : 0f;
-                        body.velocity = new Vector2(x, y);
-
-                        spriteRender.flipX = hitFromLeft[0];
+                        body.velocity = new Vector2(0, y);
+                        
                         hitFromLeft.Clear();
                         //if facing left, tilt left, else right
-                        var z = spriteRender.flipX ? -10 : 10;
-                        transform.rotation = Quaternion.Euler(0, 0, z);
-                        camera.transform.rotation = Quaternion.Euler(0, 0, 0);
                     }
                 }
 
@@ -181,8 +182,6 @@ public class Player : MonoBehaviour {
                 {
                     invincibleFrames = true;
                     takingDamage = false;
-                    transform.rotation = Quaternion.Euler(0, 0, 0);
-                    camera.transform.rotation = Quaternion.Euler(0, 0, 0);
                 }
             }
         }
@@ -205,11 +204,21 @@ public class Player : MonoBehaviour {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
-            if (counter / attackAnimationSpeed == 1)
-                disableFrontCollider = true;
+            disableFrontCollider = true;
 
-            if (counter / attackAnimationSpeed >= 8 && counter / attackAnimationSpeed < 12)
+            if (counter / attackAnimationSpeed == 5)
+                disableBackCollider = false;
+
+            if (counter / attackAnimationSpeed == 4)
+            {
                 swordCollider.gameObject.SetActive(true);
+                earlySwing = true;
+            }
+
+            else if (counter / attackAnimationSpeed == 8)
+            {
+                earlySwing = false;
+            }
 
             else if (counter / attackAnimationSpeed == 12)
             {
@@ -285,17 +294,17 @@ public class Player : MonoBehaviour {
             spriteRender.sprite = jumping;
         }
 
-    if (disableFrontCollider)
+        if (disableFrontCollider)
         {
-            if (spriteRender.flipX)
+            if (!spriteRender.flipX)
             {
-                damageColliderLeft.SetActive(false);
-                damageColliderRight.SetActive(true);
+                damageColliderRight.SetActive(false);
+                damageColliderLeft.SetActive(!disableBackCollider);
             }
             else
             {
-                damageColliderLeft.SetActive(true);
-                damageColliderRight.SetActive(false);
+                damageColliderLeft.SetActive(false);
+                damageColliderRight.SetActive(!disableBackCollider);
             }
         }
     
@@ -319,8 +328,16 @@ public class Player : MonoBehaviour {
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
 
-            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset = 
-                (spriteRender.flipX) ? new Vector2(-0.8f, -0.05f) : new Vector2(0.8f, -0.05f);
+            if (earlySwing)
+            {
+                swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
+                (spriteRender.flipX) ? new Vector2(-0.3f, -0.05f) : new Vector2(0.3f, -0.05f);
+            }
+            else
+            {
+                swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
+                    (spriteRender.flipX) ? new Vector2(-0.6f, -0.05f) : new Vector2(0.6f, -0.05f);
+            }
 
             SwordPixelGenerator.facingRight = !spriteRender.flipX;
             ShockWave.facingRight = spriteRender.flipX;
@@ -349,6 +366,7 @@ public class Player : MonoBehaviour {
         {
             body.velocity = new Vector3(0, 0, 0);
             body.gravityScale = 0;
+            collider.enabled = false;
             damageColliderLeft.SetActive(false);
             damageColliderRight.SetActive(false);
             swordCollider.SetActive(false);
@@ -383,9 +401,11 @@ public class Player : MonoBehaviour {
             }
             else
             {
-               //Game over?
+                //Reload from checkpoint, or game over
             }
         }
+        else
+            body.velocity = new Vector3(0, 0, 0);
     }
 
     private GameObject spawnPixelAtFixedLocation(GameObject pixel, int x, int y)

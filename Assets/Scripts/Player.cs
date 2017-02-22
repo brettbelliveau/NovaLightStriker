@@ -144,6 +144,7 @@ public class Player : MonoBehaviour {
                 //First frame, set sprite, push back and rotate
                 if (counter == 1)
                 {
+                    earlySwing = true;
                     disableFrontCollider = disableBackCollider = false;
                     //For now, take 10 damage on every hit
                     lifePoints -= 10;
@@ -215,7 +216,7 @@ public class Player : MonoBehaviour {
                 earlySwing = true;
             }
 
-            else if (counter / attackAnimationSpeed == 8)
+            else if (counter / attackAnimationSpeed == 9)
             {
                 earlySwing = false;
             }
@@ -223,6 +224,7 @@ public class Player : MonoBehaviour {
             else if (counter / attackAnimationSpeed == 12)
             {
                 swordCollider.gameObject.SetActive(false);
+                earlySwing = true;
             }
 
             //Around when the sword slash anim has finished
@@ -307,7 +309,17 @@ public class Player : MonoBehaviour {
                 damageColliderRight.SetActive(!disableBackCollider);
             }
         }
-    
+
+        if (earlySwing)
+        {
+            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
+            (spriteRender.flipX) ? new Vector2(0f, -0.05f) : new Vector2(0f, -0.05f);
+        }
+        else
+        {
+            swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
+                (spriteRender.flipX) ? new Vector2(-0.65f, -0.05f) : new Vector2(0.65f, -0.05f);
+        }
     }
 
     void FixedUpdate () {
@@ -327,17 +339,6 @@ public class Player : MonoBehaviour {
         if (!takingDamage && !spawningBool && spawned)
         {
             spriteRender.flipX = (body.velocity.x < 0) || (spriteRender.flipX && body.velocity.x == 0);
-
-            if (earlySwing)
-            {
-                swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
-                (spriteRender.flipX) ? new Vector2(-0.3f, -0.05f) : new Vector2(0.3f, -0.05f);
-            }
-            else
-            {
-                swordCollider.gameObject.GetComponent<BoxCollider2D>().offset =
-                    (spriteRender.flipX) ? new Vector2(-0.6f, -0.05f) : new Vector2(0.6f, -0.05f);
-            }
 
             SwordPixelGenerator.facingRight = !spriteRender.flipX;
             ShockWave.facingRight = spriteRender.flipX;

@@ -198,7 +198,7 @@ public class ShadeRanger : MonoBehaviour {
 
         location.x = 0.075f*x - 0.425f;
         location.y = 0.07f*y - 1.1f;
-        location.z = 2f;
+        location.z = Random.Range(2f, 3f);
 
         return (spawnPixelAtLocation(pixel, location));
     }
@@ -213,11 +213,11 @@ public class ShadeRanger : MonoBehaviour {
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
 
-        var xVelocity = Random.Range(xV - 0.05f, xV + 0.05f);
-        var yVelocity = Random.Range(yV - 0.05f, yV + 0.05f);
+        var xVelocity = Random.Range(xV - 0.08f, xV + 0.08f);
+        var yVelocity = Random.Range(yV, yV + 0.05f);
 
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
-        tempPixel.GetComponent<Rigidbody2D>().gravityScale = -0.02f;
+        tempPixel.GetComponent<Rigidbody2D>().gravityScale = Random.Range(-0.035f, 0.02f);
 
         return tempPixel;
     }

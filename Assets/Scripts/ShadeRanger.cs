@@ -118,7 +118,7 @@ public class ShadeRanger : MonoBehaviour {
             }
             
             //Attack if player within certain distances
-            else if (walkingCounter % 25 == 0)
+            else if (walkingCounter % 20 == 0)
             {
                 if (playerIsNear())
                     attackFreeze = true;
@@ -231,11 +231,11 @@ public class ShadeRanger : MonoBehaviour {
         if (System.Math.Abs(y) < 0.1f)
         {
             //Player is on the right and enemy unit is facing right
-            if (x > -4f && x < 0 && movingRight)
+            if (x > -2.2f && x < 0 && movingRight)
                 return true;
 
             //Player is on the left and enemy unit is facing left
-            else if (x < 4f && x > 0 && !movingRight)
+            else if (x < 2.2f && x > 0 && !movingRight)
                 return true;
 
             else

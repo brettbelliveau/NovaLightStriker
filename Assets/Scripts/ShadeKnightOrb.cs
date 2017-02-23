@@ -31,26 +31,26 @@ public class ShadeKnightOrb : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         
-        if ((!delete || shadeKnight != null) && counter < 48)
+        if ((!delete || shadeKnight != null) && counter < 36)
             movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
 
         counter++;
         
         //Charging up orb
-        if (counter < 48)
+        if (counter < 36)
         {   
             if (counter == 1) {
                 velocityOnStart = body.velocity;
                 body.velocity = new Vector2(0, 0);
             }
 
-            if (counter <= 40)
+            if (counter <= 30)
             {
-                spriteRenderer.sprite = sprites[counter / 8];
+                spriteRenderer.sprite = sprites[counter / 6];
             }
         }
         //Firing Orb
-        else if (counter == 48)
+        else if (counter == 36)
         {   //By setting speed to negative value, we can skip this assignment (for custom orb velocities)
             if (speed > 0)
             {
@@ -61,7 +61,7 @@ public class ShadeKnightOrb : MonoBehaviour {
                 body.velocity = velocityOnStart;
         }
         //Flying through the air
-        else if (counter > 48 && counter < 180 && !delete) {
+        else if (counter > 36 && counter < 180 && !delete) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));

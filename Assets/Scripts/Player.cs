@@ -126,8 +126,6 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
             {
                 counter = 0;
-                disableFrontCollider = true;
-                disableBackCollider = true;
                 attackFreeze = true;
                 SwordPixelGenerator.attacking = true;
             }
@@ -208,22 +206,32 @@ public class Player : MonoBehaviour {
             counter = (counter + 1) % (attacking.Length * attackAnimationSpeed);
             spriteRender.sprite = attacking[counter / attackAnimationSpeed];
 
-            disableFrontCollider = true;
+            //After 4 frames, invincible from front and back
+            if (counter == 4)
+            {
+                disableBackCollider = true;
+                disableFrontCollider = true;
+            }
 
+
+            //After 5th sprite frame, not invincible from back
             if (counter / attackAnimationSpeed == 5)
                 disableBackCollider = false;
 
+            //After 4th sprite frame, turn on sword collider 
             if (counter / attackAnimationSpeed == 4)
             {
                 swordCollider.gameObject.SetActive(true);
                 earlySwing = true;
             }
 
+            //After 9th sprite frame, move sword collider away from character
             else if (counter / attackAnimationSpeed == 9)
             {
                 earlySwing = false;
             }
 
+            //After 12th sprite frame, turn off sword collider 
             else if (counter / attackAnimationSpeed == 12)
             {
                 swordCollider.gameObject.SetActive(false);

@@ -13,7 +13,7 @@ public class ShadeKnight : MonoBehaviour {
     public int floatInterval = 8;
     public int turnAfterFrames = 120;
     private int attackAnimationSpeed = 3;
-    private int attackFreezeDuration = 54;
+    private int attackFreezeDuration = 40;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
@@ -131,7 +131,7 @@ public class ShadeKnight : MonoBehaviour {
             }
 
             //Attack if player within certain distances
-            else if (walkingCounter % 25 == 0)
+            else if (walkingCounter % 20 == 0)
             {
                 if (playerIsNear())
                 {
@@ -235,11 +235,11 @@ public class ShadeKnight : MonoBehaviour {
         if (System.Math.Abs(y) < 0.1f)
         {
             //Player is on the right and enemy unit is facing right
-            if (x > -4f && x < 0 && movingRight)
+            if (x > -2.4f && x < 0 && movingRight)
                 return true;
 
             //Player is on the left and enemy unit is facing left
-            else if (x < 4f && x > 0 && !movingRight)
+            else if (x < 2.4f && x > 0 && !movingRight)
                 return true;
 
             else

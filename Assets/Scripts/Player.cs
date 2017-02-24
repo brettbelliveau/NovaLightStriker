@@ -14,6 +14,7 @@ public class Player : MonoBehaviour {
     private int framesSinceOnGround = 0;
     private bool jumped = false;
     public static List<bool> hitFromLeft;
+    public static List<int> lastDamageTaken;
     private static int waitFrames = 40; //number of frames to wait before spawning
 
     private Rigidbody2D body;
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour {
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         transform = gameObject.GetComponent<Transform>();
         pixels = new List<GameObject>();
+        lastDamageTaken = new List<int>();
 
         attackFreeze = false;
         spriteRender.sprite = null;
@@ -69,13 +71,16 @@ public class Player : MonoBehaviour {
 
         lifePoints = 100;
 
-        //Ignore Layer collision for sword (15) and all non-enemy layers
+        //Ignore Layer collision for sword (15) and all non-enemy or projectile layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
         Physics2D.IgnoreLayerCollision(15, 5, true);
         Physics2D.IgnoreLayerCollision(15, 9, true);
         Physics2D.IgnoreLayerCollision(15, 10, true);
         Physics2D.IgnoreLayerCollision(15, 11, true);
         Physics2D.IgnoreLayerCollision(15, 13, true);
+
+        //Ignore Layer collision for projectile (12) and enemy (14) layers
+        Physics2D.IgnoreLayerCollision(12, 14, true);
 
     }
 
@@ -142,13 +147,14 @@ public class Player : MonoBehaviour {
             {
                 counter = (counter + 1) % damageFrames;
 
-                //First frame, set sprite, push back and rotate
                 if (counter == 1)
                 {
                     earlySwing = true;
                     disableFrontCollider = disableBackCollider = false;
-                    //For now, take 10 damage on every hit
-                    lifePoints -= 10;
+
+                    lifePoints -= lastDamageTaken[0];
+                    lastDamageTaken.Clear();
+
                     Debug.Log("Life Points = " + lifePoints);
                     if (lifePoints <= 0)
                         playDyingAnimation();
@@ -182,6 +188,7 @@ public class Player : MonoBehaviour {
                 //Done taking damage
                 if (counter == 0)
                 {
+                    lastDamageTaken.Clear();
                     invincibleFrames = true;
                     takingDamage = false;
                 }

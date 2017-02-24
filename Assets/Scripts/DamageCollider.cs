@@ -5,6 +5,9 @@ using UnityEngine;
 public class DamageCollider : MonoBehaviour {
 
     public bool isLeft;
+    private int projectileDamage = 20;
+    private int physicalDamage = 10;
+
 	// Use this for initialization
 	void Start () {
         //Ignore character layer collisions
@@ -25,9 +28,18 @@ public class DamageCollider : MonoBehaviour {
             Player.takingDamage = true;
             Player.counter = 0;
             Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(physicalDamage);
         }
 
-        //Else do nothing
+        //If collider belongs to an enemy projectile, and not
+        //taking damage or spawning
+        else if (other.gameObject.layer == 12 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
+        {
+            Player.takingDamage = true;
+            Player.counter = 0;
+            Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(projectileDamage);
+        }
     }
 
     void OnTriggerStay2D(Collider2D other)
@@ -40,6 +52,17 @@ public class DamageCollider : MonoBehaviour {
             Player.takingDamage = true;
             Player.counter = 0;
             Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(physicalDamage);
+        }
+
+        //If collider belongs to an enemy projectile, and not
+        //taking damage or spawning
+        else if (other.gameObject.layer == 12 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
+        {
+            Player.takingDamage = true;
+            Player.counter = 0;
+            Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(projectileDamage);
         }
     }
 
@@ -53,6 +76,17 @@ public class DamageCollider : MonoBehaviour {
             Player.takingDamage = true;
             Player.counter = 0;
             Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(physicalDamage);
+        }
+
+        //If collider belongs to an enemy projectile, and not
+        //taking damage or spawning
+        else if (other.gameObject.layer == 12 && !Player.takingDamage && !Player.spawningBool && !Player.invincibleFrames)
+        {
+            Player.takingDamage = true;
+            Player.counter = 0;
+            Player.hitFromLeft.Add(isLeft);
+            Player.lastDamageTaken.Add(projectileDamage);
         }
     }
         //Misc Notes:

@@ -54,7 +54,7 @@ public class ShockWave : MonoBehaviour {
             if (counter == 60)
             {
                 spriteRenderer.sprite = null;
-                //TODO: Remove collider at this step
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
             }
 
             if (counter < (60 + maxSpawnPixels * 3))

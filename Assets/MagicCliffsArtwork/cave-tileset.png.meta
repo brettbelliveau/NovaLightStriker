@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: f5091b27a656f437094000095b53c3e9
-timeCreated: 1460418058
-licenseType: Store
+timeCreated: 1487887175
+licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: cave-tileset_0
@@ -85,12 +85,16 @@ TextureImporter:
     21300156: cave-tileset_78
     21300158: cave-tileset_79
     21300160: cave-tileset_80
-  serializedVersion: 2
+    21300162: cave-tileset_81
+    21300164: cave-tileset_82
+    21300166: cave-tileset_83
+    21300168: cave-tileset_84
+  serializedVersion: 4
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
+    sRGBTexture: 1
     linearTexture: 0
-    correctGamma: 0
     fadeOut: 0
     borderMipMap: 0
     mipMapFadeDistanceStart: 1
@@ -102,10 +106,8 @@ TextureImporter:
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
-  generateCubemap: 0
+  generateCubemap: 6
   cubemapConvolution: 0
-  cubemapConvolutionSteps: 7
-  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -3
   maxTextureSize: 2048
@@ -116,9 +118,7 @@ TextureImporter:
     wrapMode: 1
   nPOTScale: 0
   lightmap: 0
-  rGBM: 0
   compressionQuality: 50
-  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
@@ -126,23 +126,49 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+  alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
-  buildTargetSettings: []
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: cave-tileset_0
+    - serializedVersion: 2
+      name: cave-tileset_0
       rect:
         serializedVersion: 2
         x: 16
-        y: 240
-        width: 16
-        height: 16
+        y: 208
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_1
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_1
       rect:
         serializedVersion: 2
         x: 32
@@ -150,10 +176,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_2
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_2
       rect:
         serializedVersion: 2
         x: 48
@@ -161,10 +189,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_3
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_3
       rect:
         serializedVersion: 2
         x: 80
@@ -172,10 +202,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_4
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_4
       rect:
         serializedVersion: 2
         x: 96
@@ -183,10 +215,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_5
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_5
       rect:
         serializedVersion: 2
         x: 160
@@ -194,10 +228,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_6
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_6
       rect:
         serializedVersion: 2
         x: 176
@@ -205,10 +241,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_7
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_7
       rect:
         serializedVersion: 2
         x: 16
@@ -216,10 +254,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_8
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_8
       rect:
         serializedVersion: 2
         x: 32
@@ -227,10 +267,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_9
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_9
       rect:
         serializedVersion: 2
         x: 48
@@ -238,10 +280,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_10
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_10
       rect:
         serializedVersion: 2
         x: 80
@@ -249,10 +293,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_11
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_11
       rect:
         serializedVersion: 2
         x: 96
@@ -260,10 +306,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_12
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_12
       rect:
         serializedVersion: 2
         x: 160
@@ -271,10 +319,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_13
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_13
       rect:
         serializedVersion: 2
         x: 176
@@ -282,10 +332,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_14
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_14
       rect:
         serializedVersion: 2
         x: 16
@@ -293,10 +345,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_15
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_15
       rect:
         serializedVersion: 2
         x: 32
@@ -304,10 +358,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_16
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_16
       rect:
         serializedVersion: 2
         x: 48
@@ -315,10 +371,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_17
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_17
       rect:
         serializedVersion: 2
         x: 96
@@ -326,10 +384,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_18
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_18
       rect:
         serializedVersion: 2
         x: 112
@@ -337,10 +397,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_19
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_19
       rect:
         serializedVersion: 2
         x: 144
@@ -348,10 +410,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_20
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_20
       rect:
         serializedVersion: 2
         x: 160
@@ -359,10 +423,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_21
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_21
       rect:
         serializedVersion: 2
         x: 0
@@ -370,10 +436,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_22
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_22
       rect:
         serializedVersion: 2
         x: 32
@@ -381,10 +449,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_23
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_23
       rect:
         serializedVersion: 2
         x: 48
@@ -392,10 +462,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_24
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_24
       rect:
         serializedVersion: 2
         x: 96
@@ -403,10 +475,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_25
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_25
       rect:
         serializedVersion: 2
         x: 112
@@ -414,10 +488,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_26
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_26
       rect:
         serializedVersion: 2
         x: 144
@@ -425,10 +501,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_27
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_27
       rect:
         serializedVersion: 2
         x: 160
@@ -436,10 +514,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_28
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_28
       rect:
         serializedVersion: 2
         x: 32
@@ -447,10 +527,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_29
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_29
       rect:
         serializedVersion: 2
         x: 48
@@ -458,10 +540,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_30
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_30
       rect:
         serializedVersion: 2
         x: 64
@@ -469,10 +553,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_31
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_31
       rect:
         serializedVersion: 2
         x: 80
@@ -480,10 +566,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_32
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_32
       rect:
         serializedVersion: 2
         x: 96
@@ -491,10 +579,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_33
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_33
       rect:
         serializedVersion: 2
         x: 176
@@ -502,10 +592,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_34
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_34
       rect:
         serializedVersion: 2
         x: 192
@@ -513,10 +605,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_35
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_35
       rect:
         serializedVersion: 2
         x: 208
@@ -524,10 +618,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_36
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_36
       rect:
         serializedVersion: 2
         x: 64
@@ -535,10 +631,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_37
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_37
       rect:
         serializedVersion: 2
         x: 80
@@ -546,10 +644,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_38
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_38
       rect:
         serializedVersion: 2
         x: 96
@@ -557,10 +657,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_39
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_39
       rect:
         serializedVersion: 2
         x: 176
@@ -568,10 +670,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_40
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_40
       rect:
         serializedVersion: 2
         x: 192
@@ -579,10 +683,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_41
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_41
       rect:
         serializedVersion: 2
         x: 208
@@ -590,10 +696,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_42
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_42
       rect:
         serializedVersion: 2
         x: 80
@@ -601,10 +709,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_43
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_43
       rect:
         serializedVersion: 2
         x: 96
@@ -612,10 +722,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_44
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_44
       rect:
         serializedVersion: 2
         x: 112
@@ -623,10 +735,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_45
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_45
       rect:
         serializedVersion: 2
         x: 128
@@ -634,10 +748,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_46
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_46
       rect:
         serializedVersion: 2
         x: 144
@@ -645,10 +761,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_47
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_47
       rect:
         serializedVersion: 2
         x: 160
@@ -656,10 +774,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_48
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_48
       rect:
         serializedVersion: 2
         x: 80
@@ -667,10 +787,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_49
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_49
       rect:
         serializedVersion: 2
         x: 96
@@ -678,10 +800,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_50
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_50
       rect:
         serializedVersion: 2
         x: 112
@@ -689,10 +813,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_51
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_51
       rect:
         serializedVersion: 2
         x: 128
@@ -700,10 +826,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_52
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_52
       rect:
         serializedVersion: 2
         x: 144
@@ -711,10 +839,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_53
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_53
       rect:
         serializedVersion: 2
         x: 160
@@ -722,10 +852,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_54
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_54
       rect:
         serializedVersion: 2
         x: 80
@@ -733,10 +865,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_55
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_55
       rect:
         serializedVersion: 2
         x: 96
@@ -744,10 +878,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_56
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_56
       rect:
         serializedVersion: 2
         x: 128
@@ -755,10 +891,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_57
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_57
       rect:
         serializedVersion: 2
         x: 144
@@ -766,10 +904,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_58
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_58
       rect:
         serializedVersion: 2
         x: 160
@@ -777,10 +917,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_59
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_59
       rect:
         serializedVersion: 2
         x: 80
@@ -788,10 +930,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_60
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_60
       rect:
         serializedVersion: 2
         x: 96
@@ -799,10 +943,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_61
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_61
       rect:
         serializedVersion: 2
         x: 144
@@ -810,10 +956,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_62
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_62
       rect:
         serializedVersion: 2
         x: 160
@@ -821,10 +969,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_63
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_63
       rect:
         serializedVersion: 2
         x: 80
@@ -832,10 +982,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_64
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_64
       rect:
         serializedVersion: 2
         x: 96
@@ -843,10 +995,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_65
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_65
       rect:
         serializedVersion: 2
         x: 112
@@ -854,10 +1008,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_66
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_66
       rect:
         serializedVersion: 2
         x: 128
@@ -865,10 +1021,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_67
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_67
       rect:
         serializedVersion: 2
         x: 144
@@ -876,10 +1034,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_68
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_68
       rect:
         serializedVersion: 2
         x: 160
@@ -887,10 +1047,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_69
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_69
       rect:
         serializedVersion: 2
         x: 80
@@ -898,10 +1060,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_70
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_70
       rect:
         serializedVersion: 2
         x: 96
@@ -909,10 +1073,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_71
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_71
       rect:
         serializedVersion: 2
         x: 112
@@ -920,10 +1086,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_72
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_72
       rect:
         serializedVersion: 2
         x: 128
@@ -931,10 +1099,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_73
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_73
       rect:
         serializedVersion: 2
         x: 144
@@ -942,10 +1112,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_74
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_74
       rect:
         serializedVersion: 2
         x: 160
@@ -953,10 +1125,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_75
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_75
       rect:
         serializedVersion: 2
         x: 80
@@ -964,10 +1138,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_76
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_76
       rect:
         serializedVersion: 2
         x: 96
@@ -975,10 +1151,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_77
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_77
       rect:
         serializedVersion: 2
         x: 112
@@ -986,10 +1164,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_78
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_78
       rect:
         serializedVersion: 2
         x: 128
@@ -997,10 +1177,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_79
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_79
       rect:
         serializedVersion: 2
         x: 144
@@ -1008,10 +1190,12 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: cave-tileset_80
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_80
       rect:
         serializedVersion: 2
         x: 160
@@ -1019,9 +1203,62 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: cave-tileset_81
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: cave-tileset_82
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: cave-tileset_83
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 224
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: cave-tileset_84
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 224
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

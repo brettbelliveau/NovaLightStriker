@@ -14,7 +14,6 @@ public class ShadeCrawler : MonoBehaviour {
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
-    private BoxCollider2D collider, damageCollider;
     
     public Sprite[] moving;
     public GameObject pixel, player;
@@ -31,9 +30,7 @@ public class ShadeCrawler : MonoBehaviour {
     // Use this for initialization
     void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
-        collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        damageCollider = enemyDamageCollider.GetComponent<BoxCollider2D>();
         pixels = new List<GameObject>();
         takingDamage = false;
         movingRight = false;

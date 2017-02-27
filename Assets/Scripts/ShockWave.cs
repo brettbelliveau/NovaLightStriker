@@ -30,12 +30,9 @@ public class ShockWave : MonoBehaviour {
         counter++;
         //Flying through the air
         if (counter > 0 && counter < 60) {
-
-            if (body.velocity.x == 0)
-            {
-                body.velocity = !facingRight ? new Vector2(speed, 0) : new Vector2(-1 * speed, 0);
-            }
-
+            
+            body.velocity = !spriteRenderer.flipX ? new Vector2(speed, 0) : new Vector2(-1 * speed, 0);
+            
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));

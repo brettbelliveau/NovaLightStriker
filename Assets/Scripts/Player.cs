@@ -10,8 +10,11 @@ public class Player : MonoBehaviour {
     public static int score;
     private static int multiplier;
     private static float lastKillTime;
+    private static float hyperActiveTime;
+    private static bool enterBossFight;
     public bool onGround;
     public static int counter = 0;
+    public static int pixelCounter = 0;
     public int runAnimationSpeed = 3;
     public static int attackAnimationSpeed = 2;
     private static int spawnAnimationSpeed = 8;
@@ -20,14 +23,15 @@ public class Player : MonoBehaviour {
     public static List<bool> hitFromLeft;
     public static List<int> lastDamageTaken;
     private static int waitFrames = 40; //number of frames to wait before spawning
-
+    
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
     private BoxCollider2D swordColliderObject;
-    private Transform transform;
     public GameObject camera, shockwave, pixel;
     public GameObject scoreText;
+    public GameObject multiplierText;
+    private Vector2 defaultMultScale;
 
     public Sprite standing, jumping;
     public Sprite[] running;
@@ -37,14 +41,14 @@ public class Player : MonoBehaviour {
     public GameObject damageColliderRight, damageColliderLeft;
     public GameObject swordCollider;
 
-    public static bool spawningBool = false; //Flip these before release
-    public static bool spawned = true;       //Flip these before release
+    public static bool spawningBool = false; //Should be true to init spawn anim
+    public static bool spawned = true;       //Should be false to init spawn anim
 
     public static bool attackFreeze;
     public static bool takingDamage;
     private int damageFrames = 20;
     private int blinkSpeed = 5;
-    public static bool hyperModeActive = false;
+    public static bool hyperModeActive = true;  //Should be false at start
     private bool disableFrontCollider;
     private bool disableBackCollider;
     public static bool invincibleFrames;
@@ -54,6 +58,8 @@ public class Player : MonoBehaviour {
     private List<GameObject> pixels;
     private float xV, yV;
     private bool earlySwing = false;
+    public static bool bossDefeated = false;
+    private static bool multiplierReset = false;
 
 
     // Use this for initialization
@@ -62,7 +68,6 @@ public class Player : MonoBehaviour {
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        transform = gameObject.GetComponent<Transform>();
         pixels = new List<GameObject>();
         lastDamageTaken = new List<int>();
 
@@ -91,17 +96,49 @@ public class Player : MonoBehaviour {
         //Ignore Layer collision for projectile (12) and enemy (14) layers
         Physics2D.IgnoreLayerCollision(12, 14, true);
 
+        defaultMultScale = multiplierText.transform.localScale;
+
     }
 
     // Update is called once per frame
     void Update() {
 
         scoreText.GetComponent<Text>().text = score.ToString("D5");
+        multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
 
-        if (multiplier > 1 && Time.time*1000 > lastKillTime + 3000)
+        //Reset size of multiplier text when it is changed by static call
+        if (multiplierReset)
+        {
+            multiplierReset = false;
+            multiplierText.transform.localScale = defaultMultScale;
+        }
+            
+        //Reduce size of multiplier text over time
+        if (multiplier > 1 && ! hyperModeActive)
+        {
+            var x = multiplierText.transform.localScale.x;
+            var y = multiplierText.transform.localScale.y;
+            multiplierText.transform.localScale = new Vector2(x * 0.9965f, y * 0.9965f);
+        }
+
+        //If hyper mode on and not in boss fight
+        if (hyperModeActive && !enterBossFight)
+        {
+            //Turn off after 10 seconds
+            if (Time.time * 1000 > hyperActiveTime + 10000)
+            {
+                hyperModeActive = false;
+                multiplier = 1;
+                multiplierText.transform.localScale = defaultMultScale;
+            }
+        }
+
+        //If not in hyper mode and mult > 1 AND 2.5 seconds since last kill
+        else if (multiplier > 1 && Time.time*1000 > lastKillTime + 2500)
         {
             multiplier = 1;
-            Debug.Log("Score " + score + " | Multiplier " + multiplier);
+            multiplierText.transform.localScale = defaultMultScale;
+            multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
         }
 
         if (invincibleFrames)
@@ -263,7 +300,9 @@ public class Player : MonoBehaviour {
             }
 
             //Around when the sword slash anim has finished
-            if (hyperModeActive)
+            //If in hyper mode for at least 500ms
+            //Sword slash inits shockwave
+            if (hyperModeActive && Time.time * 1000 > hyperActiveTime + 500)
             {
                 if (counter / attackAnimationSpeed == attacking.Length - 8
                     && counter % attackAnimationSpeed == 0)
@@ -360,7 +399,7 @@ public class Player : MonoBehaviour {
     void FixedUpdate () {
 
         //Obtain left/right input
-        if (!spawningBool && spawned && !takingDamage)
+        if (!spawningBool && spawned && !takingDamage && !bossDefeated)
         {
             float h = Input.GetAxisRaw("Horizontal");
             body.velocity = new Vector2(speed * h, body.velocity.y);
@@ -410,8 +449,7 @@ public class Player : MonoBehaviour {
 
             xV = 0;
             yV = 0.1f;
-
-            int r = 0;
+            
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 30; j++)
@@ -486,18 +524,25 @@ public class Player : MonoBehaviour {
 
         score += points * multiplier;
 
-        //Within three secodns of last kill, and not in hyper mode
-        if (!hyperModeActive && Time.time * 1000 <= lastKillTime + 3000)
+        //If not in hyper mode, increase multiplier
+        if (!hyperModeActive)
         {
             multiplier++;
+            multiplierReset = true;
         }
         
-        //TODO: Implement hyper mode
-        //if (multiplier == 8)
-        //    initHyperMode();
+        if (multiplier == 8 && !hyperModeActive)
+            initHyperMode();
         
         lastKillTime = Time.time * 1000;
 
         return multiplier;
+    }
+
+    private static void initHyperMode()
+    {
+        hyperModeActive = true;
+        hyperActiveTime = Time.time * 1000;
+        //TODO: Start up some vfx or visual cue
     }
 }

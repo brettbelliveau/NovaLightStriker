@@ -17,7 +17,7 @@ public class ShadeKnight : MonoBehaviour {
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
-    private BoxCollider2D collider, damageCollider;
+    private BoxCollider2D damageCollider;
     
     public Sprite moving;
     public Sprite[] attacking;
@@ -32,12 +32,9 @@ public class ShadeKnight : MonoBehaviour {
     private bool startDeleting;
     private int index;
 
-    private int damageCounter = 0;
-
     // Use this for initialization
     void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
-        collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         damageCollider = enemyDamageCollider.GetComponent<BoxCollider2D>();
         pixels = new List<GameObject>();

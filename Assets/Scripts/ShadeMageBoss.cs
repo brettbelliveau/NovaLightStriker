@@ -7,7 +7,7 @@ public class ShadeMageBoss : MonoBehaviour {
 
     public int counter = 0;
     private int waitCounter;
-    public int startingLifePoints = 1;
+    public int startingLifePoints;
     public int lifePoints;
     private int attackFreezeCounter = 0;
     
@@ -22,7 +22,6 @@ public class ShadeMageBoss : MonoBehaviour {
     private int framesPerPixel = 4;
     private int maxSpawnPixels = 20;
 
-    private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
     
@@ -37,16 +36,13 @@ public class ShadeMageBoss : MonoBehaviour {
     private bool attackFreeze;
     private bool warping;
     private int pixelCounter;
-    private bool dyingBool;
     private int dyingAnimationSpeed = 5;
     private bool flag = true;
 
     // Use this for initialization
     void Start () {
-        body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        body = gameObject.GetComponent<Rigidbody2D>();
         pixels = new List<GameObject>();
         attackFreeze = false;
         warping = false;
@@ -86,7 +82,10 @@ public class ShadeMageBoss : MonoBehaviour {
 
         if (lifePoints <= 0) {
             
-            if (waitCounter < 100) {
+            Player.bossDefeated = true;
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+            if (waitCounter < 60) {
                 waitCounter++;
                 collider.enabled = false;
                 spriteRender.sprite = dying[0];
@@ -94,8 +93,12 @@ public class ShadeMageBoss : MonoBehaviour {
 
             else {
 
+
                 if (counter == 0)
+                {
+                    Player.addScorePoints(10000);
                     SpawnOutPixelsBoss.dying = true;
+                }
 
                 counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);
 
@@ -106,7 +109,6 @@ public class ShadeMageBoss : MonoBehaviour {
                 if (counter == 0)
                 {
                     spriteRender.sprite = null;
-                    dyingBool = false;
                     SpawnOutPixelsBoss.dying = false;
                     Destroy(gameObject);
                     Destroy(this);

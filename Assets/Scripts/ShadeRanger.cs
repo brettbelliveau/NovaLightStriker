@@ -118,7 +118,7 @@ public class ShadeRanger : MonoBehaviour {
             }
             
             //Attack if player within certain distances
-            else if (walkingCounter % 20 == 0)
+            else if (walkingCounter % 10 == 0)
             {
                 if (playerIsNear())
                     attackFreeze = true;

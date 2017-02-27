@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
     public float speed;
     public static int lifePoints;
+    public static int score;
+    private static int multiplier;
+    private static float lastKillTime;
     public bool onGround;
     public static int counter = 0;
     public int runAnimationSpeed = 3;
@@ -23,6 +27,7 @@ public class Player : MonoBehaviour {
     private BoxCollider2D swordColliderObject;
     private Transform transform;
     public GameObject camera, shockwave, pixel;
+    public GameObject scoreText;
 
     public Sprite standing, jumping;
     public Sprite[] running;
@@ -53,6 +58,7 @@ public class Player : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
@@ -70,6 +76,9 @@ public class Player : MonoBehaviour {
         hitFromLeft = new List<bool>();
 
         lifePoints = 100;
+        score = 0;
+        lastKillTime = 0;
+        multiplier = 1;
 
         //Ignore Layer collision for sword (15) and all non-enemy or projectile layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
@@ -86,6 +95,14 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
+        scoreText.GetComponent<Text>().text = score.ToString("D5");
+
+        if (multiplier > 1 && Time.time*1000 > lastKillTime + 3000)
+        {
+            multiplier = 1;
+            Debug.Log("Score " + score + " | Multiplier " + multiplier);
+        }
 
         if (invincibleFrames)
         {
@@ -457,10 +474,30 @@ public class Player : MonoBehaviour {
         return tempPixel;
     }
 
-    public static void addLifePoints(int add)
+    public static void addLifePoints(int points)
     {
-        lifePoints += add;
+        lifePoints += points;
         lifePoints = lifePoints > 100 ? 100 : lifePoints;
         Debug.Log("Life Points = " + lifePoints);
+    }
+
+    public static int addScorePoints(int points)
+    {
+
+        score += points * multiplier;
+
+        //Within three secodns of last kill, and not in hyper mode
+        if (!hyperModeActive && Time.time * 1000 <= lastKillTime + 3000)
+        {
+            multiplier++;
+        }
+        
+        //TODO: Implement hyper mode
+        //if (multiplier == 8)
+        //    initHyperMode();
+        
+        lastKillTime = Time.time * 1000;
+
+        return multiplier;
     }
 }

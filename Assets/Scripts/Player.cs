@@ -8,9 +8,9 @@ public class Player : MonoBehaviour {
     public float speed;
     public static int lifePoints;
     public static int score;
-    private static int multiplier;
+    public static int multiplier;
     private static float lastKillTime;
-    private static float hyperActiveTime;
+    public static float hyperActiveTime;
     private static bool enterBossFight;
     public bool onGround;
     public static int counter = 0;
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour {
     public static bool takingDamage;
     private int damageFrames = 20;
     private int blinkSpeed = 5;
-    public static bool hyperModeActive = true;  //Should be false at start
+    public static bool hyperModeActive = false;  //Should be false at start
     private bool disableFrontCollider;
     private bool disableBackCollider;
     public static bool invincibleFrames;
@@ -133,8 +133,8 @@ public class Player : MonoBehaviour {
             }
         }
 
-        //If not in hyper mode and mult > 1 AND 2.5 seconds since last kill
-        else if (multiplier > 1 && Time.time*1000 > lastKillTime + 2500)
+        //If not in hyper mode and mult > 1 AND 3 seconds since last kill
+        else if (multiplier > 1 && Time.time*1000 > lastKillTime + 3000)
         {
             multiplier = 1;
             multiplierText.transform.localScale = defaultMultScale;
@@ -519,7 +519,7 @@ public class Player : MonoBehaviour {
         Debug.Log("Life Points = " + lifePoints);
     }
 
-    public static int addScorePoints(int points)
+    public static void addScorePoints(int points)
     {
 
         score += points * multiplier;
@@ -535,8 +535,6 @@ public class Player : MonoBehaviour {
             initHyperMode();
         
         lastKillTime = Time.time * 1000;
-
-        return multiplier;
     }
 
     private static void initHyperMode()

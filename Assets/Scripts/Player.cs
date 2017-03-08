@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
     public static int multiplier;
     private static float lastKillTime;
     public static float hyperActiveTime;
+    private static bool turnOnHyperMode = false;
     private static bool enterBossFight;
     public bool onGround;
     public static int counter = 0;
@@ -300,9 +301,9 @@ public class Player : MonoBehaviour {
             }
 
             //Around when the sword slash anim has finished
-            //If in hyper mode for at least 500ms
+            //If in hyper mode
             //Sword slash inits shockwave
-            if (hyperModeActive && Time.time * 1000 > hyperActiveTime + 500)
+            if (hyperModeActive)
             {
                 if (counter / attackAnimationSpeed == attacking.Length - 8
                     && counter % attackAnimationSpeed == 0)
@@ -316,6 +317,11 @@ public class Player : MonoBehaviour {
                 disableFrontCollider = false;
                 damageColliderLeft.SetActive(true);
                 damageColliderRight.SetActive(true);
+                if (turnOnHyperMode)
+                {
+                    turnOnHyperMode = false;
+                    hyperModeActive = true;
+                }
             }
         }
 
@@ -503,7 +509,7 @@ public class Player : MonoBehaviour {
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
 
-        var xVelocity = Random.Range(xV - 0.08f, xV + 0.08f);
+        var xVelocity = Random.Range(xV - 0.1f, xV + 0.1f);
         var yVelocity = Random.Range(yV, yV + 0.05f);
 
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
@@ -539,7 +545,7 @@ public class Player : MonoBehaviour {
 
     private static void initHyperMode()
     {
-        hyperModeActive = true;
+        turnOnHyperMode = true;
         hyperActiveTime = Time.time * 1000;
         //TODO: Start up some vfx or visual cue
     }

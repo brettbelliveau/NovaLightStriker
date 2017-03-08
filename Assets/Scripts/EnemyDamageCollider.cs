@@ -53,6 +53,8 @@ public class EnemyDamageCollider : MonoBehaviour {
                     pointsForKill = "50";
                     Player.addScorePoints(50);
                     textLocation = new Vector3(0.5f, 0, 0);
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
 
                 else
@@ -62,6 +64,8 @@ public class EnemyDamageCollider : MonoBehaviour {
                     pointsForKill = "100";
                     Player.addScorePoints(100);
                     textLocation = new Vector3(-0.1f, 0, 0);
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
             }
             else
@@ -71,11 +75,11 @@ public class EnemyDamageCollider : MonoBehaviour {
                 pointsForKill = "100";
                 Player.addScorePoints(100);
                 textLocation = new Vector3(-0.1f, 0, 0);
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                enemyObject.GetComponent<BoxCollider2D>().enabled = false;
             }
 
             tempText = spawnTextAtLocation(textLocation);
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            enemyObject.GetComponent<BoxCollider2D>().enabled = false;
 
         }
     }
@@ -99,6 +103,8 @@ public class EnemyDamageCollider : MonoBehaviour {
                     pointsForKill = "50";
                     Player.addScorePoints(50);
                     textLocation = new Vector3(0.5f, 0, 0);
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
 
                 else
@@ -108,6 +114,8 @@ public class EnemyDamageCollider : MonoBehaviour {
                     pointsForKill = "100";
                     Player.addScorePoints(100);
                     textLocation = new Vector3(-0.1f, 0, 0);
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
             }
             else
@@ -117,11 +125,11 @@ public class EnemyDamageCollider : MonoBehaviour {
                 pointsForKill = "100";
                 Player.addScorePoints(100);
                 textLocation = new Vector3(-0.1f, 0, 0);
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                enemyObject.GetComponent<BoxCollider2D>().enabled = false;
             }
             
             tempText = spawnTextAtLocation(textLocation);
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            enemyObject.GetComponent<BoxCollider2D>().enabled = false;
 
         }
     }

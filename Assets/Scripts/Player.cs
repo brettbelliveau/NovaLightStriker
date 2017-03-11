@@ -38,6 +38,7 @@ public class Player : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+		gameObject.tag = "Entity";
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();

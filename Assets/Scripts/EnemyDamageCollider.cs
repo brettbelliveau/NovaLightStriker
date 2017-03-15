@@ -48,35 +48,35 @@ public class EnemyDamageCollider : MonoBehaviour {
                 if (script2 == null)
                 {
                     var script3 = enemyObject.GetComponent<ShadeCrawler>();
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                     script3.takingDamage = true;
                     script3.counter = 0;
                     pointsForKill = "50";
                     Player.addScorePoints(50);
                     textLocation = new Vector3(0.5f, 0, 0);
-                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
 
                 else
                 {
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                     script2.takingDamage = true;
                     script2.counter = 0;
                     pointsForKill = "100";
                     Player.addScorePoints(100);
                     textLocation = new Vector3(-0.1f, 0, 0);
-                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                    enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
             }
             else
             {
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                enemyObject.GetComponent<BoxCollider2D>().enabled = false;
                 script.takingDamage = true;
                 script.counter = 0;
                 pointsForKill = "100";
                 Player.addScorePoints(100);
                 textLocation = new Vector3(-0.1f, 0, 0);
-                gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                enemyObject.GetComponent<BoxCollider2D>().enabled = false;
             }
 
             tempText = spawnTextAtLocation(textLocation);

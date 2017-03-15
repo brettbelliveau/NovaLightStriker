@@ -30,8 +30,9 @@ public class Player : MonoBehaviour {
     private BoxCollider2D collider;
     private BoxCollider2D swordColliderObject;
     public GameObject camera, shockwave, pixel;
-    public GameObject scoreText;
-    public GameObject multiplierText;
+    public GameObject healthBarObject, energyBarObject;
+    public GameObject scoreText, multiplierText;
+    private Slider healthBar, energyBar;
     private Vector2 defaultMultScale;
 
     public Sprite standing, jumping;
@@ -61,6 +62,8 @@ public class Player : MonoBehaviour {
     private bool earlySwing = false;
     public static bool bossDefeated = false;
     private static bool multiplierReset = false;
+    private int maxLifePoints;
+    private float energyBarValue;
 
 
     // Use this for initialization
@@ -82,9 +85,10 @@ public class Player : MonoBehaviour {
         hitFromLeft = new List<bool>();
 
         lifePoints = 100;
+        maxLifePoints = lifePoints;
         score = 0;
         lastKillTime = 0;
-        multiplier = 1;
+        multiplier = 7;
 
         //Ignore Layer collision for sword (15) and all non-enemy or projectile layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
@@ -99,11 +103,28 @@ public class Player : MonoBehaviour {
 
         defaultMultScale = multiplierText.transform.localScale;
 
+        healthBar = healthBarObject.GetComponent<Slider>();
+        energyBar = energyBarObject.GetComponent<Slider>();
+
+        energyBar.value = 0;
     }
 
     // Update is called once per frame
     void Update() {
 
+        if (hyperActiveTime > 0)
+            Debug.Log(Time.time * 1000 - hyperActiveTime);
+    
+        healthBar.value = ((float)lifePoints / (float)maxLifePoints);
+
+        //If in hyper mode, represent energy bar as remaining energy
+        //If not, represent it as multiplier / max multiplier
+        if (multiplier == 8) {
+            energyBar.value = ((hyperActiveTime + 10000) - Time.time * 1000) / 10000;
+        }
+        else
+            energyBar.value = (float)(multiplier - 1) / 7f;
+      
         scoreText.GetComponent<Text>().text = score.ToString("D5");
         multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
 
@@ -115,8 +136,8 @@ public class Player : MonoBehaviour {
         }
             
         //Reduce size of multiplier text over time
-        if (multiplier > 1 && ! hyperModeActive)
-        {
+        if (multiplier > 1 && !hyperModeActive && multiplier < 8)
+        {   
             var x = multiplierText.transform.localScale.x;
             var y = multiplierText.transform.localScale.y;
             multiplierText.transform.localScale = new Vector2(x * 0.9965f, y * 0.9965f);
@@ -126,10 +147,12 @@ public class Player : MonoBehaviour {
         if (hyperModeActive && !enterBossFight)
         {
             //Turn off after 10 seconds
-            if (Time.time * 1000 > hyperActiveTime + 10000)
+            if (Time.time * 1000 > hyperActiveTime + 9900)
             {
                 hyperModeActive = false;
                 multiplier = 1;
+                multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
+                multiplierReset = true;
                 multiplierText.transform.localScale = defaultMultScale;
             }
         }
@@ -218,9 +241,7 @@ public class Player : MonoBehaviour {
                     {
                         swordCollider.gameObject.SetActive(false);
                         attackFreeze = SwordPixelGenerator.attacking = false;
-
-                        //If hit from left, push right. If not, push left
-                        //var x = hitFromLeft[0] ? 0.2f : -0.2f;
+                        
                         //If moving up, push down.
                         var y = body.velocity.y > 0.02 ? -0.02f : 0f;
                         body.velocity = new Vector2(0, y);
@@ -509,7 +530,7 @@ public class Player : MonoBehaviour {
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
 
-        var xVelocity = Random.Range(xV - 0.1f, xV + 0.1f);
+        var xVelocity = Random.Range(xV - 0.15f, xV + 0.15f);
         var yVelocity = Random.Range(yV, yV + 0.05f);
 
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
@@ -527,7 +548,6 @@ public class Player : MonoBehaviour {
 
     public static void addScorePoints(int points)
     {
-
         score += points * multiplier;
 
         //If not in hyper mode, increase multiplier

@@ -7,8 +7,9 @@ public class Player : MonoBehaviour {
 
     public float speed;
     public static int lifePoints;
-    public static int score;
+    public static int score;                //TODO: Make this global variable
     public static int multiplier;
+    public static int extraLives = 2;       //TODO: Make this global variable
     private static float lastKillTime;
     public static float hyperActiveTime;
     private static bool turnOnHyperMode = false;
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour {
     public Sprite damageSprite;
     public GameObject damageColliderRight, damageColliderLeft;
     public GameObject swordCollider;
+    public GameObject lifeCounter, lifeCounterText;
 
     public static bool spawningBool = false; //Should be true to init spawn anim
     public static bool spawned = true;       //Should be false to init spawn anim
@@ -64,6 +66,8 @@ public class Player : MonoBehaviour {
     private static bool multiplierReset = false;
     private int maxLifePoints;
     private float energyBarValue;
+    private bool lifeCounterOn;
+    private bool movedUp;
 
 
     // Use this for initialization
@@ -88,7 +92,7 @@ public class Player : MonoBehaviour {
         maxLifePoints = lifePoints;
         score = 0;
         lastKillTime = 0;
-        multiplier = 7;
+        multiplier = 1;
 
         //Ignore Layer collision for sword (15) and all non-enemy or projectile layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
@@ -101,19 +105,45 @@ public class Player : MonoBehaviour {
         //Ignore Layer collision for projectile (12) and enemy (14) layers
         Physics2D.IgnoreLayerCollision(12, 14, true);
 
+
+        //UI Element initialization
         defaultMultScale = multiplierText.transform.localScale;
 
         healthBar = healthBarObject.GetComponent<Slider>();
         energyBar = energyBarObject.GetComponent<Slider>();
 
+        healthBar.value = 1;
         energyBar.value = 0;
+
+        lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
+        lifeCounterOn = true;
+        movedUp = false;
     }
 
     // Update is called once per frame
     void Update() {
 
-        if (hyperActiveTime > 0)
-            Debug.Log(Time.time * 1000 - hyperActiveTime);
+        //Turn off life counter after 4 seconds
+        if (lifeCounterOn)
+        {
+
+            //Move up
+            if (Time.time > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
+                lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y + 2f);
+
+            //Move down
+            else if (Time.time > 4 && lifeCounter.transform.position.y > -100)
+            {
+                movedUp = true;
+                lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y - 2f);
+            }
+
+            else if (Time.time > 10)
+            {
+                lifeCounterOn = false;
+                lifeCounter.SetActive(false);
+            }
+        }
     
         healthBar.value = ((float)lifePoints / (float)maxLifePoints);
 
@@ -140,7 +170,7 @@ public class Player : MonoBehaviour {
         {   
             var x = multiplierText.transform.localScale.x;
             var y = multiplierText.transform.localScale.y;
-            multiplierText.transform.localScale = new Vector2(x * 0.9965f, y * 0.9965f);
+            multiplierText.transform.localScale = new Vector2(x * 0.997f, y * 0.997f);
         }
 
         //If hyper mode on and not in boss fight
@@ -232,8 +262,7 @@ public class Player : MonoBehaviour {
 
                     lifePoints -= lastDamageTaken[0];
                     lastDamageTaken.Clear();
-
-                    Debug.Log("Life Points = " + lifePoints);
+                    
                     if (lifePoints <= 0)
                         playDyingAnimation();
 
@@ -543,7 +572,6 @@ public class Player : MonoBehaviour {
     {
         lifePoints += points;
         lifePoints = lifePoints > 100 ? 100 : lifePoints;
-        Debug.Log("Life Points = " + lifePoints);
     }
 
     public static void addScorePoints(int points)
@@ -551,9 +579,10 @@ public class Player : MonoBehaviour {
         score += points * multiplier;
 
         //If not in hyper mode, increase multiplier
-        if (!hyperModeActive)
+        if (!hyperModeActive && multiplier < 8)
         {
             multiplier++;
+            multiplier = multiplier > 8 ? 8 : multiplier;
             multiplierReset = true;
         }
         

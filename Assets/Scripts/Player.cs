@@ -77,7 +77,7 @@ public class Player : MonoBehaviour {
         maxLifePoints = lifePoints;
         score = 0;
         lastKillTime = 0;
-        multiplier = 7;
+        multiplier = 1;
 
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
@@ -261,6 +261,7 @@ public class Player : MonoBehaviour {
                     disableFrontCollider = disableBackCollider = false;
 
                     lifePoints -= lastDamageTaken[0];
+                    HealthBar.changed = true;
                     lastDamageTaken.Clear();
                     
                     if (lifePoints <= 0)
@@ -581,6 +582,7 @@ public class Player : MonoBehaviour {
     public static void addLifePoints(int points)
     {
         lifePoints += points;
+        HealthBar.changed = true;
         lifePoints = lifePoints > 100 ? 100 : lifePoints;
     }
 

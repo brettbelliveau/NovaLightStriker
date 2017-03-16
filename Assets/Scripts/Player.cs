@@ -111,8 +111,6 @@ public class Player : MonoBehaviour {
 
         healthBar = healthBarObject.GetComponent<Slider>();
         energyBar = energyBarObject.GetComponent<Slider>();
-
-        healthBar.value = 1;
         energyBar.value = 0;
 
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
@@ -229,14 +227,14 @@ public class Player : MonoBehaviour {
                 framesSinceOnGround++;
 
             //Give the user 2 frames after leaving platform to jump
-            if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage)
+            if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage && !bossDefeated)
             {
                 body.AddForce(Vector2.up * 14);
                 onGround = false;
                 jumped = true;
             }
 
-            if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage)
+            if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage && !bossDefeated)
             {
                 counter = 0;
                 attackFreeze = true;
@@ -461,6 +459,15 @@ public class Player : MonoBehaviour {
             body.velocity = new Vector2(speed * h, body.velocity.y);
         }
 
+        else if (bossDefeated)
+        {
+            body.velocity = new Vector2(0, body.velocity.y);
+            if (body.velocity.y < 0.02f)
+                body.gravityScale = 0.01f;
+            else if (body.velocity.y < -0.1f)
+                body.gravityScale = 0;
+        }
+
         //Turn off collider when moving upward
         //Layer 9 is character, layer 11 is special platforms
         Physics2D.IgnoreLayerCollision(9, 11, body.velocity.y >= 0.02);
@@ -492,7 +499,7 @@ public class Player : MonoBehaviour {
 
     void playDyingAnimation()
     {
-        counter = (counter + 1) % 180;
+        counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
         {
             body.velocity = new Vector3(0, 0, 0);
@@ -510,6 +517,7 @@ public class Player : MonoBehaviour {
             {
                 for (int j = 0; j < 30; j++)
                 {
+                    pixels.Add(spawnPixelAtFixedLocation(pixel, i, j));
                     pixels.Add(spawnPixelAtFixedLocation(pixel, i, j));
                 }
             }
@@ -559,11 +567,11 @@ public class Player : MonoBehaviour {
         tempPixel.transform.parent = null;
         tempPixel.SetActive(true);
 
-        var xVelocity = Random.Range(xV - 0.15f, xV + 0.15f);
-        var yVelocity = Random.Range(yV, yV + 0.05f);
+        var xVelocity = Random.Range(-0.25f, 0.25f);
+        var yVelocity = Random.Range(-0.25f, 0.35f);
 
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
-        tempPixel.GetComponent<Rigidbody2D>().gravityScale = Random.Range(-0.035f, 0.02f);
+        tempPixel.GetComponent<Rigidbody2D>().gravityScale = 0;
 
         return tempPixel;
     }
@@ -577,6 +585,10 @@ public class Player : MonoBehaviour {
     public static void addScorePoints(int points)
     {
         score += points * multiplier;
+
+        //Boss kill, dont touch multiplier
+        if (points >= 10000)
+            return;
 
         //If not in hyper mode, increase multiplier
         if (!hyperModeActive && multiplier < 8)

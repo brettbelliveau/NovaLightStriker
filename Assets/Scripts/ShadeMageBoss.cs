@@ -6,6 +6,7 @@ using System.Linq;
 public class ShadeMageBoss : MonoBehaviour {
 
     public int counter = 0;
+    private int textCounter = 0;
     private int waitCounter;
     public int startingLifePoints;
     public int lifePoints;
@@ -24,12 +25,13 @@ public class ShadeMageBoss : MonoBehaviour {
 
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
-    
+    private GameObject tempText;
+
     public Sprite floating;
     public Sprite attacking;
     public Sprite[] dying;
     private List<GameObject> pixels;
-    public GameObject topL, topR, botL, botR, gameObject, pixel;
+    public GameObject topL, topR, botL, botR, gameObject, pixel, scoreText;
 
     public GameObject[] orbs;
     
@@ -53,6 +55,19 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (tempText != null)
+        {
+            textCounter = (textCounter + 1) % 200;
+            tempText.transform.localPosition = new Vector3
+                (0, tempText.transform.localPosition.y + 0.005f, 0);
+
+            if (textCounter == 0)
+            {
+                tempText.GetComponent<TextMesh>().text = "";
+                Destroy(tempText);
+            }
+        }
+
 
         /* Spawn Pixels Here */
         pixelCounter = (pixelCounter + 1) % framesPerPixel;
@@ -96,6 +111,7 @@ public class ShadeMageBoss : MonoBehaviour {
 
                 if (counter == 0)
                 {
+                    tempText = spawnTextAtLocation(new Vector3(0,0,-1f));
                     Player.addScorePoints(10000);
                     SpawnOutPixelsBoss.dying = true;
                 }
@@ -305,7 +321,7 @@ public class ShadeMageBoss : MonoBehaviour {
         if (lifePoints > 0)
         {
             warping = true;
-            spawnBunchOfPixels(18);
+            spawnBunchOfPixels(20);
         }
 
     }
@@ -314,5 +330,19 @@ public class ShadeMageBoss : MonoBehaviour {
     {
         for (int i = 0; i < num; i++)
             pixels.Add(spawnPixelAtRandomLocation(pixel));
+    }
+
+    private GameObject spawnTextAtLocation(Vector3 location)
+    {
+        var popUpText = Instantiate(scoreText, location, Quaternion.identity) as GameObject;
+
+        popUpText.transform.parent = gameObject.transform;
+        popUpText.transform.localPosition = new Vector3(location.x, location.y + 1f, -3f);
+        
+        popUpText.GetComponent<TextMesh>().text = "10000";
+
+        popUpText.SetActive(true);
+
+        return popUpText;
     }
 }

@@ -10,7 +10,7 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
     private List<GameObject> pixels;
 
     private int counter = 0;
-    private int maxSpawnPixels = 300;
+    private int maxSpawnPixels = 250;
     private int framesPerPixel = 1;
     
     public static bool dying;
@@ -37,7 +37,6 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
             }
-
             if (pixels.Count == maxSpawnPixels || (started && pixels.Count > 0))
             {
                 started = true;
@@ -55,13 +54,13 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
         var maxX = width / 1f;
         var minX = -1 * maxX;
 
-        location.x = Random.Range(minX, maxX-0.1f);
+        location.x = Random.Range(minX, maxX-0.2f);
 
         if (spawnSpot == 1000f) //first pixel
-            spawnSpot = boss.transform.position.y + 4f;
+            spawnSpot = boss.transform.position.y + 4.5f;
 
         location.y = spawnSpot;
-        spawnSpot -= 0.006f;
+        spawnSpot -= 0.0075f;
         
         location.z = 2;
 
@@ -84,7 +83,7 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
             tempPixel.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
         else //spawning out 
-            tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1f);
+            tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-0.2f, 0.2f), Random.Range(-0.5f, 0.5f));
         return tempPixel;
     }
 }

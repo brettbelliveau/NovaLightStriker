@@ -73,6 +73,12 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
+        lifePoints = 100;
+        maxLifePoints = lifePoints;
+        score = 0;
+        lastKillTime = 0;
+        multiplier = 7;
+
         body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
@@ -87,13 +93,7 @@ public class Player : MonoBehaviour {
         swordColliderObject = swordCollider.gameObject.GetComponent<BoxCollider2D>();
 
         hitFromLeft = new List<bool>();
-
-        lifePoints = 100;
-        maxLifePoints = lifePoints;
-        score = 0;
-        lastKillTime = 0;
-        multiplier = 1;
-
+        
         //Ignore Layer collision for sword (15) and all non-enemy or projectile layers
         Physics2D.IgnoreLayerCollision(15, 0, true);
         Physics2D.IgnoreLayerCollision(15, 5, true);
@@ -124,7 +124,6 @@ public class Player : MonoBehaviour {
         //Turn off life counter after 4 seconds
         if (lifeCounterOn)
         {
-
             //Move up
             if (Time.time > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y + 2f);
@@ -182,6 +181,9 @@ public class Player : MonoBehaviour {
                 multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
                 multiplierReset = true;
                 multiplierText.transform.localScale = defaultMultScale;
+
+                EnergyBar.alternate = false;
+                EnergyBar.backToNormal = true;
             }
         }
 
@@ -608,6 +610,7 @@ public class Player : MonoBehaviour {
     {
         turnOnHyperMode = true;
         hyperActiveTime = Time.time * 1000;
+        EnergyBar.alternate = true;
         //TODO: Start up some vfx or visual cue
     }
 }

@@ -8,10 +8,12 @@ using UnityEngine.UI;
 public class BossHealthBar : MonoBehaviour
 {
     public static bool changed, sameValue;
-    private int counter = 0;
+    private float counter = 0;
     private float normal, light;
+    public static bool init;
     public GameObject healthBarNormal;
     public GameObject healthBarLight;
+    public GameObject text;
 
     // Use this for initialization
     void Start()
@@ -19,11 +21,27 @@ public class BossHealthBar : MonoBehaviour
         changed = false;
         sameValue = false;
         normal = light = 1;
+        healthBarNormal.GetComponent<Slider>().value = healthBarLight.GetComponent<Slider>().value = 0;
+        init = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (init == false)
+        {
+            counter += 0.006f;
+            healthBarNormal.GetComponent<Slider>().value = counter;
+            healthBarLight.GetComponent<Slider>().value = counter;
+
+            if (counter > 1)
+            {
+                init = true;
+                ShadeMageBoss.barInit = true;
+                Player.stopMovement = false;
+            }
+        }
+
         sameValue = normal == light;
         if (changed)
         {
@@ -43,7 +61,6 @@ public class BossHealthBar : MonoBehaviour
             if (normal > light)
             {
                 light = normal;
-                healthBarLight.GetComponent<Slider>().value = light;
             }
 
             else if (normal < light)
@@ -51,10 +68,9 @@ public class BossHealthBar : MonoBehaviour
                 light -= 0.0025f;
                 if (normal > light)
                     light = normal;
-
-                healthBarLight.GetComponent<Slider>().value -= 0.0025f;
             }
-            
+
+            healthBarLight.GetComponent<Slider>().value = light;
         }
     }
 }

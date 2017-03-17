@@ -9,12 +9,12 @@ public class ShadeMageBoss : MonoBehaviour {
     public static int counter = 0;
     private int textCounter = 0;
     private int waitCounter;
-    private int startingLifePoints = 80;
+    private int startingLifePoints = 70;
     public int lifePoints;
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
-    private int attackAfterFrames = 60;
+    private int attackAfterFrames = 80;
     private int warpFrames = 20;
     private int attackFreezeDuration = 80;
     private int previousWarp = -1;
@@ -32,7 +32,8 @@ public class ShadeMageBoss : MonoBehaviour {
     public Sprite attacking;
     public Sprite[] dying;
     private List<GameObject> pixels;
-    public GameObject topL, topR, botL, botR, gameObject, pixel, scoreText, healthBarObject;
+    public GameObject topL, topR, botL, botR, mid, 
+        gameObject, pixel, scoreText, healthBarObject, middleCollider;
     private Slider healthBar;
     public GameObject[] orbs;
     
@@ -41,6 +42,8 @@ public class ShadeMageBoss : MonoBehaviour {
     private int pixelCounter;
     private int dyingAnimationSpeed = 5;
     private bool flag = true;
+    public static bool barInit = false;
+    private bool finalWarp = false;
 
     // Use this for initialization
     void Start () {
@@ -57,7 +60,8 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        healthBar.value = ((float)lifePoints / (float)startingLifePoints);
+        if (barInit)
+            healthBar.value = ((float)lifePoints / (float)startingLifePoints);
 
         if (tempText != null)
         {
@@ -102,14 +106,15 @@ public class ShadeMageBoss : MonoBehaviour {
 
         /* Sprite Section */
 
-        if (lifePoints == 0) {
+        if (lifePoints == 0 && finalWarp && !warping) {
+
+            Debug.Log("HERE? " + counter + " | " + waitCounter);
 
             //Case in which we have already played anim
             if (counter == -100) { }
-
+            
             else
             {
-
                 Player.bossDefeated = true;
                 gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
@@ -122,8 +127,6 @@ public class ShadeMageBoss : MonoBehaviour {
 
                 else
                 {
-
-
                     if (counter == 0)
                     {
                         tempText = spawnTextAtLocation(new Vector3(0, 0, -1f));
@@ -157,7 +160,15 @@ public class ShadeMageBoss : MonoBehaviour {
                     nextWarp = Random.Range(0, 4);
 
                 previousWarp = nextWarp;
-                if (nextWarp == 0)
+
+                if (lifePoints <= 0) {
+                    gameObject.transform.parent = mid.transform;
+                    finalWarp = true;
+                    spriteRender.flipX = false;
+                    middleCollider.SetActive(true);
+                }
+
+                else if (nextWarp == 0)
                 {
                     gameObject.transform.parent = topL.transform;
                     spriteRender.flipX = true;
@@ -189,7 +200,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 warping = false;
                 spriteRender.sprite = floating;
 
-                if (warpFrames > 20) //just took damage, so last warp was long
+                if (warpFrames > 20 && warpFrames < 200) //just took damage, so last warp was long. But was not killing blow
                 {
                     if (lifePoints >= startingLifePoints / 2)
                         warpFrames = 20;
@@ -327,21 +338,14 @@ public class ShadeMageBoss : MonoBehaviour {
     {
         var tempLifePoints = lifePoints - damage;
         lifePoints = tempLifePoints < 0 ? 0 : tempLifePoints;
-        
-        BossHealthBar.changed = true;
-        attackFreeze = false;
-        attackFreezeCounter = 0;
         counter = 0;
         warpFrames = 100;
 
-
-        //If still alive, warp some more and spawn some pixels
-        if (lifePoints > 0)
-        {
-            warping = true;
-            spawnBunchOfPixels(10);
-        }
-
+        BossHealthBar.changed = true;
+        attackFreeze = false;
+        attackFreezeCounter = 0;
+        warping = true;
+        spawnBunchOfPixels(10);
     }
 
     private void spawnBunchOfPixels(int num)

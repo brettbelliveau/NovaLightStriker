@@ -43,17 +43,16 @@ public class HealthBar : MonoBehaviour
             if (normal > light)
             {
                 light = normal;
-                healthBarLight.GetComponent<Slider>().value = light;
             }
 
             else if (normal < light)
             {
-                light -= 0.0025f;
+                light -= 0.0035f;
                 if (normal > light)
                     light = normal;
-
-                healthBarLight.GetComponent<Slider>().value -= 0.0025f;
             }
+
+            healthBarLight.GetComponent<Slider>().value = light;
         }
     }
 }

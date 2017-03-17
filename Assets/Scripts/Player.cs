@@ -68,6 +68,7 @@ public class Player : MonoBehaviour {
     private float energyBarValue;
     private bool lifeCounterOn;
     private bool movedUp;
+    public static bool stopMovement;
 
 
     // Use this for initialization
@@ -229,14 +230,14 @@ public class Player : MonoBehaviour {
                 framesSinceOnGround++;
 
             //Give the user 2 frames after leaving platform to jump
-            if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage && !bossDefeated)
+            if (Input.GetButtonDown("Jump") && (onGround || (!jumped && framesSinceOnGround < 2)) && !attackFreeze && !takingDamage && !bossDefeated && !stopMovement)
             {
                 body.AddForce(Vector2.up * 14);
                 onGround = false;
                 jumped = true;
             }
 
-            if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage && !bossDefeated)
+            if (Input.GetButtonDown("Fire1") && !attackFreeze && !takingDamage && !bossDefeated && !stopMovement)
             {
                 counter = 0;
                 attackFreeze = true;
@@ -303,7 +304,10 @@ public class Player : MonoBehaviour {
         //Standing sprite
         else if (!attackFreeze && body.velocity.x == 0 && Mathf.Abs(body.velocity.y) < 0.02 && !spawningBool && spawned)
         {
-            spriteRender.sprite = standing;
+            if (stopMovement && spriteRender.sprite == jumping)
+                spriteRender.sprite = jumping;
+            else
+                spriteRender.sprite = standing;
         }
 
         //Running sprite
@@ -456,8 +460,9 @@ public class Player : MonoBehaviour {
     void FixedUpdate () {
 
         //Obtain left/right input
-        if (!spawningBool && spawned && !takingDamage && !bossDefeated)
+        if (!spawningBool && spawned && !takingDamage && !bossDefeated && !stopMovement)
         {
+            body.gravityScale = 0.25f;
             float h = Input.GetAxisRaw("Horizontal");
             body.velocity = new Vector2(speed * h, body.velocity.y);
         }
@@ -469,6 +474,12 @@ public class Player : MonoBehaviour {
                 body.gravityScale = 0.01f;
             else if (body.velocity.y < -0.1f)
                 body.gravityScale = 0;
+        }
+        
+        else if (stopMovement)
+        {
+            body.velocity = new Vector2(0, 0);
+            body.gravityScale = 0f;
         }
 
         //Turn off collider when moving upward

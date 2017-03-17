@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ShadeMageBoss : MonoBehaviour {
 
-    public int counter = 0;
+    public static int counter = 0;
     private int textCounter = 0;
     private int waitCounter;
-    public int startingLifePoints;
+    private int startingLifePoints = 80;
     public int lifePoints;
     private int attackFreezeCounter = 0;
     
@@ -31,8 +32,8 @@ public class ShadeMageBoss : MonoBehaviour {
     public Sprite attacking;
     public Sprite[] dying;
     private List<GameObject> pixels;
-    public GameObject topL, topR, botL, botR, gameObject, pixel, scoreText;
-
+    public GameObject topL, topR, botL, botR, gameObject, pixel, scoreText, healthBarObject;
+    private Slider healthBar;
     public GameObject[] orbs;
     
     private bool attackFreeze;
@@ -48,6 +49,7 @@ public class ShadeMageBoss : MonoBehaviour {
         pixels = new List<GameObject>();
         attackFreeze = false;
         warping = false;
+        healthBar = healthBarObject.GetComponent<Slider>();
 
         lifePoints = startingLifePoints;
     }
@@ -55,9 +57,11 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        healthBar.value = ((float)lifePoints / (float)startingLifePoints);
+
         if (tempText != null)
         {
-            textCounter = (textCounter + 1) % 200;
+            textCounter = (textCounter + 1) % 240;
             tempText.transform.localPosition = new Vector3
                 (0, tempText.transform.localPosition.y + 0.005f, 0);
 
@@ -65,6 +69,9 @@ public class ShadeMageBoss : MonoBehaviour {
             {
                 tempText.GetComponent<TextMesh>().text = "";
                 Destroy(tempText);
+                SpawnOutPixelsBoss.dying = false;
+                Destroy(gameObject);
+                Destroy(this);
             }
         }
 
@@ -95,39 +102,46 @@ public class ShadeMageBoss : MonoBehaviour {
 
         /* Sprite Section */
 
-        if (lifePoints <= 0) {
-            
-            Player.bossDefeated = true;
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        if (lifePoints == 0) {
 
-            if (waitCounter < 60) {
-                waitCounter++;
-                collider.enabled = false;
-                spriteRender.sprite = dying[0];
-            }
+            //Case in which we have already played anim
+            if (counter == -100) { }
 
-            else {
+            else
+            {
 
+                Player.bossDefeated = true;
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
-                if (counter == 0)
+                if (waitCounter < 60)
                 {
-                    tempText = spawnTextAtLocation(new Vector3(0,0,-1f));
-                    Player.addScorePoints(10000);
-                    SpawnOutPixelsBoss.dying = true;
+                    waitCounter++;
+                    collider.enabled = false;
+                    spriteRender.sprite = dying[0];
                 }
 
-                counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);
-
-                if (counter > 0)
-                    spriteRender.sprite = dying[(counter / dyingAnimationSpeed)];
-
-                //Done spawning out
-                if (counter == 0)
+                else
                 {
-                    spriteRender.sprite = null;
-                    SpawnOutPixelsBoss.dying = false;
-                    Destroy(gameObject);
-                    Destroy(this);
+
+
+                    if (counter == 0)
+                    {
+                        tempText = spawnTextAtLocation(new Vector3(0, 0, -1f));
+                        Player.addScorePoints(10000);
+                        SpawnOutPixelsBoss.dying = true;
+                    }
+
+                    counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);
+
+                    if (counter > 0)
+                        spriteRender.sprite = dying[(counter / dyingAnimationSpeed)];
+
+                    //Done spawning out
+                    if (counter == 0)
+                    {
+                        spriteRender.sprite = null;
+                        counter = -100;
+                    }
                 }
             }
         }
@@ -311,17 +325,21 @@ public class ShadeMageBoss : MonoBehaviour {
 
     public void sendDamage(int damage)
     {
-        lifePoints -= damage;
+        var tempLifePoints = lifePoints - damage;
+        lifePoints = tempLifePoints < 0 ? 0 : tempLifePoints;
+        
+        BossHealthBar.changed = true;
         attackFreeze = false;
         attackFreezeCounter = 0;
         counter = 0;
         warpFrames = 100;
 
+
         //If still alive, warp some more and spawn some pixels
         if (lifePoints > 0)
         {
             warping = true;
-            spawnBunchOfPixels(20);
+            spawnBunchOfPixels(10);
         }
 
     }
@@ -337,7 +355,7 @@ public class ShadeMageBoss : MonoBehaviour {
         var popUpText = Instantiate(scoreText, location, Quaternion.identity) as GameObject;
 
         popUpText.transform.parent = gameObject.transform;
-        popUpText.transform.localPosition = new Vector3(location.x, location.y + 1f, -3f);
+        popUpText.transform.localPosition = new Vector3(location.x, location.y + 1.5f, -3f);
         
         popUpText.GetComponent<TextMesh>().text = "10000";
 

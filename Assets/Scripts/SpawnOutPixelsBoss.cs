@@ -32,7 +32,7 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
 
         if (counter % framesPerPixel == 0)
         {
-            if (dying)
+            if (dying && ShadeMageBoss.counter > -100)
             {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
                 pixels.Add(spawnPixelAtRandomLocation(pixel));

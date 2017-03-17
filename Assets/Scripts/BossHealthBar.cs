@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 //This class determines the behavior of the LIGHT health bar only
 //Normal health bar behavior is in Player.cs (or ShadeMageBoss.cs for boss health)
-public class HealthBar : MonoBehaviour
+public class BossHealthBar : MonoBehaviour
 {
     public static bool changed, sameValue;
     private int counter = 0;
@@ -27,7 +27,7 @@ public class HealthBar : MonoBehaviour
         sameValue = normal == light;
         if (changed)
         {
-            if (healthBarNormal.GetComponent<Slider>().value == normal)
+            if (healthBarNormal.GetComponent<Slider>().value == normal && sameValue)
             {
                 //do nothing, wait for health bar to change
             }
@@ -54,6 +54,7 @@ public class HealthBar : MonoBehaviour
 
                 healthBarLight.GetComponent<Slider>().value -= 0.0025f;
             }
+            
         }
     }
 }

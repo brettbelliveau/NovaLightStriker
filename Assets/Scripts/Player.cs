@@ -72,7 +72,8 @@ public class Player : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start() {
+    void Start () {
+		gameObject.tag = "Entity";
 
         lifePoints = 100;
         maxLifePoints = lifePoints;

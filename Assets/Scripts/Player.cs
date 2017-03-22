@@ -69,6 +69,7 @@ public class Player : MonoBehaviour {
     private bool lifeCounterOn;
     private bool movedUp;
     public static bool stopMovement;
+    private float awakeTime;
 
 
     // Use this for initialization
@@ -118,6 +119,9 @@ public class Player : MonoBehaviour {
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
         lifeCounterOn = true;
         movedUp = false;
+
+        //Record time when level is started
+        awakeTime = Time.time;
     }
 
     // Update is called once per frame
@@ -127,17 +131,17 @@ public class Player : MonoBehaviour {
         if (lifeCounterOn)
         {
             //Move up
-            if (Time.time > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
+            if (Time.time - awakeTime > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y + 2f);
 
             //Move down
-            else if (Time.time > 4 && lifeCounter.transform.position.y > -100)
+            else if (Time.time - awakeTime > 3.5 && lifeCounter.transform.position.y > -100)
             {
                 movedUp = true;
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y - 2f);
             }
 
-            else if (Time.time > 10)
+            else if (Time.time - awakeTime > 10)
             {
                 lifeCounterOn = false;
                 lifeCounter.SetActive(false);

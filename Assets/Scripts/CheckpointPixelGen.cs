@@ -21,8 +21,6 @@ public class CheckpointPixelGen : MonoBehaviour {
     private float[] xCoordinates;
     private float[] yCoordinates;
 
-    private bool startDeleting = false;
-
     // Use this for initialization
     void Start () {
         pixels = new List<GameObject>();
@@ -33,20 +31,6 @@ public class CheckpointPixelGen : MonoBehaviour {
     void Update()
     {
         counter = (counter + 1) % (framesPerPixel);
-
-        //TODO: Make this collider-based when the character steps over
-        if (!accessed && pixels.Count >= maxPixels-1)
-        {
-            //TODO: Again, make this variable global so it can be loaded on death
-            accessed = true;
-            top.GetComponent<SpriteRenderer>().sprite = pointOn;
-            bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
-            pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
-            foreach (GameObject temp in pixels)
-            {
-                temp.GetComponent<SpriteRenderer>().sprite = pixelOn;
-            }
-        }
    
         if (counter == 0)
         {
@@ -99,5 +83,21 @@ public class CheckpointPixelGen : MonoBehaviour {
         }
 
         return tempPixel;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //TODO: Again, make this variable global so it can be loaded on death
+        accessed = true;
+        
+        top.GetComponent<SpriteRenderer>().sprite = pointOn;
+        bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
+        pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
+
+        foreach (GameObject temp in pixels)
+        {
+            temp.GetComponent<SpriteRenderer>().sprite = pixelOn;
+        }
+        
     }
 }

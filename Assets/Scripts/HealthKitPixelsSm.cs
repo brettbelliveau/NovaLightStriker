@@ -11,13 +11,12 @@ public class HealthKitPixelsSm : MonoBehaviour {
 
     private int counter = 0;
     private int coordinateCounter;
-    private int maxPixels = 4;
-    private int framesPerPixel = 20;
+    private int maxPixels = 8;
+    private int framesPerPixel = 15;
+    private bool startDeleting = false;
 
     private float[] xCoordinates;
     private float[] yCoordinates;
-
-    private bool startDeleting = false;
 
     // Use this for initialization
     void Start () {
@@ -33,15 +32,22 @@ public class HealthKitPixelsSm : MonoBehaviour {
 
         if (counter % framesPerPixel == 0)
         {
-            pixels.Add(spawnPixelAtRandomLocation(pixel));
+            if (!startDeleting)
+                pixels.Add(spawnPixelAtRandomLocation(pixel));
 
-            if (pixels.Count == maxPixels)
+            if (pixels.Count == maxPixels || (startDeleting && pixels.Count > 0))
             {
                 Destroy(pixels[0]);
                 pixels.RemoveAt(0);
-            } 
+            }
+
+            if (startDeleting && pixels.Count == 0)
+            {
+                Destroy(gameObject);
+                Destroy(this);
+            }
         }
-    
+
     }
 
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
@@ -68,5 +74,16 @@ public class HealthKitPixelsSm : MonoBehaviour {
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0.05f);
         
         return tempPixel;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == 9 && Player.lifePoints < 100) //character layer, and lifepoints not maxed
+        {
+            Player.addLifePoints(20);
+            startDeleting = true;
+            gameObject.GetComponent<SpriteRenderer>().sprite = null;
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 }

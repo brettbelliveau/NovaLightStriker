@@ -16,20 +16,23 @@ public class ShadeArrow : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D body;
     private bool movingRight;
-    
+    public bool delete;
     
 	// Use this for initialization
 	void Start () {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         body = gameObject.GetComponent<Rigidbody2D>();
         pixels = new List<GameObject>();
+        counter = 0;
+        delete = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
 
         counter++;
-        //Charging up orb
+        //After charged up arrow
+        
         if (counter == 25)
         {
             movingRight = shadeRanger.GetComponent<SpriteRenderer>().flipX;
@@ -37,7 +40,7 @@ public class ShadeArrow : MonoBehaviour {
             body.velocity = velocity;
         }
         //Flying through the air
-        else if (counter > 25 && counter < 180) {
+        else if (counter > 25 && counter < 180 && !delete) {
             if (counter % framesPerPixel == 0)
                 {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
@@ -48,17 +51,20 @@ public class ShadeArrow : MonoBehaviour {
                     pixels.RemoveAt(0);
                 }
             }
+
+            //TODO: Check if hit another object
         }
-        //Else if orb flying too long, delete
-        else if (counter >= 200)
+        //Else if orb flying too long (or collision), ;delete
+        else if (counter >= 180 || delete)
         {
-            if (counter == 200)
+            if (counter == 180)
             {
                 spriteRenderer.sprite = null;
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
                 //TODO: Remove collider at this step
             }
 
-            if (counter < (200 + maxSpawnPixels * 3))
+            if (counter < (180 + maxSpawnPixels * 3))
             {
                 if (counter % 3 == 0 && pixels.Count > 0)
                 {
@@ -72,8 +78,6 @@ public class ShadeArrow : MonoBehaviour {
                 Destroy(this);
             }
         }
-        //TODO: Add delete on collision
-
     }
 
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
@@ -101,5 +105,14 @@ public class ShadeArrow : MonoBehaviour {
         tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(x, 0);
 
         return tempPixel;
+    }
+
+    void OnTriggerEnter2D (Collider2D other)
+    {
+        //Begins deletion process
+        delete = true;
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        spriteRenderer.sprite = null;
+        counter = 180;
     }
 }

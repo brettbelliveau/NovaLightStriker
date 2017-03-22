@@ -5,38 +5,41 @@ using System.Linq;
 
 public class ShadeRanger : MonoBehaviour {
 
-    private int counter = 0;
+    public int counter = 0;
     private int walkingCounter = 0;
     private int attackFreezeCounter = 0;
     
     public float speed;
-    private int turnAfterFrames = 80;
+    public int turnAfterFrames = 80;
     private int attackAnimationSpeed = 3;
     private int attackFreezeDuration = 40;
     private bool arrowFlag = false;
 
     private Rigidbody2D body;
     private SpriteRenderer spriteRender;
-    private BoxCollider2D collider;
+    private BoxCollider2D damageCollider;
     
     public Sprite moving;
     public Sprite[] attacking;
-    public Sprite damageSprite;
-    public GameObject arrow;
-    
-    private bool takingDamage;
-    private bool attackFreeze;
-    private bool movingRight;
-    private int damageFrames = 40;
-    private int blinkSpeed = 4;
+    public GameObject arrow, pixel1, pixel2, player;
+    public GameObject enemyDamageCollider;
+    private List<GameObject> pixels;
 
-    private int damageCounter = 0;
+    private GameObject pixel;
+
+    public bool takingDamage;
+    private bool attackFreeze;
+    public bool movingRight;
+    private float x, y, xV, yV;
+    private bool startDeleting;
+    private int index;
 
     // Use this for initialization
     void Start () {
         body = gameObject.GetComponent<Rigidbody2D>();
-        collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        damageCollider = enemyDamageCollider.GetComponent<BoxCollider2D>();
+        pixels = new List<GameObject>();
         attackFreeze = false;
         takingDamage = false;
         movingRight = false;
@@ -45,23 +48,55 @@ public class ShadeRanger : MonoBehaviour {
     // Update is called once per frame
     void Update() {
        
-        /* Sprite Section */
-
-        //Talking damage sprite
+        //Talking damage (must reset counter first)
         if (takingDamage)
         {
-            counter = (counter + 1) % damageFrames;
-
-            //TODO: Taking damage anim
-
-            //Done taking damage
-            if (counter == 0)
+            counter = (counter + 1) % 40;
+            if (counter == 1 && !startDeleting)
             {
-                takingDamage = false;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                GetComponent<Camera>().transform.rotation = Quaternion.Euler(0, 0, 0);
-                spriteRender.sprite = moving;
+                body.velocity = new Vector2(0, 0);
+                spriteRender.sprite = null;
+
+                //Increase velocity depending on dist. to player
+                x = gameObject.transform.position.x - player.transform.position.x;
+                y = gameObject.transform.position.y - player.transform.position.y + 0.137f;
+
+                xV = -0.1f * (x*x);
+                yV = 0.3f * (y*y);
+                
+                int r = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    for (int j = 0; j < 30; j++)
+                    {
+                        r = Random.Range(0, 2);
+                        pixel = r == 0 ? pixel1 : pixel2;
+                        pixels.Add(spawnPixelAtFixedLocation(pixel, i, j));
+                    }
+                }
             }
+            else if (counter == 0 || startDeleting)
+            {
+                startDeleting = true;
+                if (pixels.Count > 0)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        index = pixels.Count - 1;
+                        if (index >= 0)
+                        {
+                            Destroy(pixels[index]);
+                            pixels.RemoveAt(index);
+                        }
+                    }
+                }
+                else
+                {
+                    Destroy(gameObject);
+                    Destroy(this);
+                }
+            }
+
         }
 
         //Standing sprite
@@ -71,20 +106,22 @@ public class ShadeRanger : MonoBehaviour {
             if (walkingCounter == turnAfterFrames)
             {
                 movingRight = true;
+                damageCollider.offset = new Vector2(0.1f, 0);
             }
             else if (walkingCounter == 0)
             {
                 movingRight = false;
+                damageCollider.offset = new Vector2(-0.1f, 0);
             }
             
-            //Manual attacking
-            else if (walkingCounter % turnAfterFrames == 40)
+            //Attack if player within certain distances
+            else if (walkingCounter % 10 == 0)
             {
-                attackFreeze = true;
+                if (playerIsNear())
+                    attackFreeze = true;
             }
         }
         
-
         //Attacking sprite
         else
         {
@@ -96,8 +133,7 @@ public class ShadeRanger : MonoBehaviour {
 
             if (counter > 0)
                 spriteRender.sprite = attacking[counter / attackAnimationSpeed];
-
-            //Hardcoded point in animation to generate arrow. May want to find better solution
+            
             if (!arrowFlag && counter / attackAnimationSpeed == 3)
             {
                 generateArrow();
@@ -151,5 +187,59 @@ public class ShadeRanger : MonoBehaviour {
 
         tempArrow.transform.parent = null;
         tempArrow.SetActive(true);
+    }
+
+    private GameObject spawnPixelAtFixedLocation(GameObject pixel, int x, int y)
+    {
+        var location = Vector3.zero;
+
+        location.x = 0.075f*x - 0.425f;
+        location.y = 0.07f*y - 1.1f;
+        location.z = Random.Range(2f, 3f);
+
+        return (spawnPixelAtLocation(pixel, location));
+    }
+
+    private GameObject spawnPixelAtLocation(GameObject pixel, Vector3 location)
+    {
+        var tempPixel = Instantiate(pixel, location, Quaternion.identity) as GameObject;
+
+        tempPixel.transform.parent = gameObject.transform;
+        tempPixel.transform.localPosition = location;
+        
+        tempPixel.transform.parent = null;
+        tempPixel.SetActive(true);
+
+        var xVelocity = Random.Range(xV - 0.08f, xV + 0.08f);
+        var yVelocity = Random.Range(yV, yV + 0.05f);
+
+        tempPixel.GetComponent<Rigidbody2D>().velocity = new Vector2(xVelocity, yVelocity);
+        tempPixel.GetComponent<Rigidbody2D>().gravityScale = Random.Range(-0.035f, 0.02f);
+
+        return tempPixel;
+    }
+
+    private bool playerIsNear()
+    {
+        //Calculate distance to player from body
+        x = gameObject.transform.position.x - player.transform.position.x;
+        y = gameObject.transform.position.y - player.transform.position.y;
+
+        if (System.Math.Abs(y) < 0.1f)
+        {
+            //Player is on the right and enemy unit is facing right
+            if (x > -2.2f && x < 0 && movingRight)
+                return true;
+
+            //Player is on the left and enemy unit is facing left
+            else if (x < 2.2f && x > 0 && !movingRight)
+                return true;
+
+            else
+                return false;
+        }
+
+        else
+            return false;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PixelGenerator : MonoBehaviour {
+public class SwordPixelGenerator : MonoBehaviour {
 
     private float width = 1f;
     public GameObject player, pixel;
@@ -15,7 +15,7 @@ public class PixelGenerator : MonoBehaviour {
     private int counter = 0;
     public int maxPixels;
     public int framesPerPixel;
-
+    
     private bool startDeleting = false;
 
     // Use this for initialization
@@ -25,7 +25,7 @@ public class PixelGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (attacking || pixels.Count > 0)
+        if (attacking || pixels.Count > 0 && !Player.hyperModeActive)
             managePixels();
 	}
 

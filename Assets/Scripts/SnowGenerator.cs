@@ -13,8 +13,6 @@ public class SnowGenerator : MonoBehaviour {
     //public int maxSnowPixels;
     public int framesPerPixel;
 
-    private bool startDeleting = false;
-
     // Use this for initialization
     void Start () {
         pixels = new List<GameObject>();

@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ShadeMageBoss : MonoBehaviour {
 
-    private int counter = 0;
-    private int walkingCounter = 0;
+    public static int counter = 0;
+    private int textCounter = 0;
+    private int waitCounter;
+    private int startingLifePoints = 70;
+    public int lifePoints;
     private int attackFreezeCounter = 0;
     
     public int floatInterval = 8;
-    private int attackAfterFrames = 30;
-    private int warpFrames = 60;
-    private int attackFreezeDuration = 70;
+    private int attackAfterFrames = 80;
+    private int warpFrames = 20;
+    private int attackFreezeDuration = 80;
     private int previousWarp = -1;
     private int nextWarp = -1;
     private int warpCounter = 0;
@@ -20,44 +24,66 @@ public class ShadeMageBoss : MonoBehaviour {
     private int framesPerPixel = 4;
     private int maxSpawnPixels = 20;
 
-    private Rigidbody2D body;
     private SpriteRenderer spriteRender;
     private BoxCollider2D collider;
-    
+    private GameObject tempText;
+
     public Sprite floating;
     public Sprite attacking;
+    public Sprite[] dying;
     private List<GameObject> pixels;
-    public GameObject topL, topR, botL, botR, gameObject, pixel;
-
+    public GameObject topL, topR, botL, botR, mid, 
+        gameObject, pixel, scoreText, healthBarObject, middleCollider;
+    private Slider healthBar;
     public GameObject[] orbs;
     
-    private bool takingDamage;
     private bool attackFreeze;
     private bool warping;
-    private bool movingRight;
     private int pixelCounter;
-    
+    private int dyingAnimationSpeed = 5;
+    private bool flag = true;
+    public static bool barInit = false;
+    private bool finalWarp = false;
+
     // Use this for initialization
     void Start () {
-        body = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<BoxCollider2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        body = gameObject.GetComponent<Rigidbody2D>();
         pixels = new List<GameObject>();
         attackFreeze = false;
-        takingDamage = false;
-        movingRight = false;
         warping = false;
+        healthBar = healthBarObject.GetComponent<Slider>();
+
+        lifePoints = startingLifePoints;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (barInit)
+            healthBar.value = ((float)lifePoints / (float)startingLifePoints);
+
+        if (tempText != null)
+        {
+            textCounter = (textCounter + 1) % 240;
+            tempText.transform.localPosition = new Vector3
+                (0, tempText.transform.localPosition.y + 0.005f, 0);
+
+            if (textCounter == 0)
+            {
+                tempText.GetComponent<TextMesh>().text = "";
+                Destroy(tempText);
+                SpawnOutPixelsBoss.dying = false;
+                Destroy(gameObject);
+                Destroy(this);
+            }
+        }
+
 
         /* Spawn Pixels Here */
         pixelCounter = (pixelCounter + 1) % framesPerPixel;
 
-        if (!warping)
+        if (!warping && lifePoints > 0)
         {
             if (pixelCounter == 0)
             {
@@ -71,20 +97,55 @@ public class ShadeMageBoss : MonoBehaviour {
             }
         }
 
+        if (flag && lifePoints < (startingLifePoints / 2))
+        {
+            attackAfterFrames = 30;
+            flag = false;
+        }
+
+
         /* Sprite Section */
 
-        //Talking damage sprite (RESET COUNTER FIRST)
-        if (takingDamage)
-        {
-            //TODO: Taking damage anim + deal with health
+        if (lifePoints == 0 && finalWarp && !warping) {
 
-            //Done taking damage
-            if (counter == 0)
+            Debug.Log("HERE? " + counter + " | " + waitCounter);
+
+            //Case in which we have already played anim
+            if (counter == -100) { }
+            
+            else
             {
-                takingDamage = false;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                GetComponent<Camera>().transform.rotation = Quaternion.Euler(0, 0, 0);
-                warping = true;
+                Player.bossDefeated = true;
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+                if (waitCounter < 60)
+                {
+                    waitCounter++;
+                    collider.enabled = false;
+                    spriteRender.sprite = dying[0];
+                }
+
+                else
+                {
+                    if (counter == 0)
+                    {
+                        tempText = spawnTextAtLocation(new Vector3(0, 0, -1f));
+                        Player.addScorePoints(10000);
+                        SpawnOutPixelsBoss.dying = true;
+                    }
+
+                    counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);
+
+                    if (counter > 0)
+                        spriteRender.sprite = dying[(counter / dyingAnimationSpeed)];
+
+                    //Done spawning out
+                    if (counter == 0)
+                    {
+                        spriteRender.sprite = null;
+                        counter = -100;
+                    }
+                }
             }
         }
 
@@ -99,7 +160,15 @@ public class ShadeMageBoss : MonoBehaviour {
                     nextWarp = Random.Range(0, 4);
 
                 previousWarp = nextWarp;
-                if (nextWarp == 0)
+
+                if (lifePoints <= 0) {
+                    gameObject.transform.parent = mid.transform;
+                    finalWarp = true;
+                    spriteRender.flipX = false;
+                    middleCollider.SetActive(true);
+                }
+
+                else if (nextWarp == 0)
                 {
                     gameObject.transform.parent = topL.transform;
                     spriteRender.flipX = true;
@@ -130,6 +199,14 @@ public class ShadeMageBoss : MonoBehaviour {
                 gameObject.SetActive(true);
                 warping = false;
                 spriteRender.sprite = floating;
+
+                if (warpFrames > 20 && warpFrames < 200) //just took damage, so last warp was long. But was not killing blow
+                {
+                    if (lifePoints >= startingLifePoints / 2)
+                        warpFrames = 20;
+                    else
+                        warpFrames = 10;
+                }
             }
         }
 
@@ -158,7 +235,6 @@ public class ShadeMageBoss : MonoBehaviour {
             }
         }
 
-
         //Attacking sprite (attackFreeze == true)
         else
         {
@@ -175,11 +251,11 @@ public class ShadeMageBoss : MonoBehaviour {
             //Throw projectiles after first warp
             if (attackFreezeCounter == 1 && previousWarp > -1)
             {
-
-                //TODO: Maybe add some more deviance to this pattern
-                //If below 1/2 hp, increase warp speed and only attack after third warp (need to add this condition where false is)
-                if (false && warpCounter++ < 2)
+                //If below 1/2 hp, increase warp speed and only attack after third warp
+                if (lifePoints < (startingLifePoints / 2) && warpCounter++ < 2)
+                {
                     attackFreezeCounter = 0;
+                }
 
                 //Above 1/2 hp, normal execution
                 else
@@ -223,6 +299,7 @@ public class ShadeMageBoss : MonoBehaviour {
                 }
             }
 
+            //Done attacking, warp
             if (attackFreezeCounter == 0)
             {
                 warping = true;
@@ -236,8 +313,8 @@ public class ShadeMageBoss : MonoBehaviour {
     {
         var location = Vector3.zero;
 
-        location.x = Random.Range(-0.65f, 0.6f);
-        location.y = Random.Range(-1f, 1f);
+        location.x = Random.Range(-0.7f, 0.7f);
+        location.y = Random.Range(-1.5f, 1f);
         location.z = 2;
 
         return (spawnPixelAtLocation(pixel, location));
@@ -255,5 +332,39 @@ public class ShadeMageBoss : MonoBehaviour {
         tempPixel.SetActive(true);
 
         return tempPixel;
+    }
+
+    public void sendDamage(int damage)
+    {
+        var tempLifePoints = lifePoints - damage;
+        lifePoints = tempLifePoints < 0 ? 0 : tempLifePoints;
+        counter = 0;
+        warpFrames = 100;
+
+        BossHealthBar.changed = true;
+        attackFreeze = false;
+        attackFreezeCounter = 0;
+        warping = true;
+        spawnBunchOfPixels(10);
+    }
+
+    private void spawnBunchOfPixels(int num)
+    {
+        for (int i = 0; i < num; i++)
+            pixels.Add(spawnPixelAtRandomLocation(pixel));
+    }
+
+    private GameObject spawnTextAtLocation(Vector3 location)
+    {
+        var popUpText = Instantiate(scoreText, location, Quaternion.identity) as GameObject;
+
+        popUpText.transform.parent = gameObject.transform;
+        popUpText.transform.localPosition = new Vector3(location.x, location.y + 1.5f, -3f);
+        
+        popUpText.GetComponent<TextMesh>().text = "10000";
+
+        popUpText.SetActive(true);
+
+        return popUpText;
     }
 }

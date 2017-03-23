@@ -54,7 +54,10 @@ public class ScreenFader : MonoBehaviour
             FadeToBlack();
             if (fadeImage.color.a >= 0.96f)
             {
-                SceneManager.LoadScene(SceneNumber);
+                if (SceneNumber > -1)
+                    SceneManager.LoadScene(SceneNumber);
+                else
+                    Application.Quit();
                 yield break;
             }
             else

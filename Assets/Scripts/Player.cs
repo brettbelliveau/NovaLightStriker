@@ -104,11 +104,17 @@ public class Player : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(15, 10, true);
         Physics2D.IgnoreLayerCollision(15, 11, true);
         Physics2D.IgnoreLayerCollision(15, 13, true);
+        Physics2D.IgnoreLayerCollision(15, 16, true);
+
+        //Ignore Layer collision for enemy projectiles and themselves
+        Physics2D.IgnoreLayerCollision(12, 12, true);
 
         //Ignore Layer collision for projectile (12) and enemy (14) layers
         Physics2D.IgnoreLayerCollision(12, 14, true);
 
-
+        //Ignore Layer collision for projectile (12) and health item (15) layers
+        Physics2D.IgnoreLayerCollision(12, 16, true);
+        
         //UI Element initialization
         defaultMultScale = multiplierText.transform.localScale;
 

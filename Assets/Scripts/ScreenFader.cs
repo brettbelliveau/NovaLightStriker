@@ -9,6 +9,9 @@ public class ScreenFader : MonoBehaviour
     public float speed;
     public bool startScene = true;
 
+    //TODO: Control this depending on previous scene (environment variable?)
+    public bool fadeIn;
+
     void Awake()
     {
         fadeImage.rectTransform.localScale = new Vector2(Screen.width, Screen.height);
@@ -17,7 +20,15 @@ public class ScreenFader : MonoBehaviour
     void Update()
     {
         if (startScene)
-            StartScene();
+        {
+            if (fadeIn)
+                StartScene();
+            else
+            {
+                fadeImage.color = Color.clear;
+                fadeImage.enabled = startScene = false;
+            }
+        }
     }
 
     void StartScene()

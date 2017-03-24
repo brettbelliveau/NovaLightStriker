@@ -82,7 +82,7 @@ public class HealthKitPixelsLg : MonoBehaviour {
     {
         if (other.gameObject.layer == 9 && Player.lifePoints < 100) //character layer, and lifepoints not maxed
         { 
-            Player.addLifePoints(40);
+            Player.addLifePoints(50);
             startDeleting = true;
             gameObject.GetComponent<SpriteRenderer>().sprite = null;
             gameObject.GetComponent<BoxCollider2D>().enabled = false;

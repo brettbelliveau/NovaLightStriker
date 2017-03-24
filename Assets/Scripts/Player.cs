@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour {
 
     public float speed;
+    public static int currentLevel = 1;         //TODO: Make this global variable
     public static int lifePoints;
     public static int score;                //TODO: Make this global variable
     public static int multiplier;
@@ -45,8 +46,8 @@ public class Player : MonoBehaviour {
     public GameObject swordCollider;
     public GameObject lifeCounter, lifeCounterText;
 
-    public static bool spawningBool = false; //Should be true to init spawn anim
-    public static bool spawned = true;       //Should be false to init spawn anim
+    public static bool spawningBool = true; //Should be true to init spawn anim
+    public static bool spawned = false;       //Should be false to init spawn anim
 
     public static bool attackFreeze;
     public static bool takingDamage;
@@ -70,6 +71,7 @@ public class Player : MonoBehaviour {
     private bool movedUp;
     public static bool stopMovement;
     private float awakeTime;
+    private bool calledDyingAnim;
 
 
     // Use this for initialization
@@ -128,6 +130,20 @@ public class Player : MonoBehaviour {
 
         //Record time when level is started
         awakeTime = Time.time;
+
+        string writeText;
+
+        if (currentLevel == 1)
+            writeText = "Level One";
+
+        else if (currentLevel == 2)
+            writeText = "Level Two";
+
+        else
+            writeText = "Level Three";
+        
+        GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 110, 10);
+        stopMovement = true;
     }
 
     // Update is called once per frame
@@ -262,7 +278,10 @@ public class Player : MonoBehaviour {
         if (takingDamage)
         {
             if (lifePoints <= 0)
-                playDyingAnimation();
+            {
+                if (!calledDyingAnim)
+                    playDyingAnimation();
+            }
             else
             {
                 counter = (counter + 1) % damageFrames;
@@ -275,19 +294,22 @@ public class Player : MonoBehaviour {
                     lifePoints -= lastDamageTaken[0];
                     HealthBar.changed = true;
                     lastDamageTaken.Clear();
-                    
+
                     if (lifePoints <= 0)
-                        playDyingAnimation();
+                    {
+                        if (!calledDyingAnim)
+                            playDyingAnimation();
+                    }
 
                     else
                     {
                         swordCollider.gameObject.SetActive(false);
                         attackFreeze = SwordPixelGenerator.attacking = false;
-                        
+
                         //If moving up, push down.
                         var y = body.velocity.y > 0.02 ? -0.02f : 0f;
                         body.velocity = new Vector2(0, y);
-                        
+
                         hitFromLeft.Clear();
                         //if facing left, tilt left, else right
                     }
@@ -524,6 +546,11 @@ public class Player : MonoBehaviour {
 
     void playDyingAnimation()
     {
+        calledDyingAnim = true;
+
+        //TODO: Make this only play when out of lives
+        GameObject.FindObjectOfType<TextController>().writeText("Game Over", 60, 2000, 10);
+
         counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
         {

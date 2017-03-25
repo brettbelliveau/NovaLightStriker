@@ -36,6 +36,7 @@ public class TextController : MonoBehaviour {
             //Text has not been written
             else if (counter > 0 || text.text == "")
             {
+                text.enabled = true;
                 waitCounter = waitBefore = 0;
 
                 if (counter % framesPerChar == 0)
@@ -56,6 +57,7 @@ public class TextController : MonoBehaviour {
             else
             {
                 Player.stopMovement = false;
+                text.enabled = false;
                 text.text = "";
                 run = false;
                 counter = waitCounter = index = 0;

@@ -45,6 +45,11 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
                 started = true;
                 Destroy(pixels[0]);
                 pixels.RemoveAt(0);
+                
+                if (pixels.Count < 100)
+                {
+                    GameObject.FindObjectOfType<ScoreRecap>().run = true;
+                }
             }
         }
         

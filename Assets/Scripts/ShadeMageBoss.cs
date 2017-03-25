@@ -92,7 +92,7 @@ public class ShadeMageBoss : MonoBehaviour {
             {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
 
-                if (pixels.Count == maxSpawnPixels)
+                if (pixels.Count > 20)
                 {
                     Destroy(pixels[0]);
                     pixels.RemoveAt(0);
@@ -110,9 +110,7 @@ public class ShadeMageBoss : MonoBehaviour {
         /* Sprite Section */
 
         if (lifePoints == 0 && finalWarp && !warping) {
-
-            Debug.Log("HERE? " + counter + " | " + waitCounter);
-
+            
             //Case in which we have already played anim
             if (counter == -100) { }
             

@@ -80,7 +80,7 @@ public class PauseMenuKeyController : MonoBehaviour {
         
         else //pause menu inactive
         {
-            if (Input.GetButtonDown("Cancel"))
+            if (Input.GetButtonDown("Cancel") && !Player.bossDefeated)
             {
                 active = true;
                 PauseMenuItems.SetActive(true);

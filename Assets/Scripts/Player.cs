@@ -8,7 +8,8 @@ public class Player : MonoBehaviour {
     public float speed;
     public static int currentLevel = 1;         //TODO: Make this global variable
     public static int lifePoints;
-    public static int score;                //TODO: Make this global variable
+    public static int score;                    
+    public static int totalScore;                //TODO: Make this global variable
     public static int multiplier;
     public static int extraLives = 2;       //TODO: Make this global variable
     private static float lastKillTime;
@@ -33,7 +34,7 @@ public class Player : MonoBehaviour {
     private BoxCollider2D swordColliderObject;
     public GameObject camera, shockwave, pixel;
     public GameObject healthBarObject, energyBarObject;
-    public GameObject scoreText, multiplierText;
+    public GameObject scoreText, totalScoreText, multiplierText;
     private Slider healthBar, energyBar;
     private Vector2 defaultMultScale;
 
@@ -187,6 +188,7 @@ public class Player : MonoBehaviour {
             energyBar.value = (float)(multiplier - 1) / 7f;
       
         scoreText.GetComponent<Text>().text = score.ToString("D5");
+        totalScoreText.GetComponent<Text>().text = totalScore.ToString("D5");
         multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
 
         //Reset size of multiplier text when it is changed by static call
@@ -643,6 +645,7 @@ public class Player : MonoBehaviour {
     public static void addScorePoints(int points)
     {
         score += points * multiplier;
+        totalScore += points * multiplier;
 
         //Boss kill, dont touch multiplier
         if (points >= 10000)

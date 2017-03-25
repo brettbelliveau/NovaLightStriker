@@ -17,7 +17,7 @@ public class MenuHandler : MonoBehaviour {
     //  3       Level Three
     //  4       About
     //  5       High Scores
-    //  6+      TBD
+    //  6       End Game Recap
 
     //In case this component is enabled in Unity
     void Awake()

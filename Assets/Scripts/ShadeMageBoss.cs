@@ -60,6 +60,9 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         if (barInit)
             healthBar.value = ((float)lifePoints / (float)startingLifePoints);
 

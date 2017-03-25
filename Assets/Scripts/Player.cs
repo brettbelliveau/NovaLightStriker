@@ -78,6 +78,9 @@ public class Player : MonoBehaviour {
     void Start () {
 		gameObject.tag = "Entity";
 
+        spawningBool = true;
+        spawned = false;
+
         lifePoints = 100;
         maxLifePoints = lifePoints;
         score = 0;
@@ -149,6 +152,9 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        if (Time.timeScale != 1)
+            return;
+        
         //Turn off life counter after 4 seconds
         if (lifeCounterOn)
         {
@@ -362,8 +368,7 @@ public class Player : MonoBehaviour {
                 disableBackCollider = true;
                 disableFrontCollider = true;
             }
-
-
+            
             //After 5th sprite frame, not invincible from back
             if (counter / attackAnimationSpeed == 5)
                 disableBackCollider = false;
@@ -434,9 +439,9 @@ public class Player : MonoBehaviour {
                     if (counter == 0)
                     {
                         spriteRender.sprite = standing;
-                        spawningBool = false;               //Comment this out to test spawn out
+                        spawningBool = false;               
                         spawned = true;
-                        SpawnInOutPixels.spawning = false;  //Comment this out to test spawn out
+                        SpawnInOutPixels.spawning = false;  
                         SpawnInOutPixels.spawned = true;
                     }
                 }

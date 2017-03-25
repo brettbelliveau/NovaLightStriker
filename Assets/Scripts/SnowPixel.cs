@@ -21,9 +21,12 @@ public class SnowPixel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        if (Time.timeScale != 1)
+            return;
+
         //If snow has had a chance to start falling, delete on ground hit
-		if (counter++ > 5 && body.velocity.y > -0.02)
+        if (counter++ > 5 && body.velocity.y > -0.02)
         {
             Destroy(snow);
             Destroy(this);

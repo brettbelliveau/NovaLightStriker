@@ -21,7 +21,10 @@ public class TextController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        if (Time.timeScale != 1)
+            return;
+
         if (run)
         {
             //Text has not been written, and we have not waited

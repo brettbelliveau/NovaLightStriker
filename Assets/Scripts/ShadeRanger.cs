@@ -47,7 +47,10 @@ public class ShadeRanger : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-       
+
+        if (Time.timeScale != 1)
+            return;
+
         //Talking damage (must reset counter first)
         if (takingDamage)
         {

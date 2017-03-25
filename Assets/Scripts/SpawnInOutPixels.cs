@@ -31,6 +31,9 @@ public class SpawnInOutPixels : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         if (spawning)
         {
             counter = (counter + 1) % (framesPerPixel);
@@ -62,7 +65,7 @@ public class SpawnInOutPixels : MonoBehaviour {
         else //spawning out
         {
             if (spawnSpot == 1000f) //first pixel
-                spawnSpot = player.transform.position.y + 3.8f;
+                spawnSpot = player.transform.position.y + 3.75f;
 
             location.y = spawnSpot;
             spawnSpot -= 0.05f;

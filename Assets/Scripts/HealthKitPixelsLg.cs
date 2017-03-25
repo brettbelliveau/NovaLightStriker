@@ -30,6 +30,9 @@ public class HealthKitPixelsLg : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         counter = (counter + 1) % (framesPerPixel);
 
         if (counter % framesPerPixel == 0)

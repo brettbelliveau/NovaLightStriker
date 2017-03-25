@@ -20,6 +20,10 @@ public class EnemyDamageCollider : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (Time.timeScale != 1)
+            return;
+
         if (tempText != null)
         {
             counter = (counter + 1) % 60;

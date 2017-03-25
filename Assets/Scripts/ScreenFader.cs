@@ -7,7 +7,7 @@ public class ScreenFader : MonoBehaviour
 {
     public Image fadeImage;
     public float speed;
-    public bool startScene = true;
+    private bool startScene = true;
 
     //TODO: Control this depending on previous scene (environment variable?)
     public bool fadeIn;
@@ -54,6 +54,7 @@ public class ScreenFader : MonoBehaviour
 
     void FadeToBlack()
     {
+        Debug.Log("FADING TO BLK");
         fadeImage.color = Color.Lerp(fadeImage.color, Color.black, speed * Time.deltaTime);
     }
     

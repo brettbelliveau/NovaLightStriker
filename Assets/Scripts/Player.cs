@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour {
 
     public float speed;
-    public static int currentLevel = 1;         //TODO: Make this global variable
+    public static int currentLevel;         
     public static int lifePoints;
     public static int score;                    
-    public static int totalScore;                //TODO: Make this global variable
+    public static int totalScore;           
     public static int multiplier;
-    public static int extraLives = 2;       //TODO: Make this global variable
+    public static int extraLives;      
     private static float lastKillTime;
     public static float hyperActiveTime;
     private static bool turnOnHyperMode = false;
@@ -71,20 +71,62 @@ public class Player : MonoBehaviour {
     private bool lifeCounterOn;
     private bool movedUp;
     public static bool stopMovement;
-    private float awakeTime;
+    public static float awakeTime, finishTime;
     private bool calledDyingAnim;
+    public static bool checkPointOne, checkPointTwo;
+    public GameObject checkPointOneObject, checkPointTwoObject, startingPosition;
 
 
     // Use this for initialization
     void Start () {
 		gameObject.tag = "Entity";
 
-        spawningBool = true;
-        spawned = false;
+        checkPointOne = ("True".Equals(PlayerPrefs.GetString("CheckPointOne")));
+        checkPointTwo = ("True".Equals(PlayerPrefs.GetString("CheckPointTwo")));
+
+        if (checkPointTwo)
+        {
+            transform.position = checkPointOneObject.transform.position;
+            spawningBool = true;
+            spawned = false;
+            awakeTime = PlayerPrefs.GetFloat("AwakeTime");
+        }
+
+        else if (checkPointOne)
+        {
+            transform.position = checkPointOneObject.transform.position;
+            spawningBool = true;
+            spawned = false;
+            awakeTime = PlayerPrefs.GetFloat("AwakeTime");
+        }
+
+        else
+        {
+            transform.position = startingPosition.transform.position;
+            spawningBool = false;
+            spawned = true;
+            awakeTime = Time.time;
+        }
+
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel");
+        
+        if (currentLevel == 0)
+        {
+            currentLevel = 1;
+            score = 0;
+            totalScore = 0;
+            extraLives = 2;
+        }
+
+        else
+        {
+            score = PlayerPrefs.GetInt("Score");
+            extraLives = PlayerPrefs.GetInt("ExtraLives");
+            totalScore = PlayerPrefs.GetInt("TotalScore");
+        }
 
         lifePoints = 100;
         maxLifePoints = lifePoints;
-        score = 0;
         lastKillTime = 0;
         multiplier = 1;
 
@@ -131,10 +173,7 @@ public class Player : MonoBehaviour {
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
         lifeCounterOn = true;
         movedUp = false;
-
-        //Record time when level is started
-        awakeTime = Time.time;
-
+        
         string writeText;
 
         if (currentLevel == 1)
@@ -556,7 +595,8 @@ public class Player : MonoBehaviour {
         calledDyingAnim = true;
 
         //TODO: Make this only play when out of lives
-        GameObject.FindObjectOfType<TextController>().writeText("Game Over", 60, 2000, 10);
+        if (extraLives == 0)
+            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 60, 2000, 10);
 
         counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
@@ -598,7 +638,24 @@ public class Player : MonoBehaviour {
             }
             else
             {
-                //Reload from checkpoint, or game over
+                //If out of lives, return to main menu
+                if (extraLives == 0)
+                {
+                    PlayerPrefs.SetInt("Score", 0);
+                    PlayerPrefs.SetInt("CurrentLevel", 0);
+                    GameObject.FindObjectOfType<ScreenFader>().EndScene(0);
+                }
+                else
+                {
+                    PlayerPrefs.SetInt("Score", score);
+                    PlayerPrefs.SetInt("TotalScore", totalScore);
+                    PlayerPrefs.SetInt("ExtraLives", extraLives-1);
+                    PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+                    PlayerPrefs.SetString("CheckPointOne", checkPointOne ? "True" : "False");
+                    PlayerPrefs.SetString("CheckPointTwo", checkPointTwo ? "True" : "False");
+                    PlayerPrefs.SetFloat("AwakeTime", awakeTime);
+                    GameObject.FindObjectOfType<ScreenFader>().EndScene(currentLevel);
+                }
             }
         }
         else

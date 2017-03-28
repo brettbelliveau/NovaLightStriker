@@ -17,6 +17,7 @@ public class CheckpointPixelGen : MonoBehaviour {
     private int coordinateCounter;
     private int maxPixels = 30;
     private int framesPerPixel = 3;
+    private bool checkPointOne;
 
     private float[] xCoordinates;
     private float[] yCoordinates;
@@ -87,8 +88,10 @@ public class CheckpointPixelGen : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //TODO: Again, make this variable global so it can be loaded on death
-        accessed = true;
+        if (checkPointOne)
+            Player.checkPointOne = true;
+        else
+            Player.checkPointTwo = true;
         
         top.GetComponent<SpriteRenderer>().sprite = pointOn;
         bottom.GetComponent<SpriteRenderer>().sprite = pointOn;

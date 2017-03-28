@@ -10,14 +10,14 @@ public class MenuKeyController : MonoBehaviour {
     private Color unSelected;
     private Color selected;
 
-    private int cursor;
+    private static int cursor;
 
 	// Use this for initialization
 	void Start () {
         unSelected = buttons[0].GetComponent<ButtonController>().regularColor;
         selected = buttons[0].GetComponent<ButtonController>().highlightedColor;
 
-        cursor = 0;
+        cursor = PlayerPrefs.GetInt("CurrentLevel") == 0 ? PlayerPrefs.GetInt("LastCursorPosition") : 0;
     }
 	
 	// Update is called once per frame
@@ -25,7 +25,13 @@ public class MenuKeyController : MonoBehaviour {
 
         //Select button at cursor
         if (Input.GetButtonDown("Submit"))
+        {
             buttons[cursor].GetComponent<MenuHandler>().enabled = true;
+            if (PlayerPrefs.GetInt("CurrentLevel") == 0)
+            {
+                PlayerPrefs.SetInt("LastCursorPosition", cursor);
+            }
+        }
 
         //Move cursor up
         if (Input.GetButtonDown("UP"))

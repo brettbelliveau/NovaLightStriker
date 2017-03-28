@@ -29,10 +29,21 @@ public class MenuHandler : MonoBehaviour {
     {
         if (enabled)
         {
+            //If starting game
+            if (PlayerPrefs.GetInt("CurrentLevel") == 0 && SceneToLoad == 1)
+            {
+                PlayerPrefs.DeleteAll();
+                PlayerPrefs.SetInt("CurrentLevel", 0);
+            }
+
             if (fade)
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(SceneToLoad);
             else
+            {
+                PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
+                PlayerPrefs.SetInt("CurrentLevel", SceneToLoad);
                 SceneManager.LoadScene(SceneToLoad);
+            }
         }
     }
     

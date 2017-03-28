@@ -46,6 +46,9 @@ public class PauseMenuKeyController : MonoBehaviour {
                 else
                 {
                     Time.timeScale = 1;
+                    int current = PlayerPrefs.GetInt("CurrentLevel");
+                    PlayerPrefs.DeleteAll();
+                    PlayerPrefs.SetInt("CurrentLevel", current);
                     GameObject.FindObjectOfType<ScreenFader>().EndScene(0);
                 }
             }

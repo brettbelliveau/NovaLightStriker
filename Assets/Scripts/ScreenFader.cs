@@ -8,8 +8,7 @@ public class ScreenFader : MonoBehaviour
     public Image fadeImage;
     public float speed;
     private bool startScene = true;
-
-    //TODO: Control this depending on previous scene (environment variable?)
+    
     public bool fadeIn;
 
     void Awake()
@@ -21,6 +20,12 @@ public class ScreenFader : MonoBehaviour
     {
         if (startScene)
         {
+            if (PlayerPrefs.GetInt("CurrentLevel") == 0 && (PlayerPrefs.GetInt("PreviousLevel") < 4 || PlayerPrefs.GetInt("PreviousLevel") > 5))
+            {
+                fadeIn = true;
+                PlayerPrefs.SetInt("LastCursorPosition", 0);
+            }
+
             if (fadeIn)
                 StartScene();
             else
@@ -54,7 +59,6 @@ public class ScreenFader : MonoBehaviour
 
     void FadeToBlack()
     {
-        Debug.Log("FADING TO BLK");
         fadeImage.color = Color.Lerp(fadeImage.color, Color.black, speed * Time.deltaTime);
     }
     
@@ -67,7 +71,11 @@ public class ScreenFader : MonoBehaviour
             if (fadeImage.color.a >= 0.96f)
             {
                 if (SceneNumber > -1)
+                {
+                    PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
+                    PlayerPrefs.SetInt("CurrentLevel", SceneNumber);
                     SceneManager.LoadScene(SceneNumber);
+                }
                 else
                     Application.Quit();
                 yield break;

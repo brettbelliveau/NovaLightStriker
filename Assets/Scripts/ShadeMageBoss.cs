@@ -116,6 +116,7 @@ public class ShadeMageBoss : MonoBehaviour {
             
             else
             {
+                Player.finishTime = (Time.time - Player.timeLost);
                 Player.bossDefeated = true;
                 gameObject.GetComponent<BoxCollider2D>().enabled = false;
 

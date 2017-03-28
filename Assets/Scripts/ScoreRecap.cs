@@ -42,7 +42,7 @@ public class ScoreRecap : MonoBehaviour {
             }
 
             timeBonus = ((Player.finishTime - Player.awakeTime) - parTime) *100;
-
+            Debug.Log("Start: " + Player.awakeTime + " Finish :" + Player.finishTime);
             TimeVal.GetComponent<Text>().text = Convert.ToString(timeBonus);
             TotalVal.GetComponent<Text>().text = Convert.ToString(Player.score + timeBonus);
         }
@@ -75,12 +75,8 @@ public class ScoreRecap : MonoBehaviour {
         else if (counter == 500)
         {
             //Set global variables and load next level
-            PlayerPrefs.SetInt("Score", Player.score);
-            PlayerPrefs.SetInt("TotalScore", Player.totalScore);
-            PlayerPrefs.SetInt("ExtraLives", Player.extraLives + 1);
-            PlayerPrefs.SetInt("CurrentLevel", Player.currentLevel + 1);
-            PlayerPrefs.SetString("CheckPointOne", Player.checkPointOne ? "True" : "False");
-            PlayerPrefs.SetString("CheckPointTwo", Player.checkPointTwo ? "True" : "False");
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
             GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
         }
     }

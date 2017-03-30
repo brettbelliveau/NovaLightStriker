@@ -43,7 +43,6 @@ public class TextController : MonoBehaviour {
                 {
                     text.text += str[index++];
                 }
-
                 counter = (counter + 1) % (str.Length * framesPerChar);
             }
             

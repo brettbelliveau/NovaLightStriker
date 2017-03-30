@@ -29,10 +29,12 @@ public class CheckpointPixelGen : MonoBehaviour {
         if (checkPointOne && "True".Equals(PlayerPrefs.GetString("CheckPointOne")))
         {
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            turnEverythingGreen();
         }
         else if ("True".Equals(PlayerPrefs.GetString("CheckPointTwo")))
         {
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            turnEverythingGreen();
         }
     }
 
@@ -112,14 +114,19 @@ public class CheckpointPixelGen : MonoBehaviour {
             PlayerPrefs.SetInt("Score", Player.score);
             PlayerPrefs.SetInt("TotalScore", Player.totalScore);
 
-            top.GetComponent<SpriteRenderer>().sprite = pointOn;
-            bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
-            pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
+            turnEverythingGreen();
+        }
+    }
 
-            foreach (GameObject temp in pixels)
-            {
-                temp.GetComponent<SpriteRenderer>().sprite = pixelOn;
-            }
+    private void turnEverythingGreen()
+    {
+        top.GetComponent<SpriteRenderer>().sprite = pointOn;
+        bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
+        pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
+
+        foreach (GameObject temp in pixels)
+        {
+            temp.GetComponent<SpriteRenderer>().sprite = pixelOn;
         }
     }
 }

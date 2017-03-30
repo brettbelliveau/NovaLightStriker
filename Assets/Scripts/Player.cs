@@ -73,8 +73,10 @@ public class Player : MonoBehaviour {
     public static bool stopMovement;
     public static float awakeTime, finishTime, timeLost, timeAtCheckPoint;
     private bool calledDyingAnim;
+    private bool playedGameOverText;
     public static bool checkPointOne, checkPointTwo;
     public GameObject checkPointOneObject, checkPointTwoObject, startingPosition;
+    private float startTime;
 
 
     // Use this for initialization
@@ -88,10 +90,30 @@ public class Player : MonoBehaviour {
         if (PlayerPrefs.GetInt("PreviousLevel") == 0 && timeLost == 0)
             PlayerPrefs.SetInt("ExtraLives", 2);
 
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel");
+
+        //If reached no checkpoints and haven't died yet
+        if (!checkPointOne && !checkPointTwo && timeLost == 0)
+        {
+            string writeText;
+            
+            if (currentLevel == 1)
+                writeText = "Level One";
+
+            else if (currentLevel == 2)
+                writeText = "Level Two";
+
+            else
+                writeText = "Level Three";
+
+            GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 110, 10);
+            stopMovement = true;
+        }
+        
         //Reached checkpoint two
         if (checkPointTwo)
         {
-            transform.position = checkPointOneObject.transform.position;
+            transform.position = checkPointTwoObject.transform.position;
             awakeTime = PlayerPrefs.GetFloat("AwakeTime");
             score = PlayerPrefs.GetInt("Score");
             timeAtCheckPoint = Time.time;
@@ -109,7 +131,6 @@ public class Player : MonoBehaviour {
         {
             transform.position = startingPosition.transform.position;
             awakeTime = Time.time;
-            timeLost = 0;
             score = 0;
             timeAtCheckPoint = 0;
         }
@@ -191,20 +212,7 @@ public class Player : MonoBehaviour {
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
         lifeCounterOn = true;
         movedUp = false;
-        
-        string writeText;
-
-        if (currentLevel == 1)
-            writeText = "Level One";
-
-        else if (currentLevel == 2)
-            writeText = "Level Two";
-
-        else
-            writeText = "Level Three";
-        
-        GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 110, 10);
-        stopMovement = true;
+        startTime = Time.time;   
     }
 
     // Update is called once per frame
@@ -217,17 +225,17 @@ public class Player : MonoBehaviour {
         if (lifeCounterOn)
         {
             //Move up
-            if (Time.time - awakeTime > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
+            if (Time.time - startTime > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y + 2f);
 
             //Move down
-            else if (Time.time - awakeTime > 3.5 && lifeCounter.transform.position.y > -100)
+            else if (Time.time - startTime > 3.5 && lifeCounter.transform.position.y > -100)
             {
                 movedUp = true;
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y - 2f);
             }
 
-            else if (Time.time - awakeTime > 10)
+            else if (Time.time - startTime > 10)
             {
                 lifeCounterOn = false;
                 lifeCounter.SetActive(false);
@@ -609,8 +617,11 @@ public class Player : MonoBehaviour {
     void playDyingAnimation()
     {
         //TODO: Make this only play when out of lives
-        if (extraLives == 0)
-            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 60, 2000, 10);
+        if (extraLives == 0 && !playedGameOverText)
+        {
+            playedGameOverText = true;
+            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 8);
+        }
 
         counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
@@ -650,7 +661,7 @@ public class Player : MonoBehaviour {
                     }
                 }
             }
-            else if (!calledDyingAnim)
+            else if (pixels.Count == 0 && !calledDyingAnim)
             {
                 calledDyingAnim = true;
                 //If out of lives, return to main menu
@@ -658,12 +669,12 @@ public class Player : MonoBehaviour {
                 {
                     PlayerPrefs.DeleteAll();
                     PlayerPrefs.SetInt("CurrentLevel", currentLevel);
-                    GameObject.FindObjectOfType<ScreenFader>().speed = 1.5f;
+                    GameObject.FindObjectOfType<ScreenFader>().speed = 0.8f;
                     GameObject.FindObjectOfType<ScreenFader>().EndScene(0);
                 }
                 else
                 {
-                    if (checkPointOne)
+                    if (checkPointOne || checkPointTwo)
                         timeLost += Time.time - timeAtCheckPoint;
                     else
                         timeLost += Time.time - awakeTime;

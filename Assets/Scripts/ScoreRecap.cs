@@ -41,42 +41,58 @@ public class ScoreRecap : MonoBehaviour {
                 parTime = 180; //180 seconds == 3 minutes
             }
 
-            timeBonus = ((Player.finishTime - Player.awakeTime) - parTime) *100;
-            Debug.Log("Start: " + Player.awakeTime + " Finish :" + Player.finishTime);
+            timeBonus = (parTime - (Player.finishTime - Player.awakeTime)) * 100;
+            if (timeBonus > 0)
+                timeBonus = Convert.ToInt64(Math.Round(Convert.ToDouble(timeBonus) / 100) * 100);
+            else
+                timeBonus = 0;
+            
             TimeVal.GetComponent<Text>().text = Convert.ToString(timeBonus);
             TotalVal.GetComponent<Text>().text = Convert.ToString(Player.score + timeBonus);
+            Player.totalScore = Player.score + Convert.ToInt32(timeBonus);
         }
 
-        else if (counter == 50)
+        else if (counter == 30)
             BG.SetActive(true);
+
+        else if (counter == 70)
+        {
+            Score.SetActive(true);
+        }
 
         else if (counter == 100)
         {
-            Score.SetActive(true);
             ScoreVal.SetActive(true);
         }
 
-        else if (counter == 150)
+        else if (counter == 160)
         {
             TimeBonus.SetActive(true);
-            TimeVal.SetActive(true);
         }
 
-        else if (counter == 200)
+        else if (counter == 190)
         {
-            Total.SetActive(true);
+            TimeVal.SetActive(true);
         }
 
         else if (counter == 250)
         {
+            Total.SetActive(true);
+        }
+
+        else if (counter == 300)
+        {
             TotalVal.SetActive(true);
         }
 
-        else if (counter == 500)
+        //TODO: Add extra lives?
+        else if (counter == 420)
         {
-            //Set global variables and load next level
+            int extraLives = (Player.score + Convert.ToInt32(timeBonus)) / 10000;
             PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
+            PlayerPrefs.SetInt("ExtraLives", Player.extraLives+extraLives);
+            PlayerPrefs.SetInt("TotalScore", Player.totalScore);
+            PlayerPrefs.SetInt("CurrentLevel", Player.currentLevel);
             GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
         }
     }

@@ -7,6 +7,7 @@ public class ScreenFader : MonoBehaviour
 {
     public Image fadeImage;
     public float speed;
+    public int currentLevel;
     private bool startScene = true;
     
     public bool fadeIn;
@@ -20,6 +21,8 @@ public class ScreenFader : MonoBehaviour
     {
         if (startScene)
         {
+            PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+
             if (PlayerPrefs.GetInt("CurrentLevel") == 0 && (PlayerPrefs.GetInt("PreviousLevel") < 4 || PlayerPrefs.GetInt("PreviousLevel") > 5))
             {
                 fadeIn = true;

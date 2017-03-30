@@ -29,6 +29,7 @@ public class ShadeCrawler : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+		gameObject.tag = "Entity";
         body = gameObject.GetComponent<Rigidbody2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         pixels = new List<GameObject>();

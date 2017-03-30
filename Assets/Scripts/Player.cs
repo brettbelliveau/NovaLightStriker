@@ -253,7 +253,7 @@ public class Player : MonoBehaviour {
             energyBar.value = (float)(multiplier - 1) / 7f;
       
         scoreText.GetComponent<Text>().text = score.ToString("D5");
-        totalScoreText.GetComponent<Text>().text = totalScore.ToString("D5");
+        totalScoreText.GetComponent<Text>().text = totalScore.ToString("D6");
         multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
 
         //Reset size of multiplier text when it is changed by static call

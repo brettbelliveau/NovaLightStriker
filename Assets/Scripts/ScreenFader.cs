@@ -75,6 +75,12 @@ public class ScreenFader : MonoBehaviour
             {
                 if (SceneNumber > -1)
                 {
+                    if (PlayerPrefs.GetInt("CurrentLevel") == 0 && SceneNumber == 1)
+                    {
+                        PlayerPrefs.DeleteAll();
+                        PlayerPrefs.SetInt("CurrentLevel", 0);
+                    }
+
                     PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
                     PlayerPrefs.SetInt("CurrentLevel", SceneNumber);
                     SceneManager.LoadScene(SceneNumber);

@@ -65,22 +65,22 @@ public class ScoreRecap : MonoBehaviour {
             ScoreVal.SetActive(true);
         }
 
-        else if (counter == 160)
+        else if (counter == 150)
         {
             TimeBonus.SetActive(true);
         }
 
-        else if (counter == 190)
+        else if (counter == 180)
         {
             TimeVal.SetActive(true);
         }
 
-        else if (counter == 250)
+        else if (counter == 240)
         {
             Total.SetActive(true);
         }
 
-        else if (counter == 300)
+        else if (counter == 290)
         {
             TotalVal.SetActive(true);
         }
@@ -88,12 +88,24 @@ public class ScoreRecap : MonoBehaviour {
         //TODO: Add extra lives?
         else if (counter == 420)
         {
-            int extraLives = (Player.score + Convert.ToInt32(timeBonus)) / 10000;
+            if (PlayerPrefs.GetInt("CurrentLevel") == 1)
+                PlayerPrefs.SetInt("LevelOneScore", Player.totalScore);
+
+            else if (PlayerPrefs.GetInt("CurrentLevel") == 2)
+                PlayerPrefs.SetInt("LevelTwoScore", Player.totalScore);
+
+            else if (PlayerPrefs.GetInt("CurrentLevel") == 3)
+                PlayerPrefs.SetInt("LevelThreeScore", Player.totalScore);
+            
+            int extraLives = (Player.totalScore + Convert.ToInt32(timeBonus)) / 10000;
             PlayerPrefs.DeleteAll();
             PlayerPrefs.SetInt("ExtraLives", Player.extraLives+extraLives);
             PlayerPrefs.SetInt("TotalScore", Player.totalScore);
             PlayerPrefs.SetInt("CurrentLevel", Player.currentLevel);
-            GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
+            if (Player.currentLevel < 3)
+                GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
+            else
+                GameObject.FindObjectOfType<ScreenFader>().EndScene(6);
         }
     }
 }

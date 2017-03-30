@@ -17,7 +17,7 @@ public class CheckpointPixelGen : MonoBehaviour {
     private int coordinateCounter;
     private int maxPixels = 30;
     private int framesPerPixel = 3;
-    private bool checkPointOne;
+    public bool checkPointOne;
 
     private float[] xCoordinates;
     private float[] yCoordinates;

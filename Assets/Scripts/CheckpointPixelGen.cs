@@ -8,7 +8,7 @@ public class CheckpointPixelGen : MonoBehaviour {
     public Sprite pointOn, pixelOn;
 
     //TODO: Make this a global variable
-    public bool accessed = false;
+    public bool spawn = true;
 
     private List<GameObject> pixels;
 
@@ -17,6 +17,7 @@ public class CheckpointPixelGen : MonoBehaviour {
     private int coordinateCounter;
     private int maxPixels = 30;
     private int framesPerPixel = 3;
+    private bool checkPointOne;
 
     private float[] xCoordinates;
     private float[] yCoordinates;
@@ -25,25 +26,37 @@ public class CheckpointPixelGen : MonoBehaviour {
     void Start () {
         pixels = new List<GameObject>();
         xCoordinates = new float[] { -1f, 1f, -0.3f, 0.5f, -0.8f, 0f, -0.5f, 0.75f};
-	}
+        if (checkPointOne && "True".Equals(PlayerPrefs.GetString("CheckPointOne")))
+        {
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            turnEverythingGreen();
+        }
+        else if ("True".Equals(PlayerPrefs.GetString("CheckPointTwo")))
+        {
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            turnEverythingGreen();
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
-        counter = (counter + 1) % (framesPerPixel);
-   
-        if (counter == 0)
+        if (spawn)
         {
-            pixels.Add(spawnPixelAtRandomLocation(pixel));
+            counter = (counter + 1) % (framesPerPixel);
 
-            if (pixels.Count == maxPixels)
+            if (counter == 0)
             {
-                Destroy(pixels[0]);
-                pixels.RemoveAt(0);
-            } 
+                pixels.Add(spawnPixelAtRandomLocation(pixel));
+
+                if (pixels.Count == maxPixels)
+                {
+                    Destroy(pixels[0]);
+                    pixels.RemoveAt(0);
+                }
+            }
         }
     }
-
     private GameObject spawnPixelAtRandomLocation(GameObject pixel)
     {
         pixelCounter = Random.Range(0, 1f);
@@ -85,11 +98,28 @@ public class CheckpointPixelGen : MonoBehaviour {
         return tempPixel;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        //TODO: Again, make this variable global so it can be loaded on death
-        accessed = true;
-        
+        //Player layer only
+        if (other.gameObject.layer == 9)
+        {
+           gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+            if (checkPointOne)
+                Player.checkPointOne = true;
+            else
+                Player.checkPointTwo = true;
+
+            Player.timeAtCheckPoint = Time.time;
+            PlayerPrefs.SetInt("Score", Player.score);
+            PlayerPrefs.SetInt("TotalScore", Player.totalScore);
+
+            turnEverythingGreen();
+        }
+    }
+
+    private void turnEverythingGreen()
+    {
         top.GetComponent<SpriteRenderer>().sprite = pointOn;
         bottom.GetComponent<SpriteRenderer>().sprite = pointOn;
         pixel.GetComponent<SpriteRenderer>().sprite = pixelOn;
@@ -98,6 +128,5 @@ public class CheckpointPixelGen : MonoBehaviour {
         {
             temp.GetComponent<SpriteRenderer>().sprite = pixelOn;
         }
-        
     }
 }

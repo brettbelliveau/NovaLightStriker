@@ -27,6 +27,9 @@ public class ShockWave : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (Time.timeScale != 1)
+            return;
+
         counter++;
         //Flying through the air
         if (counter > 0 && counter < 60) {

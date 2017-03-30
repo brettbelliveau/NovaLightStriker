@@ -21,9 +21,12 @@ public class SpawnPixel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        if (Time.timeScale != 1)
+            return;
+
         //If falling pixels
-		if (counter++ > 5 && body.velocity.y < 0.02 && snow.transform.position.y <= SpawnInOutPixels.deleteSpot)
+        if (counter++ > 5 && body.velocity.y < 0.02 && snow.transform.position.y <= SpawnInOutPixels.deleteSpot)
         {
             SpawnInOutPixels.deleteSpot += 0.005f;
             Destroy(snow);

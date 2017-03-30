@@ -28,6 +28,9 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         counter = (counter + 1) % (framesPerPixel);
 
         if (counter % framesPerPixel == 0)
@@ -42,6 +45,11 @@ public class SpawnOutPixelsBoss : MonoBehaviour {
                 started = true;
                 Destroy(pixels[0]);
                 pixels.RemoveAt(0);
+                
+                if (pixels.Count < 100)
+                {
+                    GameObject.FindObjectOfType<ScoreRecap>().run = true;
+                }
             }
         }
         

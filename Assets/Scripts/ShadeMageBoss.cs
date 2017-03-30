@@ -60,6 +60,9 @@ public class ShadeMageBoss : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         if (barInit)
             healthBar.value = ((float)lifePoints / (float)startingLifePoints);
 
@@ -89,7 +92,7 @@ public class ShadeMageBoss : MonoBehaviour {
             {
                 pixels.Add(spawnPixelAtRandomLocation(pixel));
 
-                if (pixels.Count == maxSpawnPixels)
+                if (pixels.Count > 20)
                 {
                     Destroy(pixels[0]);
                     pixels.RemoveAt(0);
@@ -107,14 +110,13 @@ public class ShadeMageBoss : MonoBehaviour {
         /* Sprite Section */
 
         if (lifePoints == 0 && finalWarp && !warping) {
-
-            Debug.Log("HERE? " + counter + " | " + waitCounter);
-
+            
             //Case in which we have already played anim
             if (counter == -100) { }
             
             else
             {
+                Player.finishTime = (Time.time - Player.timeLost);
                 Player.bossDefeated = true;
                 gameObject.GetComponent<BoxCollider2D>().enabled = false;
 

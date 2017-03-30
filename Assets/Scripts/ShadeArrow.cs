@@ -30,6 +30,9 @@ public class ShadeArrow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (Time.timeScale != 1)
+            return;
+
         counter++;
         //After charged up arrow
         

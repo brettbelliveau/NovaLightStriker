@@ -30,7 +30,10 @@ public class ShadeKnightOrb : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        if (Time.timeScale != 1)
+            return;
+
         if ((!delete || shadeKnight != null) && counter < 36)
             movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
 

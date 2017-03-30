@@ -1,4 +1,4 @@
-# Nova-Light Striker
+# Nova Light Striker
 Retro 2D-platforming game built with C# and Unity3D.
 Creators: Brett Belliveau, Allison Aguirre, Ben Winninger
 

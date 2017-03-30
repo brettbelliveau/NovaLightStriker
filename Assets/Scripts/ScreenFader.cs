@@ -7,7 +7,10 @@ public class ScreenFader : MonoBehaviour
 {
     public Image fadeImage;
     public float speed;
-    public bool startScene = true;
+    public int currentLevel;
+    private bool startScene = true;
+    
+    public bool fadeIn;
 
     void Awake()
     {
@@ -17,7 +20,23 @@ public class ScreenFader : MonoBehaviour
     void Update()
     {
         if (startScene)
-            StartScene();
+        {
+            PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+
+            if (PlayerPrefs.GetInt("CurrentLevel") == 0 && (PlayerPrefs.GetInt("PreviousLevel") < 4 || PlayerPrefs.GetInt("PreviousLevel") > 5))
+            {
+                fadeIn = true;
+                PlayerPrefs.SetInt("LastCursorPosition", 0);
+            }
+
+            if (fadeIn)
+                StartScene();
+            else
+            {
+                fadeImage.color = Color.clear;
+                fadeImage.enabled = startScene = false;
+            }
+        }
     }
 
     void StartScene()
@@ -54,7 +73,14 @@ public class ScreenFader : MonoBehaviour
             FadeToBlack();
             if (fadeImage.color.a >= 0.96f)
             {
-                SceneManager.LoadScene(SceneNumber);
+                if (SceneNumber > -1)
+                {
+                    PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));
+                    PlayerPrefs.SetInt("CurrentLevel", SceneNumber);
+                    SceneManager.LoadScene(SceneNumber);
+                }
+                else
+                    Application.Quit();
                 yield break;
             }
             else

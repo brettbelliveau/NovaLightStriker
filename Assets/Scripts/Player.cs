@@ -6,10 +6,12 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour {
 
     public float speed;
+    public static int currentLevel;         
     public static int lifePoints;
-    public static int score;                //TODO: Make this global variable
+    public static int score;                    
+    public static int totalScore;           
     public static int multiplier;
-    public static int extraLives = 2;       //TODO: Make this global variable
+    public static int extraLives;      
     private static float lastKillTime;
     public static float hyperActiveTime;
     private static bool turnOnHyperMode = false;
@@ -32,7 +34,7 @@ public class Player : MonoBehaviour {
     private BoxCollider2D swordColliderObject;
     public GameObject camera, shockwave, pixel;
     public GameObject healthBarObject, energyBarObject;
-    public GameObject scoreText, multiplierText;
+    public GameObject scoreText, totalScoreText, multiplierText;
     private Slider healthBar, energyBar;
     private Vector2 defaultMultScale;
 
@@ -45,8 +47,8 @@ public class Player : MonoBehaviour {
     public GameObject swordCollider;
     public GameObject lifeCounter, lifeCounterText;
 
-    public static bool spawningBool = false; //Should be true to init spawn anim
-    public static bool spawned = true;       //Should be false to init spawn anim
+    public static bool spawningBool; //Should be true to init spawn anim
+    public static bool spawned;      //Should be false to init spawn anim
 
     public static bool attackFreeze;
     public static bool takingDamage;
@@ -69,16 +71,99 @@ public class Player : MonoBehaviour {
     private bool lifeCounterOn;
     private bool movedUp;
     public static bool stopMovement;
-    private float awakeTime;
+    public static float awakeTime, finishTime, timeLost, timeAtCheckPoint;
+    private bool calledDyingAnim;
+    private bool playedGameOverText;
+    public static bool checkPointOne, checkPointTwo;
+    public GameObject checkPointOneObject, checkPointTwoObject, startingPosition;
+    private float startTime;
 
 
     // Use this for initialization
     void Start () {
 		gameObject.tag = "Entity";
+        
+        checkPointOne = ("True".Equals(PlayerPrefs.GetString("CheckPointOne")));
+        checkPointTwo = ("True".Equals(PlayerPrefs.GetString("CheckPointTwo")));
+        timeLost = PlayerPrefs.GetFloat("TimeLost");
+
+        if (PlayerPrefs.GetInt("PreviousLevel") == 0 && timeLost == 0)
+            PlayerPrefs.SetInt("ExtraLives", 2);
+
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel");
+
+        //If reached no checkpoints and haven't died yet
+        if (!checkPointOne && !checkPointTwo && timeLost == 0)
+        {
+            string writeText;
+            
+            if (currentLevel == 1)
+                writeText = "Level One";
+
+            else if (currentLevel == 2)
+                writeText = "Level Two";
+
+            else
+                writeText = "Level Three";
+
+            GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 110, 10);
+            stopMovement = true;
+        }
+        
+        //Reached checkpoint two
+        if (checkPointTwo)
+        {
+            transform.position = checkPointTwoObject.transform.position;
+            awakeTime = PlayerPrefs.GetFloat("AwakeTime");
+            score = PlayerPrefs.GetInt("Score");
+            timeAtCheckPoint = Time.time;
+        }
+        //Reached checkpoint one
+        else if (checkPointOne)
+        {
+            transform.position = checkPointOneObject.transform.position;
+            awakeTime = PlayerPrefs.GetFloat("AwakeTime");
+            score = PlayerPrefs.GetInt("Score");
+            timeAtCheckPoint = Time.time;
+        }
+        //No checkpoints reached
+        else
+        {
+            transform.position = startingPosition.transform.position;
+            awakeTime = Time.time;
+            score = 0;
+            timeAtCheckPoint = 0;
+        }
+
+        //Already died in level
+        if (timeLost > 0)
+        {
+            spawningBool = false;
+            spawned = true;
+            extraLives = PlayerPrefs.GetInt("ExtraLives");
+        }
+        else
+        {
+            spawningBool = true;
+            spawned = false;
+            extraLives = 2;
+        }
+
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel");
+        
+        if (currentLevel < 1)
+        {
+            currentLevel = 1;
+            PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+        }
+        else
+        {
+            extraLives = PlayerPrefs.GetInt("ExtraLives");
+            totalScore = PlayerPrefs.GetInt("TotalScore");
+        }
 
         lifePoints = 100;
         maxLifePoints = lifePoints;
-        score = 0;
         lastKillTime = 0;
         multiplier = 1;
 
@@ -89,6 +174,8 @@ public class Player : MonoBehaviour {
         lastDamageTaken = new List<int>();
 
         attackFreeze = false;
+        takingDamage = false;
+        counter = 0;
         spriteRender.sprite = null;
         SpawnInOutPixels.spawning = spawningBool;
         SpawnInOutPixels.spawned = spawned;
@@ -104,11 +191,17 @@ public class Player : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(15, 10, true);
         Physics2D.IgnoreLayerCollision(15, 11, true);
         Physics2D.IgnoreLayerCollision(15, 13, true);
+        Physics2D.IgnoreLayerCollision(15, 16, true);
+
+        //Ignore Layer collision for enemy projectiles and themselves
+        Physics2D.IgnoreLayerCollision(12, 12, true);
 
         //Ignore Layer collision for projectile (12) and enemy (14) layers
         Physics2D.IgnoreLayerCollision(12, 14, true);
 
-
+        //Ignore Layer collision for projectile (12) and health item (15) layers
+        Physics2D.IgnoreLayerCollision(12, 16, true);
+        
         //UI Element initialization
         defaultMultScale = multiplierText.transform.localScale;
 
@@ -119,29 +212,30 @@ public class Player : MonoBehaviour {
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
         lifeCounterOn = true;
         movedUp = false;
-
-        //Record time when level is started
-        awakeTime = Time.time;
+        startTime = Time.time;   
     }
 
     // Update is called once per frame
     void Update() {
 
+        if (Time.timeScale != 1)
+            return;
+        
         //Turn off life counter after 4 seconds
         if (lifeCounterOn)
         {
             //Move up
-            if (Time.time - awakeTime > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
+            if (Time.time - startTime > 0.5 && lifeCounter.transform.position.y < 0 && !movedUp)
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y + 2f);
 
             //Move down
-            else if (Time.time - awakeTime > 3.5 && lifeCounter.transform.position.y > -100)
+            else if (Time.time - startTime > 3.5 && lifeCounter.transform.position.y > -100)
             {
                 movedUp = true;
                 lifeCounter.transform.position = new Vector2(lifeCounter.transform.position.x, lifeCounter.transform.position.y - 2f);
             }
 
-            else if (Time.time - awakeTime > 10)
+            else if (Time.time - startTime > 10)
             {
                 lifeCounterOn = false;
                 lifeCounter.SetActive(false);
@@ -159,6 +253,7 @@ public class Player : MonoBehaviour {
             energyBar.value = (float)(multiplier - 1) / 7f;
       
         scoreText.GetComponent<Text>().text = score.ToString("D5");
+        totalScoreText.GetComponent<Text>().text = totalScore.ToString("D5");
         multiplierText.GetComponent<Text>().text = "x" + multiplier.ToString();
 
         //Reset size of multiplier text when it is changed by static call
@@ -256,7 +351,9 @@ public class Player : MonoBehaviour {
         if (takingDamage)
         {
             if (lifePoints <= 0)
+            {
                 playDyingAnimation();
+            }
             else
             {
                 counter = (counter + 1) % damageFrames;
@@ -269,19 +366,21 @@ public class Player : MonoBehaviour {
                     lifePoints -= lastDamageTaken[0];
                     HealthBar.changed = true;
                     lastDamageTaken.Clear();
-                    
+
                     if (lifePoints <= 0)
+                    {
                         playDyingAnimation();
+                    }
 
                     else
                     {
                         swordCollider.gameObject.SetActive(false);
                         attackFreeze = SwordPixelGenerator.attacking = false;
-                        
+
                         //If moving up, push down.
                         var y = body.velocity.y > 0.02 ? -0.02f : 0f;
                         body.velocity = new Vector2(0, y);
-                        
+
                         hitFromLeft.Clear();
                         //if facing left, tilt left, else right
                     }
@@ -334,8 +433,7 @@ public class Player : MonoBehaviour {
                 disableBackCollider = true;
                 disableFrontCollider = true;
             }
-
-
+            
             //After 5th sprite frame, not invincible from back
             if (counter / attackAnimationSpeed == 5)
                 disableBackCollider = false;
@@ -406,9 +504,9 @@ public class Player : MonoBehaviour {
                     if (counter == 0)
                     {
                         spriteRender.sprite = standing;
-                        spawningBool = false;               //Comment this out to test spawn out
+                        spawningBool = false;               
                         spawned = true;
-                        SpawnInOutPixels.spawning = false;  //Comment this out to test spawn out
+                        SpawnInOutPixels.spawning = false;  
                         SpawnInOutPixels.spawned = true;
                     }
                 }
@@ -435,7 +533,7 @@ public class Player : MonoBehaviour {
         {
             spriteRender.sprite = jumping;
         }
-
+        
         if (disableFrontCollider)
         {
             if (!spriteRender.flipX)
@@ -518,6 +616,13 @@ public class Player : MonoBehaviour {
 
     void playDyingAnimation()
     {
+        //TODO: Make this only play when out of lives
+        if (extraLives == 0 && !playedGameOverText)
+        {
+            playedGameOverText = true;
+            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 8);
+        }
+
         counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
         {
@@ -556,9 +661,33 @@ public class Player : MonoBehaviour {
                     }
                 }
             }
-            else
+            else if (pixels.Count == 0 && !calledDyingAnim)
             {
-                //Reload from checkpoint, or game over
+                calledDyingAnim = true;
+                //If out of lives, return to main menu
+                if (extraLives == 0)
+                {
+                    PlayerPrefs.DeleteAll();
+                    PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+                    GameObject.FindObjectOfType<ScreenFader>().speed = 0.8f;
+                    GameObject.FindObjectOfType<ScreenFader>().EndScene(0);
+                }
+                else
+                {
+                    if (checkPointOne || checkPointTwo)
+                        timeLost += Time.time - timeAtCheckPoint;
+                    else
+                        timeLost += Time.time - awakeTime;
+
+                    PlayerPrefs.SetInt("ExtraLives", extraLives-1);
+                    PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+                    PlayerPrefs.SetString("CheckPointOne", checkPointOne ? "True" : "False");
+                    PlayerPrefs.SetString("CheckPointTwo", checkPointTwo ? "True" : "False");
+                    PlayerPrefs.SetFloat("AwakeTime", awakeTime);
+                    PlayerPrefs.SetFloat("TimeLost", timeLost);
+                    GameObject.FindObjectOfType<ScreenFader>().speed = 1.5f;
+                    GameObject.FindObjectOfType<ScreenFader>().EndScene(currentLevel);
+                }
             }
         }
         else
@@ -605,6 +734,7 @@ public class Player : MonoBehaviour {
     public static void addScorePoints(int points)
     {
         score += points * multiplier;
+        totalScore += points * multiplier;
 
         //Boss kill, dont touch multiplier
         if (points >= 10000)

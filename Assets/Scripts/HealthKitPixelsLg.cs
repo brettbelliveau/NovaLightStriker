@@ -30,6 +30,9 @@ public class HealthKitPixelsLg : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale != 1)
+            return;
+
         counter = (counter + 1) % (framesPerPixel);
 
         if (counter % framesPerPixel == 0)
@@ -82,7 +85,7 @@ public class HealthKitPixelsLg : MonoBehaviour {
     {
         if (other.gameObject.layer == 9 && Player.lifePoints < 100) //character layer, and lifepoints not maxed
         { 
-            Player.addLifePoints(40);
+            Player.addLifePoints(50);
             startDeleting = true;
             gameObject.GetComponent<SpriteRenderer>().sprite = null;
             gameObject.GetComponent<BoxCollider2D>().enabled = false;

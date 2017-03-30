@@ -25,6 +25,10 @@ public class SwordPixelGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (Time.timeScale != 1)
+            return;
+
         if (attacking || pixels.Count > 0 && !Player.hyperModeActive)
             managePixels();
 	}

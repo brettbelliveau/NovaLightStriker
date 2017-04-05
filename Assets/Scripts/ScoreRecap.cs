@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class ScoreRecap : MonoBehaviour {
 
-    public GameObject BG, Complete, Score, TimeBonus, Total, ScoreVal, TimeVal, TotalVal;
-    private int counter;
+    public GameObject BG, Complete, Score, TimeBonus, Total, ScoreVal, TimeVal, TotalVal, ExtraLives;
+    public GameObject[] lives;
+    private int counter, extraLives;
     public bool run;
     private float timeBonus, parTime;
     
 	// Use this for initialization
 	void Start () {
-        counter = 0;
+        counter = extraLives = 0;
         run = false;
 	}
 
@@ -42,6 +43,7 @@ public class ScoreRecap : MonoBehaviour {
             }
 
             timeBonus = (parTime - (Player.finishTime - Player.awakeTime)) * 100;
+            Debug.Log("Finish + " + Player.finishTime + ", Awake" + Player.awakeTime);
             if (timeBonus > 0)
                 timeBonus = Convert.ToInt64(Math.Round(Convert.ToDouble(timeBonus) / 100) * 100);
             else
@@ -84,10 +86,60 @@ public class ScoreRecap : MonoBehaviour {
         {
             TotalVal.SetActive(true);
         }
-
-        //TODO: Add extra lives?
-        else if (counter == 420)
+        
+        else if (counter == 380)
         {
+            if (Player.currentLevel < 3)
+            {
+                if (Player.currentLevel == 1)
+                    extraLives = Player.totalScore / 20000;
+
+                else //Player.currentLevel == 2
+                    extraLives = Player.totalScore / 15000;
+
+                extraLives = extraLives > 3 ? 3 : extraLives;
+                Player.extraLives += extraLives;
+                ExtraLives.SetActive(true);
+            }
+
+            else
+            {
+                counter = 450;
+            }
+        }
+
+        else if (counter == 410)
+        {
+            if (extraLives >= 1)
+            {
+                lives[0].SetActive(true);
+            }
+        }
+
+        else if (counter == 435)
+        {
+            if (extraLives >= 2)
+            {
+                lives[1].SetActive(true);
+            }
+        }
+
+        else if (counter == 460)
+        {
+            if (extraLives == 3)
+            {
+                lives[2].SetActive(true);
+            }
+        }
+
+        else if ((counter >= 450 && extraLives < 1) || (counter >= 540))
+        {
+            PlayerPrefs.DeleteAll();
+
+            PlayerPrefs.SetInt("TotalScore", Player.totalScore);
+
+            PlayerPrefs.SetInt("CurrentLevel", Player.currentLevel);
+
             if (PlayerPrefs.GetInt("CurrentLevel") == 1)
                 PlayerPrefs.SetInt("LevelOneScore", Player.totalScore);
 
@@ -97,11 +149,10 @@ public class ScoreRecap : MonoBehaviour {
             else if (PlayerPrefs.GetInt("CurrentLevel") == 3)
                 PlayerPrefs.SetInt("LevelThreeScore", Player.totalScore);
             
-            int extraLives = (Player.totalScore + Convert.ToInt32(timeBonus)) / 10000;
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("ExtraLives", Player.extraLives+extraLives);
-            PlayerPrefs.SetInt("TotalScore", Player.totalScore);
-            PlayerPrefs.SetInt("CurrentLevel", Player.currentLevel);
+            PlayerPrefs.SetInt("ExtraLives", Player.extraLives);
+
+            GameObject.FindObjectOfType<ScreenFader>().speed = 1;
+
             if (Player.currentLevel < 3)
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
             else

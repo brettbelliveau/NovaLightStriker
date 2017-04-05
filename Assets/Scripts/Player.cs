@@ -96,7 +96,9 @@ public class Player : MonoBehaviour {
         if (!checkPointOne && !checkPointTwo && timeLost == 0)
         {
             string writeText;
-            
+
+            Debug.Log("CurrentLevel " + currentLevel);
+
             if (currentLevel == 1)
                 writeText = "Level One";
 
@@ -106,7 +108,7 @@ public class Player : MonoBehaviour {
             else
                 writeText = "Level Three";
 
-            GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 110, 10);
+            GameObject.FindObjectOfType<TextController>().writeText(writeText, 40, 100, 14);
             stopMovement = true;
         }
         
@@ -620,7 +622,7 @@ public class Player : MonoBehaviour {
         if (extraLives == 0 && !playedGameOverText)
         {
             playedGameOverText = true;
-            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 8);
+            GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 10);
         }
 
         counter = (counter + 1) % 80;

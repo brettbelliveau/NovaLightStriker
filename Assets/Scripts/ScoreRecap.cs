@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -153,10 +154,67 @@ public class ScoreRecap : MonoBehaviour {
 
             GameObject.FindObjectOfType<ScreenFader>().speed = 1;
 
-            if (Player.currentLevel < 3)
+            if (Player.currentLevel < 3) {
+
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
-            else
+            }
+            else {
+                var scorePath = Path.GetDirectoryName(Application.dataPath);
+                scorePath += "/Assets/HiScores.csv";
+                var scoreToFile = new string[5];
+                var currentDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+
+                if (File.Exists(scorePath))
+                {
+                    var fs = File.OpenRead(scorePath);
+                    var reader = new StreamReader(fs);
+                    var scores = new string[5];
+                    var dateTimes = new string[5];
+                    int pos = 0;
+
+                    while (!reader.EndOfStream && pos < 5)
+                    {
+                        var line = reader.ReadLine();
+                        var values = line.Split(';');
+                        scores[pos] = values[0];
+                        dateTimes[pos] = values[1];
+                        pos++;
+                    }
+
+                    if (pos < 5)
+                    {
+                        scores[pos] = Convert.ToString(Player.totalScore);
+                        dateTimes[pos] = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    }
+                    else if(Convert.ToInt16(scores[4]) < Player.totalScore) {
+                        string tempScore = "-1";
+                        string tempDate = "";
+
+                        for(int i = 0; i < 5; i++) {
+                            if(Convert.ToInt16(scores[i]) < Player.totalScore) {
+                                tempScore = scores[i];
+                                tempDate = dateTimes[i];
+                                scores[i] = Convert.ToString(Player.totalScore);
+                                dateTimes[i] = currentDate;
+                                Player.totalScore = Convert.ToInt16(tempScore);
+                                currentDate = tempDate;
+                            }
+                        }
+                    }
+
+                    for(int i = 0; i < 5; i++) {
+                        scoreToFile[i] = scores[i] + ";" + dateTimes[i];
+                    }
+                }
+                else {
+                    File.Create(scorePath);
+                    scoreToFile[0] = Convert.ToString(Player.totalScore) + ";" + currentDate;
+                }
+
+                File.WriteAllLines(scorePath, scoreToFile);
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(6);
+            }
+                
         }
     }
 }

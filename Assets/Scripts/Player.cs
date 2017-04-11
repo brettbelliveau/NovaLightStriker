@@ -82,7 +82,6 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		gameObject.tag = "Entity";
-        
         checkPointOne = ("True".Equals(PlayerPrefs.GetString("CheckPointOne")));
         checkPointTwo = ("True".Equals(PlayerPrefs.GetString("CheckPointTwo")));
         timeLost = PlayerPrefs.GetFloat("TimeLost");
@@ -214,7 +213,8 @@ public class Player : MonoBehaviour {
         lifeCounterText.GetComponent<Text>().text = "x" + extraLives;
         lifeCounterOn = true;
         movedUp = false;
-        startTime = Time.time;   
+        startTime = Time.time;
+        bossDefeated = false;
     }
 
     // Update is called once per frame
@@ -586,6 +586,7 @@ public class Player : MonoBehaviour {
             body.velocity = new Vector2(0, 0);
             body.gravityScale = 0f;
         }
+       
 
         //Turn off collider when moving upward
         //Layer 9 is character, layer 11 is special platforms

@@ -27,7 +27,6 @@ public class TextController : MonoBehaviour {
 
         if (run)
         {
-            Debug.Log("running" + counter);
             //Text has not been written, and we have not waited
             if (waitCounter < waitBefore)
             {

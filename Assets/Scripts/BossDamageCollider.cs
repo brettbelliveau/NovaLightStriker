@@ -52,10 +52,10 @@ public class BossDamageCollider : MonoBehaviour {
             {
                 enemyObject.GetComponent<ShadeMageBoss>().sendDamage(10);
             }
-            //  else if (Player.currentLevel == 2)
-            // {
-            //     enemyObject.GetComponent<PurpleSlime>().sendDamage(10);
-            // }
+              else if (Player.currentLevel == 2)
+             {
+                 enemyObject.GetComponent<PurpleSlime>().sendDamage(10);
+             }
             else
             {
                 enemyObject.GetComponent<SkeletonBoss>().sendDamage(10);

@@ -9,7 +9,7 @@ public class BossDamageCollider : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+
 	}
 	
 	// Update is called once per frame
@@ -31,6 +31,11 @@ public class BossDamageCollider : MonoBehaviour {
 					script2.sendDamage (10);
 					script2.counter = 0;
 				}
+                else
+                {
+                    var script3 = enemyObject.GetComponent<SkeletonBoss>();
+                    script3.sendDamage (10);
+                }
 			} else {
 				script.sendDamage(10);
 			}
@@ -43,10 +48,18 @@ public class BossDamageCollider : MonoBehaviour {
         //Add instance for third enemy type
         if (other.gameObject.layer == 15)
         {
-			var script = enemyObject.GetComponent<ShadeMageBoss> ();
-			if (script != null) {
-				script.sendDamage (10);
-			}
+            if (Player.currentLevel == 1)
+            {
+                enemyObject.GetComponent<ShadeMageBoss>().sendDamage(10);
+            }
+            //  else if (Player.currentLevel == 2)
+            // {
+            //     enemyObject.GetComponent<PurpleSlime>().sendDamage(10);
+            // }
+            else
+            {
+                enemyObject.GetComponent<SkeletonBoss>().sendDamage(10);
+            }
         }
     }
 }

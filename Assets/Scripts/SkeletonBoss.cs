@@ -32,7 +32,8 @@ public class SkeletonBoss : MonoBehaviour {
     public Sprite[] attacking;
     public Sprite[] dying;
     private List<GameObject> pixels;
-    public GameObject Left, Right, Middle, MiddleCollider, gameObject, pixel, scoreText, healthBarObject;
+    public GameObject Left, Right, Middle, MiddleCollider, gameObject, pixel, scoreText, healthBarObject, 
+                      skeletonShockwave, skeletonSwordCollider;
     private Slider healthBar;
     //public GameObject shockwave;
     
@@ -55,6 +56,8 @@ public class SkeletonBoss : MonoBehaviour {
         healthBar = healthBarObject.GetComponent<Slider>();
 
         lifePoints = startingLifePoints;
+
+        //swordColliderObject = swordCollider.gameObject.GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -179,16 +182,19 @@ public class SkeletonBoss : MonoBehaviour {
                 {
                     gameObject.transform.parent = Left.transform;
                     spriteRender.flipX = true;
+                    SkeletonSwordPixelGenerator.facingRight = true;
                 }
                 else if (nextWarp == 1)
                 {
                     gameObject.transform.parent = Right.transform;
                     spriteRender.flipX = false;
+                    SkeletonSwordPixelGenerator.facingRight = false;
                 }
                 else if (nextWarp == 2)
                 {
                     gameObject.transform.parent = Middle.transform;
                     spriteRender.flipX = false;
+                    SkeletonSwordPixelGenerator.facingRight = false;
                 }
 
                 gameObject.transform.localPosition = new Vector3(0, 0, 0);
@@ -254,8 +260,13 @@ public class SkeletonBoss : MonoBehaviour {
                    // warpCounter = 0;
                     print("Attacking with sprite index " + counter / attackingAnimationSpeed);
                 	spriteRender.sprite = attacking[counter / attackingAnimationSpeed];
+                if (counter / attackingAnimationSpeed == attacking.Length - 8
+                   && counter % attackingAnimationSpeed == 0)
+                {
+                    generateShockWave();
+                }
 
-                 }
+            }
 
             //Done attacking, warp
             if (counter == 0)
@@ -332,4 +343,20 @@ public class SkeletonBoss : MonoBehaviour {
 
         return popUpText;
     }
+
+    void generateShockWave()
+    {
+        float x = SkeletonSwordPixelGenerator.facingRight ? 0.8f : -0.8f;
+        Vector3 position = new Vector3(x, 0.1f, 0);
+        var tempWave = Instantiate(skeletonShockwave, position, Quaternion.identity) as GameObject;
+
+        tempWave.GetComponent<SpriteRenderer>().flipX = !SkeletonSwordPixelGenerator.facingRight;
+        tempWave.transform.parent = gameObject.transform;
+        tempWave.transform.localPosition = position;
+
+        tempWave.transform.parent = null;
+        tempWave.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        tempWave.SetActive(true);
+    }
+
 }

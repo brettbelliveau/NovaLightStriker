@@ -127,7 +127,7 @@ public class SkeletonBoss : MonoBehaviour {
                 Player.bossDefeated = true;
                 gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
-                if (waitCounter < 60)
+                if (waitCounter < 30)
                 {
                     waitCounter++;
                     collider.enabled = false;
@@ -258,7 +258,6 @@ public class SkeletonBoss : MonoBehaviour {
                 //else
                 //{
                    // warpCounter = 0;
-                    print("Attacking with sprite index " + counter / attackingAnimationSpeed);
                 	spriteRender.sprite = attacking[counter / attackingAnimationSpeed];
                 if (counter / attackingAnimationSpeed == attacking.Length - 8
                    && counter % attackingAnimationSpeed == 0)
@@ -271,14 +270,9 @@ public class SkeletonBoss : MonoBehaviour {
             //Done attacking, warp
             if (counter == 0)
             {
-                //attackFreezeCounter = (attackFreezeCounter + 1) % attackFreezeDuration;
-                //if (attackFreezeCounter == 0)
-                //{
                 warping = true;
                 attackFreeze = false;
                 attackFreezeCounter = 0;
-                //print("Warping now");
-                //}
             }
 
          }

@@ -617,7 +617,7 @@ public class Player : MonoBehaviour {
         tempWave.SetActive(true);
     }
 
-    void playDyingAnimation()
+    public void playDyingAnimation()
     {
         //TODO: Make this only play when out of lives
         if (extraLives == 0 && !playedGameOverText)

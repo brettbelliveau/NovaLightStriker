@@ -155,10 +155,12 @@ public class ScoreRecap : MonoBehaviour {
             GameObject.FindObjectOfType<ScreenFader>().speed = 1;
 
             if (Player.currentLevel < 3) {
-
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(Player.currentLevel + 1);
             }
             else {
+
+                GameObject.FindObjectOfType<ScreenFader>().EndScene(6);
+
                 var scorePath = Path.GetDirectoryName(Application.dataPath);
                 scorePath += "/Assets/HiScores.csv";
                 var scoreToFile = new string[5];
@@ -169,6 +171,7 @@ public class ScoreRecap : MonoBehaviour {
                     var fs = File.OpenRead(scorePath);
                     var reader = new StreamReader(fs);
                     var scores = new string[5];
+                    var scoresValues = new int[5];
                     var dateTimes = new string[5];
                     int pos = 0;
 
@@ -181,29 +184,50 @@ public class ScoreRecap : MonoBehaviour {
                         pos++;
                     }
 
+                    fs.Close();
+
                     if (pos < 5)
                     {
                         scores[pos] = Convert.ToString(Player.totalScore);
                         dateTimes[pos] = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                     }
-                    else if(Convert.ToInt16(scores[4]) < Player.totalScore) {
-                        string tempScore = "-1";
-                        string tempDate = "";
-
-                        for(int i = 0; i < 5; i++) {
-                            if(Convert.ToInt16(scores[i]) < Player.totalScore) {
-                                tempScore = scores[i];
-                                tempDate = dateTimes[i];
-                                scores[i] = Convert.ToString(Player.totalScore);
-                                dateTimes[i] = currentDate;
-                                Player.totalScore = Convert.ToInt16(tempScore);
-                                currentDate = tempDate;
+                    else
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (scores[i].Equals(""))
+                            {
+                                scoresValues[i] = 0;
+                            }
+                            else
+                            {
+                                scoresValues[i] = Convert.ToInt32(scores[i]);
                             }
                         }
-                    }
 
-                    for(int i = 0; i < 5; i++) {
-                        scoreToFile[i] = scores[i] + ";" + dateTimes[i];
+                        if (scoresValues[4] < Player.totalScore)
+                        {
+                            int tempScore = -1;
+                            string tempDate = "";
+
+                            for (int i = 0; i < 5; i++)
+                            {
+                                if (scoresValues[i] < Player.totalScore)
+                                {
+                                    tempScore = scoresValues[i];
+                                    tempDate = dateTimes[i];
+                                    scores[i] = Convert.ToString(Player.totalScore);
+                                    dateTimes[i] = currentDate;
+                                    Player.totalScore = tempScore;
+                                    currentDate = tempDate;
+                                }
+                            }
+                        }
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            scoreToFile[i] = scores[i] + ";" + dateTimes[i];
+                        }
                     }
                 }
                 else {
@@ -212,7 +236,6 @@ public class ScoreRecap : MonoBehaviour {
                 }
 
                 File.WriteAllLines(scorePath, scoreToFile);
-                GameObject.FindObjectOfType<ScreenFader>().EndScene(6);
             }
                 
         }

@@ -141,6 +141,7 @@ public class SkeletonBoss : MonoBehaviour {
                         tempText = spawnTextAtLocation(new Vector3(0, 0, -1f));
                         Player.addScorePoints(10000);
                         SpawnOutPixelsBoss.dying = true;
+                        GameObject.FindObjectOfType<ScoreRecap>().run = true;
                     }
 
                     counter = (counter + 1) % (dying.Length * dyingAnimationSpeed);

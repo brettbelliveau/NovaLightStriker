@@ -29,7 +29,11 @@ public class MenuKeyController : MonoBehaviour {
             buttons[cursor].GetComponent<MenuHandler>().enabled = true;
             if (PlayerPrefs.GetInt("CurrentLevel") == 0)
             {
-                PlayerPrefs.SetInt("LastCursorPosition", cursor);
+                //If exiting game, set cursor back to 0
+                if (cursor == 3)
+                    PlayerPrefs.SetInt("LastCursorPosition", 0);
+                else
+                    PlayerPrefs.SetInt("LastCursorPosition", cursor);
             }
         }
 

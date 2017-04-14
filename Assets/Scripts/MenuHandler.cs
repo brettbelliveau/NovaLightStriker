@@ -35,6 +35,10 @@ public class MenuHandler : MonoBehaviour {
                 PlayerPrefs.DeleteAll();
                 PlayerPrefs.SetInt("CurrentLevel", 0);
             }
+            if (PlayerPrefs.GetInt("CurrentLevel") > 0 && PlayerPrefs.GetInt("CurrentLevel") < 4 && SceneToLoad == 0)
+            {
+                Player.fadeOutSound = true;
+            }
 
             if (fade)
                 GameObject.FindObjectOfType<ScreenFader>().EndScene(SceneToLoad);

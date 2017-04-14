@@ -46,6 +46,7 @@ public class Player : MonoBehaviour {
     public GameObject damageColliderRight, damageColliderLeft;
     public GameObject swordCollider;
     public GameObject lifeCounter, lifeCounterText;
+    public GameObject musicSource;
 
     public static bool spawningBool; //Should be true to init spawn anim
     public static bool spawned;      //Should be false to init spawn anim
@@ -77,6 +78,8 @@ public class Player : MonoBehaviour {
     public static bool checkPointOne, checkPointTwo;
     public GameObject checkPointOneObject, checkPointTwoObject, startingPosition;
     private float startTime;
+    private float volume;
+    public static bool fadeOutSound;
 
 
     // Use this for initialization
@@ -163,7 +166,7 @@ public class Player : MonoBehaviour {
             totalScore = PlayerPrefs.GetInt("TotalScore");
         }
 
-        lifePoints = 100;
+        lifePoints = 10;
         maxLifePoints = lifePoints;
         lastKillTime = 0;
         multiplier = 1;
@@ -215,10 +218,37 @@ public class Player : MonoBehaviour {
         movedUp = false;
         startTime = Time.time;
         bossDefeated = false;
+        volume = 0;
+        fadeOutSound = false;
     }
 
     // Update is called once per frame
     void Update() {
+
+        if (musicSource == null)
+        {
+            musicSource = FindObjectOfType<AudioScript>().gameObject;
+            volume = musicSource.GetComponent<AudioSource>().volume;
+        }
+
+        if (!musicSource.GetComponent<AudioSource>().isPlaying)
+        {
+            musicSource.GetComponent<AudioSource>().Play();
+        }
+
+        if (volume < .12f && !fadeOutSound)
+        {
+            volume += 0.001f;
+            musicSource.GetComponent<AudioSource>().volume = volume;
+        }
+
+        else if (fadeOutSound)
+        {
+            volume -= 0.001f;
+            musicSource.GetComponent<AudioSource>().volume = volume;
+        }
+
+
 
         if (Time.timeScale != 1)
             return;
@@ -670,6 +700,7 @@ public class Player : MonoBehaviour {
                 //If out of lives, return to main menu
                 if (extraLives == 0)
                 {
+                    fadeOutSound = true;
                     PlayerPrefs.DeleteAll();
                     PlayerPrefs.SetInt("CurrentLevel", currentLevel);
                     GameObject.FindObjectOfType<ScreenFader>().speed = 0.8f;

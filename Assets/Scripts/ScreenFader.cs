@@ -78,7 +78,14 @@ public class ScreenFader : MonoBehaviour
                     if (PlayerPrefs.GetInt("CurrentLevel") == 0 && SceneNumber == 1)
                     {
                         PlayerPrefs.DeleteAll();
+                        Destroy(FindObjectOfType<AudioScript>().gameObject);
                         PlayerPrefs.SetInt("CurrentLevel", 0);
+                    }
+
+                    else if (PlayerPrefs.GetInt("CurrentLevel") == 1 || PlayerPrefs.GetInt("CurrentLevel") == 2 || PlayerPrefs.GetInt("CurrentLevel") == 3)
+                    {
+                        if (SceneNumber != PlayerPrefs.GetInt("CurrentLevel"))
+                            Destroy(FindObjectOfType<AudioScript>().gameObject);
                     }
 
                     PlayerPrefs.SetInt("PreviousLevel", PlayerPrefs.GetInt("CurrentLevel"));

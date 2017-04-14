@@ -31,7 +31,13 @@ public class MenuKeyController : MonoBehaviour {
             {
                 //If exiting game, set cursor back to 0
                 if (cursor == 3)
+                {
                     PlayerPrefs.SetInt("LastCursorPosition", 0);
+                    AudioScript.fadeOutSound = true;
+                }
+                else if (cursor == 0)
+                    AudioScript.fadeOutSound = true;
+
                 else
                     PlayerPrefs.SetInt("LastCursorPosition", cursor);
             }

@@ -47,6 +47,7 @@ public class Player : MonoBehaviour {
     public GameObject swordCollider;
     public GameObject lifeCounter, lifeCounterText;
     public GameObject musicSource;
+    public AudioClip dying;
 
     public static bool spawningBool; //Should be true to init spawn anim
     public static bool spawned;      //Should be false to init spawn anim
@@ -166,7 +167,7 @@ public class Player : MonoBehaviour {
             totalScore = PlayerPrefs.GetInt("TotalScore");
         }
 
-        lifePoints = 10;
+        lifePoints = 100;
         maxLifePoints = lifePoints;
         lastKillTime = 0;
         multiplier = 1;
@@ -474,6 +475,7 @@ public class Player : MonoBehaviour {
             if (counter / attackAnimationSpeed == 4)
             {
                 swordCollider.gameObject.SetActive(true);
+                gameObject.GetComponent<AudioSource>().Play();
                 earlySwing = true;
             }
 
@@ -652,6 +654,8 @@ public class Player : MonoBehaviour {
         //TODO: Make this only play when out of lives
         if (extraLives == 0 && !playedGameOverText)
         {
+            gameObject.GetComponent<AudioSource>().clip = dying;
+            gameObject.GetComponent<AudioSource>().Play();
             playedGameOverText = true;
             GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 10);
         }

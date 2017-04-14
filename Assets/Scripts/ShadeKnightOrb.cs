@@ -38,7 +38,12 @@ public class ShadeKnightOrb : MonoBehaviour {
             movingRight = shadeKnight.GetComponent<SpriteRenderer>().flipX;
 
         counter++;
-        
+
+        if (counter == 1)
+        {
+            gameObject.GetComponent<AudioSource>().Play();
+        }
+
         //Charging up orb
         if (counter < 36)
         {   

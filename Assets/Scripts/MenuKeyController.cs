@@ -10,6 +10,9 @@ public class MenuKeyController : MonoBehaviour {
     private Color unSelected;
     private Color selected;
 
+    public AudioClip selectSound;
+    public AudioClip moveSound;
+
     private static int cursor;
 
 	// Use this for initialization
@@ -26,6 +29,11 @@ public class MenuKeyController : MonoBehaviour {
         //Select button at cursor
         if (Input.GetButtonDown("Submit"))
         {
+            if (buttons.Length > 3 && cursor == 0)
+            {
+                gameObject.GetComponent<AudioSource>().clip = selectSound;
+                gameObject.GetComponent<AudioSource>().Play();
+            }
             buttons[cursor].GetComponent<MenuHandler>().enabled = true;
             if (PlayerPrefs.GetInt("CurrentLevel") == 0)
             {
@@ -48,6 +56,8 @@ public class MenuKeyController : MonoBehaviour {
         {
             if (cursor - 1 >= 0)
             {
+                gameObject.GetComponent<AudioSource>().clip = moveSound;
+                gameObject.GetComponent<AudioSource>().Play();
                 buttons[cursor--].GetComponentInChildren<Text>().color = unSelected;
             }
         }
@@ -56,6 +66,8 @@ public class MenuKeyController : MonoBehaviour {
         {
             if (cursor + 1 < buttons.Length)
             {
+                gameObject.GetComponent<AudioSource>().clip = moveSound;
+                gameObject.GetComponent<AudioSource>().Play();
                 buttons[cursor++].GetComponentInChildren<Text>().color = unSelected;
             }
         }

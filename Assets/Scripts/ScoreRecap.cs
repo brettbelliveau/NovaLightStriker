@@ -179,8 +179,16 @@ public class ScoreRecap : MonoBehaviour {
                     {
                         var line = reader.ReadLine();
                         var values = line.Split(';');
-                        scores[pos] = values[0];
-                        dateTimes[pos] = values[1];
+                        if (values[0] != "")
+                        {
+                            scores[pos] = values[0];
+                            dateTimes[pos] = values[1];
+                        }
+                        else
+                        {
+                            scores[pos] = "0";
+                            dateTimes[pos] = "Not yet completed.";
+                        }
                         pos++;
                     }
 

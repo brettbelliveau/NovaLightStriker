@@ -24,18 +24,8 @@ public class ScoreReportLoader : MonoBehaviour {
 	
     private string buildList(int[] list)
     {
-        string str = "";
-        for (int i = 0; i < list.Length; i++)
-        {
-            str += list[i];
-
-            if (i < list.Length - 1)
-                str += "\n" + "\n";
-            if (i == list.Length - 2)
-                str += "\n";
-        }
-
-        return str;
+       return scores[0] + "\n" + "\n" + scores[1] + 
+            "\n" + "\n" + scores[2] + "\n" + "\n" + "\n" + scores[3];
     }
 
 }

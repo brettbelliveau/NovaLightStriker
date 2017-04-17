@@ -48,7 +48,11 @@ public class ShadeKnight : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(10, 14, true);
 
         //Make projectiles ignore VFX
-        Physics2D.IgnoreLayerCollision(10, 12, true);
+        Physics2D.IgnoreLayerCollision(10, 12, true);        
+        
+        //Fix glitch with floating right over time
+        if (turnAfterFrames % 2 == 1)
+            turnAfterFrames -= 1;
     }
 
     // Update is called once per frame
@@ -110,13 +114,13 @@ public class ShadeKnight : MonoBehaviour {
         //Standing sprite
         else if (!attackFreeze)
         {
-            //Float Up 1/2 of the time
+            //Float down 1/2 of the time
             if ((walkingCounter / (turnAfterFrames*2 / floatInterval) % 2) == 0)
-                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.02f);
-
-            //Float Down the other 1/2 of the time
-            else
                 gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, -0.02f);
+
+            //Float up the other 1/2 of the time
+            else
+                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(gameObject.GetComponent<Rigidbody2D>().velocity.x, 0.02f);
 
             walkingCounter = (walkingCounter + 1) % (turnAfterFrames * 2);
             if (walkingCounter == turnAfterFrames)

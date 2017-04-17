@@ -42,7 +42,7 @@ public class ScoreRecap : MonoBehaviour {
             }
             else
             {
-                parTime = 180; //180 seconds == 3 minutes
+                parTime = 300; //300 seconds == 5 minutes
             }
 
             timeBonus = (parTime - (Player.finishTime - Player.awakeTime)) * 100;
@@ -54,7 +54,7 @@ public class ScoreRecap : MonoBehaviour {
             
             TimeVal.GetComponent<Text>().text = Convert.ToString(timeBonus);
             TotalVal.GetComponent<Text>().text = Convert.ToString(Player.score + timeBonus);
-            Player.totalScore = Player.score + Convert.ToInt32(timeBonus);
+            Player.totalScore += Convert.ToInt32(timeBonus);
         }
         
         else if (counter == 60 || counter == 90 || counter == 140 
@@ -95,12 +95,9 @@ public class ScoreRecap : MonoBehaviour {
         {
             if (Player.currentLevel < 3)
             {
-                if (Player.currentLevel == 1)
-                    extraLives = Player.totalScore / 20000;
-
-                else //Player.currentLevel == 2
+                if (Player.currentLevel < 3)
                     extraLives = Player.totalScore / 15000;
-
+             
                 extraLives = extraLives > 3 ? 3 : extraLives;
                 Player.extraLives += extraLives;
                 ExtraLives.SetActive(true);
@@ -138,6 +135,11 @@ public class ScoreRecap : MonoBehaviour {
 
         else if ((counter >= 450 && extraLives < 1) || (counter >= 540))
         {
+            int oneScore, twoScore;
+            Debug.Log("Level " + Player.currentLevel);
+            oneScore = PlayerPrefs.GetInt("LevelOneScore");
+            twoScore = PlayerPrefs.GetInt("LevelTwoScore");
+
             PlayerPrefs.DeleteAll();
 
             PlayerPrefs.SetInt("TotalScore", Player.totalScore);
@@ -146,12 +148,16 @@ public class ScoreRecap : MonoBehaviour {
 
             if (PlayerPrefs.GetInt("CurrentLevel") == 1)
                 PlayerPrefs.SetInt("LevelOneScore", Player.totalScore);
+            else
+                PlayerPrefs.SetInt("LevelOneScore", oneScore);
 
-            else if (PlayerPrefs.GetInt("CurrentLevel") == 2)
-                PlayerPrefs.SetInt("LevelTwoScore", Player.totalScore);
+            if (PlayerPrefs.GetInt("CurrentLevel") == 2)
+                PlayerPrefs.SetInt("LevelTwoScore", Player.score + Convert.ToInt32(timeBonus));
+            else
+                PlayerPrefs.SetInt("LevelTwoScore", twoScore);
 
-            else if (PlayerPrefs.GetInt("CurrentLevel") == 3)
-                PlayerPrefs.SetInt("LevelThreeScore", Player.totalScore);
+            if (PlayerPrefs.GetInt("CurrentLevel") == 3)
+                PlayerPrefs.SetInt("LevelThreeScore", Player.score + Convert.ToInt32(timeBonus));
             
             PlayerPrefs.SetInt("ExtraLives", Player.extraLives);
 
@@ -190,7 +196,7 @@ public class ScoreRecap : MonoBehaviour {
                         else
                         {
                             scores[pos] = "0";
-                            dateTimes[pos] = "Not yet completed.";
+                            dateTimes[pos] = "Not yet completed";
                         }
                         pos++;
                     }

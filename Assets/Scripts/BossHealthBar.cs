@@ -38,6 +38,7 @@ public class BossHealthBar : MonoBehaviour
             {
                 init = true;
                 ShadeMageBoss.barInit = true;
+                SkeletonBoss.barInit = true;
                 Player.stopMovement = false;
             }
         }

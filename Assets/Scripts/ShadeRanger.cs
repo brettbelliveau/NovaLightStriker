@@ -33,6 +33,7 @@ public class ShadeRanger : MonoBehaviour {
     private float x, y, xV, yV;
     private bool startDeleting;
     private int index;
+    private int turnModified;
 
     // Use this for initialization
     void Start () {
@@ -43,6 +44,10 @@ public class ShadeRanger : MonoBehaviour {
         attackFreeze = false;
         takingDamage = false;
         movingRight = false;
+
+        //Fix glitch with floating right over time
+        if (turnAfterFrames % 2 == 1)
+            turnAfterFrames -= 1;
     }
 
     // Update is called once per frame

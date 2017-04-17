@@ -42,6 +42,11 @@ public class ShadeCrawler : MonoBehaviour {
 
         //Make projectiles ignore VFX
         Physics2D.IgnoreLayerCollision(10, 12, true);
+
+        //Fix glitch with floating right over time
+        if (turnAfterFrames % 2 == 1)
+            turnAfterFrames -= 1;
+
     }
 
     // Update is called once per frame

@@ -344,6 +344,7 @@ public class Player : MonoBehaviour {
                 spriteRender.enabled = true;
                 spriteEnabled = true;
             }
+            
         }
 
         if (!spawningBool && spawned)
@@ -654,15 +655,15 @@ public class Player : MonoBehaviour {
         //TODO: Make this only play when out of lives
         if (extraLives == 0 && !playedGameOverText)
         {
-            gameObject.GetComponent<AudioSource>().clip = dying;
-            gameObject.GetComponent<AudioSource>().Play();
             playedGameOverText = true;
             GameObject.FindObjectOfType<TextController>().writeText("Game Over", 40, 2000, 10);
         }
-
+        
         counter = (counter + 1) % 80;
         if (counter == 2 && !startDeleting)
         {
+            gameObject.GetComponent<AudioSource>().clip = dying;
+            gameObject.GetComponent<AudioSource>().Play();
             body.velocity = new Vector3(0, 0, 0);
             body.gravityScale = 0;
             collider.enabled = false;

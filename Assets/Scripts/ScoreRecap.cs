@@ -27,7 +27,9 @@ public class ScoreRecap : MonoBehaviour {
 
         if (counter == 1)
         {
+            Player.fadeOutSound = true;
             Complete.SetActive(true);
+            BG.SetActive(true);
             ScoreVal.GetComponent<Text>().text = Convert.ToString(Player.score);
 
             if (Player.currentLevel == 1)
@@ -54,9 +56,10 @@ public class ScoreRecap : MonoBehaviour {
             TotalVal.GetComponent<Text>().text = Convert.ToString(Player.score + timeBonus);
             Player.totalScore = Player.score + Convert.ToInt32(timeBonus);
         }
-
-        else if (counter == 30)
-            BG.SetActive(true);
+        
+        else if (counter == 60 || counter == 90 || counter == 140 
+            || counter == 170 || counter == 230 || counter == 280)
+            gameObject.GetComponent<AudioSource>().Play();
 
         else if (counter == 70)
         {

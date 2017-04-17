@@ -25,10 +25,22 @@ public class HighScoreLoader : MonoBehaviour {
 
             while(!reader.EndOfStream && pos < 5)
             {
+                Debug.Log("Position: " + pos);
                 var line = reader.ReadLine();
+                Debug.Log("Line is: " + line);
                 var values = line.Split(';');
-                scores[pos] = values[0];
-                dateTimes[pos] = values[1];
+                if (values[0] != "")
+                {
+                    Debug.Log("Score is: " + values[0]);
+                    scores[pos] = values[0];
+                    Debug.Log("Date is: " + values[1]);
+                    dateTimes[pos] = values[1];
+                }
+                else
+                {
+                    scores[pos] = "0";
+                    dateTimes[pos] = "Not yet completed.";
+                }
                 pos++;
             }
 
@@ -36,8 +48,8 @@ public class HighScoreLoader : MonoBehaviour {
             {
                 while(pos < 5)
                 {
-                    scores[pos] = "Empty";
-                    dateTimes[pos] = "Not yet recorded";
+                    scores[pos] = "0";
+                    dateTimes[pos] = "Not yet completed.";
                     pos++;
                 }
             }

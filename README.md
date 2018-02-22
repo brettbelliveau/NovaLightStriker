@@ -7,3 +7,5 @@ In the year 40XX, the planet Xeron has been peacefully colonized by a species of
 This world is thrown into chaos when a separatist faction of humanoids known as the Shade invade the planet. They are an advanced species transcended to a energy-less state, and their mission is to exterminate all lesser forms of life, one world at a time.
 
 As the striker, you are agile, skillful with a blade and can harness the power of the Nova. Defend Xeron from the invasion, and put an end to the Shade.
+
+Demo: https://www.youtube.com/watch?v=iz5InOvOogY
